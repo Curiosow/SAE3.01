@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+/**/build/
+
+# Ignore gradle
+gradlew
+gradlew.bat
