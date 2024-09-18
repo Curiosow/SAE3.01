@@ -9,3 +9,6 @@ Projet de SAE visant à créer un visionneur d'emploi du temps utilisant PHP pou
 - [CHARPIOT Corentin](https://www.github.com/CorentinChr)
 - [BAJOMÉE Noa](https://www.github.com/NoaBaj)
 - [HENICHARD Théo](https://www.github.com/TheoHenichard)
+
+## Live preview
+[Cliquez ici](http://87.106.121.50/dashboard.php)
