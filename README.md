@@ -11,4 +11,4 @@ Projet de SAE visant à créer un visionneur d'emploi du temps utilisant PHP pou
 - [HENICHARD Théo](https://www.github.com/TheoHenichard)
 
 ## Live preview
-[Cliquez ici](http://87.106.121.50/dashboard.php)
+[Cliquez ici](http://87.106.121.50/Dashboard.php)
