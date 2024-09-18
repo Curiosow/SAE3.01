@@ -79,12 +79,16 @@ function generateCalendar() {
                 <div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-black text-sm shadow ring-1 ring-black">
                     <?php generateCalendar(); ?>
                 </div>
-                <footer>
-                    <div class="mt-4 text-center text-gray-400">
-                        <p>© 2023 Mon emploi du temps</p>
-                    </div>
-                </footer>
+            </div>
 
+            <div class="mt-auto flex-col justify-center ">
+                <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
+                    <path d="M0 0.5H240" stroke="#898888"/>
+                </svg>
+                <div class="mt-4 flex justify-center gap-12">
+                    <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
+                    <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
+                </div>
             </div>
         </div>
 
