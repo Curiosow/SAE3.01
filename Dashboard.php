@@ -1,7 +1,18 @@
 <?php
+session_start();
 
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $date = new DateTime('now', new DateTimeZone('Europe/Paris'));
+
+if (isset($_POST['monthOffSet'])) {
+    $_SESSION['monthOffSet'] = (int)$_POST['monthOffSet'];
+} else {
+    if (!isset($_SESSION['monthOffSet'])) {
+        $_SESSION['monthOffSet'] = 0;
+    }
+}
+
+$date->modify($_SESSION['monthOffSet'] . ' month');
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
 
 function generateCalendar() {
@@ -53,19 +64,22 @@ function generateCalendar() {
         <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-black px-6 pb-4">
             <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
                 <div class="flex items-center text-gray-400">
-                    <button type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
-                        <span class="sr-only">Previous month</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
-                    <div class="flex-auto text-sm font-semibold"><?php echo ucfirst($month); ?></div>
-                    <button type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
-                        <span class="sr-only">Next month</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
+                    <form action="Dashboard.php" method="post" class="flex w-full">
+                        <button type="submit" name="monthOffSet" value="<?php echo ($_SESSION['monthOffSet'] - 1); ?>" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+                            <span class="sr-only">Previous month</span>
+                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        <div class="flex-auto text-sm font-semibold"><?php echo ucfirst($month); ?></div>
+                        <button type="submit" name="monthOffSet" value="<?php echo ($_SESSION['monthOffSet'] + 1); ?>" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+                            <span class="sr-only">Next month</span>
+                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </form>
+
                 </div>
                 <div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-400">
                     <div>Lun</div>
