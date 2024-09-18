@@ -4,6 +4,10 @@ setlocale(LC_TIME, 'fr_FR.UTF-8');
 $date = new DateTime('now', new DateTimeZone('Europe/Paris'));
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
 
+function isMobile() {
+    return preg_match('/(android|iphone|ipad|ipod|mobile|blackberry|opera mini|windows phone)/i', $_SERVER['HTTP_USER_AGENT']);
+}
+
 function generateCalendar() {
     global $date;
     $month = $date->format('m');
@@ -38,15 +42,65 @@ function generateCalendar() {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Emploi du temps</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+
 <div>
 
+    <?php if (isMobile()): ?>
+    <!-- Topbar for mobile -->
+    <div class="relative z-50 lg:hidden" role="dialog" aria-modal="true">
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-black px-6 pb-4">
+            <!-- Close button -->
+            <div class="absolute top-0 right-0 m-2">
+                <svg id='close-sidebar' class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </div>
+            <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9">
+                <div class="flex items-center text-gray-400">
+                    <button type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Previous month</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                    <div class="flex-auto text-sm font-semibold"><?php echo ucfirst($month); ?></div>
+                    <button type="button" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
+                        <span class="sr-only">Next month</span>
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-400">
+                    <div>Lun</div>
+                    <div>Mar</div>
+                    <div>Mer</div>
+                    <div>Jeu</div>
+                    <div>Ven</div>
+                    <div>Sam</div>
+                    <div>Dim</div>
+                </div>
+                <div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-black text-sm shadow ring-1 ring-black">
+                    <?php generateCalendar(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('close-sidebar').addEventListener('click', function() {
+            document.querySelector('.relative.z-50.lg\\:hidden').style.display = 'none';
+        });
+    </script>
+
+
+    <?php else: ?>
     <!-- Static sidebar for desktop -->
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <!-- Sidebar component-->
@@ -82,13 +136,18 @@ function generateCalendar() {
             </div>
         </div>
 
-        <div class="lg:pl-72">
-            <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <?php endif; ?>
+    </div>
+    <div class="lg:pl-72">
+        <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
                 <!-- Dashboard -->
 
-            </div>
         </div>
     </div>
+
+</div>
+
+
 
 </body>
 </html>
