@@ -1,12 +1,29 @@
 <?php
+include 'ScheduleManager.php';
+
 session_start();
+
+// Vérification si l'utilisateur n'est pas connecté
+if(!isset($_SESSION['groupe'])) {
+    header('location: Login.php');
+    exit();
+}
+
+// Vérification si l'utilisateur souhaite se déconnecter
+if(isset($_POST['disconnect'])) {
+    session_destroy();
+    header('location: Login.php');
+    exit();
+}
 
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $date = new DateTime('now', new DateTimeZone('Europe/Paris'));
 
+// Vérification si l'utilisateur à demander de changer de mois
 if (isset($_POST['monthOffSet'])) {
     $_SESSION['monthOffSet'] = (int)$_POST['monthOffSet'];
 } else {
+    // Si ce n'est pas le cas, si aucun mois n'est enregistrer dans la session, alors on définit au mois actuel.
     if (!isset($_SESSION['monthOffSet'])) {
         $_SESSION['monthOffSet'] = 0;
     }
@@ -46,6 +63,8 @@ function generateCalendar() {
                </button>';
     }
 }
+
+getDay($date, 19, (int) getSemestre((int) $_SESSION['promotion'], $date), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
 ?>
 
 <!DOCTYPE html>
@@ -96,6 +115,9 @@ function generateCalendar() {
             </div>
 
             <div class="mt-auto flex-col justify-center ">
+                <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
+                    <button type="submit" id="disconnect" name="disconnect" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Se déconnecter</button>
+                </form>
                 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                     <path d="M0 0.5H240" stroke="#898888"/>
                 </svg>
