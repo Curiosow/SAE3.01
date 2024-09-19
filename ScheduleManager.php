@@ -1,16 +1,16 @@
 <?php
 
-function getDay($date, $day, $semestre, $groupe, $sousgroupe) {
+function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
-    $preparedStatement = "SELECT * FROM schedule WHERE DATE(horaire) = $1 AND semestre = $2 AND (nomgroupe = 'TD". $groupe . "' OR nomgroupe = 'TP" . $groupe . $sousgroupe . "' OR nomgroupe = 'CM') ORDER BY version DESC";
+    $preparedStatement = "SELECT * FROM schedule WHERE DATE(horaire) = $1 AND semestre = $2 AND typeformation = $3 AND (nomgroupe = 'TD" . $groupe . "' OR nomgroupe = 'TP" . $groupe . $sousgroupe . "' OR nomgroupe = 'CM') ORDER BY version DESC";
     $connexion = pg_connect("host=iutinfo-sgbd.uphf.fr port=5432 dbname=edt user=iutinfo315 password=MDPToSAE22!");
     if(!$connexion) {
         die('La communcation à la base de données a echouée : ' . pg_last_error());
     }
 
-    $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre));
+    $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation));
 
     $version = -1;
     while ($row = pg_fetch_assoc($result)) {
@@ -31,6 +31,23 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe) {
         $course->setHoraire($row['horaire']);
         $course->setDuration($row['duration']);
         $course->setSalle($row['salle']);
+    }
+}
+
+function getSemestre($promotion, $date) {
+    if ($date instanceof DateTime)
+        $date = $date->format('Y-m-d');
+    $month = date('n', strtotime($date));
+
+    switch ($promotion) {
+        case '1':
+            return ($month >= 1 && $month <= 6) ? '1' : '2';
+        case '2':
+            return ($month >= 1 && $month <= 6) ? '3' : '4';
+        case '3':
+            return ($month >= 1 && $month <= 6) ? '5' : '6';
+        default:
+            return null;
     }
 }
 
