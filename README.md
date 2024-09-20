@@ -10,5 +10,10 @@ Projet de SAE visant à créer un visionneur d'emploi du temps utilisant PHP pou
 - [BAJOMÉE Noa](https://www.github.com/NoaBaj)
 - [HENICHARD Théo](https://www.github.com/TheoHenichard)
 
+## Technologies
+
+**Client:** Html, TailWindCSS, JavaScript
+**Serveur:** PHP, Git, Github, Jetbrains : Code With Me
+
 ## Live preview
 [Cliquez ici](http://87.106.121.50/Dashboard.php)
