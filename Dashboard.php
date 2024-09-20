@@ -254,6 +254,18 @@ function getDayWeek($day) {
                         </div>
                     </div>
 
+                    <!-- Vertical lines -->
+                    <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-7 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-7">
+                        <div class="col-start-1 row-span-full"></div>
+                        <div class="col-start-2 row-span-full"></div>
+                        <div class="col-start-3 row-span-full"></div>
+                        <div class="col-start-4 row-span-full"></div>
+                        <div class="col-start-5 row-span-full"></div>
+                        <div class="col-start-6 row-span-full"></div>
+                        <div class="col-start-7 row-span-full"></div>
+                        <div class="col-start-8 row-span-full w-8"></div>
+                    </div>
+
                     <div class="flex flex-auto">
                         <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100"></div>
                         <div class="grid flex-auto grid-cols-1 grid-rows-1">
@@ -309,17 +321,9 @@ function getDayWeek($day) {
                         </div>
                     </div>
 
-                    <!-- Vertical lines -->
-                    <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-7 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-7">
-                        <div class="col-start-1 row-span-full"></div>
-                        <div class="col-start-2 row-span-full"></div>
-                        <div class="col-start-3 row-span-full"></div>
-                        <div class="col-start-4 row-span-full"></div>
-                        <div class="col-start-5 row-span-full"></div>
-                        <div class="col-start-6 row-span-full"></div>
-                        <div class="col-start-7 row-span-full"></div>
-                        <div class="col-start-8 row-span-full w-8"></div>
-                    </div>
+
+
+
                 </div>
             </div>
         </div>
