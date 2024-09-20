@@ -1,5 +1,7 @@
 <?php
 include 'managers/ScheduleManager.php';
+include 'managers/CollegueManager.php';
+include 'managers/EnseignementManager.php';
 
 session_start();
 
@@ -73,32 +75,125 @@ function generateCalendar() {
 
     $actualDay = clone $realDate;
     $actualDay = $actualDay->format('Y-m-d');
-    foreach ($calendar as $date) {
-        $day = date('d', strtotime($date));
-        $cMonth = date('m', strtotime($date));
+    foreach ($calendar as $d) {
+        $day = date('d', strtotime($d));
+        $cMonth = date('m', strtotime($d));
 
-        if($cMonth == $month) {
-            if($date == $actualDay) {
-                echo '<button type="button" class="rounded-full border-2 border-sky-700 bg-black-50 py-1.5 text-white focus:z-10">
-                 <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">'. $day . '</time>
-               </button>';
-            } else {
-                echo '<button type="button" class="rounded-tl-lg bg-black-50 py-1.5 text-white focus:z-10">
-                 <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">'. $day . '</time>
-               </button>';
+        $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-white focus:z-10';
+        if ($d == $actualDay) {
+            $buttonClass = 'rounded-full border-2 border-sky-700 bg-black-50 py-1.5 text-white focus:z-10';
+        } elseif ($cMonth != $month) {
+            $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-gray-600 focus:z-10';
+        }
+
+        echo '<button type="button" class="' . $buttonClass . '">
+            <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">' . $day . '</time>
+        </button>';
+    }
+}
+
+function generateDays() {
+    global $week;
+
+    $weekDates = getWeekDates($week);
+    foreach ($weekDates as $weekDate) {
+        $courses = getDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        foreach ($courses as $course) {
+            $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
+            $dispHoraire = $horraire->format("N");
+            $dispGridRow = getGridRow($horraire);
+
+            $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
+            $dispSpan = getSpan($duree);
+
+            $color = 'red';
+            switch ($course->getTypeseance()) {
+                case 'CM':
+                    $color = 'purple';
+                    break;
+
+                case "TD":
+                    $color = 'blue';
+                    break;
+
+                case "TP":
+                    $color = 'green';
+                    break;
+
+                case "DS":
+                    $color = 'orange';
+                    break;
+
+                case "PRJ":
+                    $color = 'yellow';
+                    break;
             }
-        } else {
-            if($date == $actualDay) {
-                echo '<button type="button" class="rounded-tl-lg bg-black-50 py-1.5 text-blue focus:z-10">
-                 <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">'. $day . '</time>
-               </button>';
-            } else {
-                echo '<button type="button" class="rounded-tl-lg bg-black-50 py-1.5 text-gray-600 focus:z-10">
-                 <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">'. $day . '</time>
-               </button>';
-            }
+
+            $dispHour = (int)$horraire->format("H");
+            $dispHour = $dispHour + 1;
+            if($dispHour < 10 && $dispHour > 1)
+                $dispHour = '0' . $dispHour;
+
+            $dispMinute = $horraire->format("i") . '';
+            if($horraire->format("i") < 10 && $horraire->format("i") > 1)
+                $dispMinute = '0' . $dispMinute;
+
+            echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
+                <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-xs leading-5 hover:bg-blue-100">
+                    <p class="order-1 font-semibold text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . removeAfterTiret($course->getCode()) . '</p>
+                    <p class="order-1 font-semibold text-'. $color . '-700">' . getCollegueFullName($course->getCollegue()) . '</p>
+                    <p class="text-'. $color . '-500 group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : 'Salle ' . $course->getSalle()) . '</time></p>
+                </a>
+              </li>';
         }
     }
+}
+
+function removeAfterTiret($string) {
+    $parts = explode(' - ', $string);
+    return $parts[0];
+}
+
+function getWeekDates(DateTime $date) {
+    $startOfWeek = clone $date;
+    $endOfWeek = clone $date;
+
+    $startOfWeek->modify('monday this week');
+    $endOfWeek->modify('sunday this week');
+
+    $weekDates = [];
+
+    $currentDate = clone $startOfWeek;
+    while ($currentDate <= $endOfWeek) {
+        $weekDates[] = clone $currentDate;
+        $currentDate->modify('+1 day');
+    }
+
+    return $weekDates;
+}
+
+function getGridRow(DateTime $dateTime) {
+    $hour = (int) $dateTime->format('H');
+    $minute = (int) $dateTime->format('i');
+
+    $gridRow = (($hour - 7) * 2) + 1;
+    if ($minute >= 30) {
+        $gridRow += 1;
+    }
+
+    return $gridRow;
+}
+
+function getSpan(DateTime $duration) {
+    $hours = (int) $duration->format('H');
+    $minutes = (int) $duration->format('i');
+
+    $span = ($hours * 2);
+    if ($minutes >= 30) {
+        $span += 1;
+    }
+
+    return $span;
 }
 
 function getWeekDay($firstDay) {
@@ -121,8 +216,6 @@ function getDayWeek($day) {
 
     return $resultDate;
 }
-
-//getDay($date, 19, (int) getSemestre((int) $_SESSION['promotion'], $date), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
 ?>
 
 <!DOCTYPE html>
@@ -220,6 +313,8 @@ function getDayWeek($day) {
                     <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
                         <div class="-mr-px hidden grid-cols-7 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                             <div class="col-end-1 w-14"></div>
+
+                            <!-- affichage de la semaine -->
                             <div class="flex items-center justify-center py-3">
                                 <span>Lun <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('monday'); echo $thisDay->format('d M'); ?></span></span>
                             </div>
@@ -241,6 +336,7 @@ function getDayWeek($day) {
                             <div class="flex items-center justify-center py-3">
                                 <span>Dim <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('sunday'); echo $thisDay->format('d M'); ?></span></span>
                             </div>
+
                         </div>
                     </div>
 
@@ -256,6 +352,7 @@ function getDayWeek($day) {
                         <div class="col-start-8 row-span-full w-8"></div>
                     </div>
 
+                    <!-- Heures sur la gauche du calendrier -->
                     <div class="flex flex-auto">
                         <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100"></div>
                         <div class="grid flex-auto grid-cols-1 grid-rows-1">
@@ -263,50 +360,14 @@ function getDayWeek($day) {
                             <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(21, minmax(4vh , 1fr))">
                                 <!-- Adjust top margin for mobile -->
                                 <div class="row-end-1 h-7"></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">8</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">9</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">10</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">11</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">12</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">13</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">14</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">15</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">16</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">17</div>
-                                </div>
-                                <div></div>
-                                <div>
-                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">18</div>
-                                </div>
-                                <div></div>
+                                <?php
+                                for ($i = 8; $i <= 18; $i++) {
+                                    echo '<div>
+                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">' . $i . '</div>
+                                    </div>
+                                    <div></div>';
+                                }
+                                ?>
                             </div>
 
                             <!-- Vertical lines -->
@@ -327,30 +388,7 @@ function getDayWeek($day) {
                                 <!-- Chaque incrément de cet argument augmente de 30 minutes le début, par exemple 8h : 2; 9h : 4 etc-->
                                 <!-- col-start correspond au jour de la semaine-->
                                 <!-- span correspond à la durée du cours, plus précisemment au nombre de demi heures, par exemple 1h30 : 3-->
-                                <li class="relative mt-px flex sm:col-start-1" style="grid-row: 14 / span 3">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-blue-50 p-2 text-xs leading-5 hover:bg-blue-100">
-                                        <p class="order-1 font-semibold text-blue-700">TD</p>
-                                        <p class="text-blue-500 group-hover:text-blue-700"><time>14:00</time></p>
-                                    </a>
-                                </li>
-                                <li class="relative mt-px flex sm:col-start-4" style="grid-row: 2 / span 6">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-green-50 p-2 text-xs leading-5 hover:bg-green-100">
-                                        <p class="order-1 font-semibold text-green-700">TP</p>
-                                        <p class="text-green-500 group-hover:text-green-700"><time>08:00</time></p>
-                                    </a>
-                                </li>
-                                <li class="relative mt-px flex sm:col-start-5" style="grid-row: 15 / span 3">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-purple-50 p-2 text-xs leading-5 hover:bg-purple-100">
-                                        <p class="order-1 font-semibold text-purple-700">CM</p>
-                                        <p class="text-purple-500 group-hover:text-purle-700"><time>14:30</time></p>
-                                    </a>
-                                </li>
-                                <li class="relative mt-px flex sm:col-start-2" style="grid-row: 8 / span 3">
-                                    <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-orange-50 p-2 text-xs leading-5 hover:bg-orange-100">
-                                        <p class="order-1 font-semibold text-orange-700">DS</p>
-                                        <p class="text-orange-500 group-hover:text-orange-700"><time>11:00</time></p>
-                                    </a>
-                                </li>
+                                <?php generateDays(); ?>
                             </ol>
                         </div>
                     </div>
