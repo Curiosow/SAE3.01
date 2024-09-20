@@ -12,7 +12,7 @@ Projet de SAE visant à créer un visionneur d'emploi du temps utilisant PHP pou
 
 ## Technologies
 
-**Client:** Html, TailWindCSS, JavaScript
+**Client:** HTML, TailWindCSS, JavaScript
 
 **Serveur:** PHP, Git, Github, Jetbrains : Code With Me
 
