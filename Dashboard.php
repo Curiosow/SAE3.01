@@ -130,7 +130,7 @@ function generateDays() {
             }
 
             $dispHour = (int)$horraire->format("H");
-            $dispHour = $dispHour + 1;
+            //$dispHour = $dispHour + 1;
             if($dispHour < 10 && $dispHour > 1)
                 $dispHour = '0' . $dispHour;
 
@@ -138,13 +138,17 @@ function generateDays() {
             if($horraire->format("i") < 10 && $horraire->format("i") > 1)
                 $dispMinute = '0' . $dispMinute;
 
+            // type="submit" name="viewCourse" value="' . $ser = serialize($course); echo $ser . '"
             echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-                <a href="#" class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-xs leading-5 hover:bg-blue-100">
+                <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-xs leading-5 hover:bg-blue-100">
+                <form>
+                <button">
+                    <p class="text-'. $color . '-500 group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time></p>
                     <p class="order-1 font-semibold text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . removeAfterTiret($course->getCode()) . '</p>
                     <p class="order-1 font-semibold text-'. $color . '-700">' . getCollegueFullName($course->getCollegue()) . '</p>
-                    <p class="text-'. $color . '-500 group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : 'Salle ' . $course->getSalle()) . '</time></p>
-                </a>
-              </li>';
+                </button>
+              </form>
+              </a>';
         }
     }
 }
@@ -176,7 +180,7 @@ function getGridRow(DateTime $dateTime) {
     $hour = (int) $dateTime->format('H');
     $minute = (int) $dateTime->format('i');
 
-    $gridRow = (($hour - 7) * 2) + 1;
+    $gridRow = (($hour - 7) * 2);
     if ($minute >= 30) {
         $gridRow += 1;
     }
