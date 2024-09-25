@@ -374,6 +374,7 @@ function getDayWeek($day) {
                                 ?>
                             </div>
 
+
                             <!-- Vertical lines -->
                             <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-7 grid-rows-1 divide-x divide-gray-200 sm:grid sm:grid-cols-7">
                                 <div class="col-start-1 row-span-full"></div>
@@ -387,7 +388,7 @@ function getDayWeek($day) {
                             </div>
 
                             <!-- Events -->
-                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-9" style="grid-template-rows: 1.75rem repeat(21, minmax(4vh, 1fr)) auto">
+                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(21, minmax(4vh, 1fr)) auto">
                                 <!-- grid-row correspond à l'heure de début du cours, en partant de 7h30 qui correspond à 1-->
                                 <!-- Chaque incrément de cet argument augmente de 30 minutes le début, par exemple 8h : 2; 9h : 4 etc-->
                                 <!-- col-start correspond au jour de la semaine-->
@@ -396,7 +397,6 @@ function getDayWeek($day) {
                             </ol>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
