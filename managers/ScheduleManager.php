@@ -1,12 +1,13 @@
 <?php
 include "Course.php";
+include "Database.php";
 
 function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
     $preparedStatement = "SELECT * FROM schedule WHERE DATE(horaire) = $1 AND semestre = $2 AND (typeformation = $3 OR typeformation = 'MUT') AND (nomgroupe = 'TD" . $groupe . "' OR nomgroupe = 'TP" . $groupe . $sousgroupe . "' OR nomgroupe = 'CM') ORDER BY version DESC";
-    $connexion = pg_connect("host=iutinfo-sgbd.uphf.fr port=5432 dbname=edt user=iutinfo315 password=MDPToSAE22!");
+    $connexion = Database::getInstance()->getConnection();
     if(!$connexion) {
         die('La communcation à la base de données a echouée : ' . pg_last_error());
     }

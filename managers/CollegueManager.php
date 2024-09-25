@@ -7,7 +7,7 @@ function getCollegueFullName($id) {
 
     $preparedStatement = "SELECT * FROM collegue WHERE id=$1";
 
-    $connexion = pg_connect("host=iutinfo-sgbd.uphf.fr port=5432 dbname=edt user=iutinfo315 password=MDPToSAE22!");
+    $connexion = Database::getInstance()->getConnection();
     if(!$connexion) {
         die('La communcation à la base de données a echouée : ' . pg_last_error());
     }
