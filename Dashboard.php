@@ -267,6 +267,53 @@ function getDayWeek($day) {
 
             </div>
 
+            <!-- Options de tri-->
+            <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+                <h3 class="text-white mb-2">Options de tri</h3>
+                <form class="space-y-6" action="Dashboard.php" method="POST">
+
+                    <div>
+                        <label for="promotion" class="block text-sm font-medium leading-6 text-white">Promotion</label>
+                        <div class="mb-2">
+                            <select id="promotion" name="promotion" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
+                                <option value="1">1 ère année</option>
+                                <option value="2">2 ème année</option>
+                                <option value="3">3 ème année</option>
+                            </select>
+                        </div>
+
+                        <label for="formation" class="block text-sm font-medium leading-6 text-white">Formation</label>
+                        <div class="mb-2">
+                            <select id="formation" name="formation" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
+                                <option value="FI">Initiale</option>
+                                <option value="FA">Alternance</option>
+                            </select>
+                        </div>
+
+                        <label for="groupe" class="block text-sm font-medium leading-6 text-white">Groupe</label>
+                        <div class="mb-2">
+                            <select id="groupe" name="groupe" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                            </select>
+                        </div>
+
+                        <label for="sousgroupe" class="block text-sm font-medium leading-6 text-white">Sous-Groupe</label>
+                        <div class="mb-2">
+                            <select id="sousgroupe" name="sousgroupe" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Confirmer</button>
+                    </div>
+                </form>
+            </div>
+
             <!-- Sidebar footer -->
             <div class="mt-auto flex-col justify-center ">
                 <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
