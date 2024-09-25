@@ -11,10 +11,16 @@ class Database {
         $user = null;
         $password = null;
 
+        if (!file_exists('config.yml')) {
+            header('location: Error.html');
+            exit();
+        }
+
         $config = file('config.yml');
 
         if ($config === false) {
             header('location: Error.html');
+            exit();
         }
 
         foreach ($config as $line) {
@@ -50,6 +56,7 @@ class Database {
 
         if (!$this->connection) {
             header('location: Error.html');
+            exit();
         }
     }
 
