@@ -12,15 +12,15 @@ class Database {
         $password = null;
 
         if (!file_exists('config.yml')) {
-            header('location: Error.html');
-            exit();
+            echo "<script> location.href='Error.php'; </script>";
+            exit;
         }
 
         $config = file('config.yml');
 
         if ($config === false) {
-            header('location: Error.html');
-            exit();
+            echo "<script> location.href='Error.php'; </script>";
+            exit;
         }
 
         foreach ($config as $line) {
@@ -55,8 +55,8 @@ class Database {
         );
 
         if (!$this->connection) {
-            header('location: Error.html');
-            exit();
+            echo "<script> location.href='Error.php'; </script>";
+            exit;
         }
     }
 
