@@ -12,6 +12,7 @@ class Database {
         $password = null;
 
         if (!file_exists('config.yml')) {
+            error_log("Configuration file not found.");
             echo "<script> location.href='Error.php'; </script>";
             exit;
         }
@@ -19,6 +20,7 @@ class Database {
         $config = file('config.yml');
 
         if ($config === false) {
+            error_log("Failed to read configuration file.");
             echo "<script> location.href='Error.php'; </script>";
             exit;
         }
@@ -50,11 +52,10 @@ class Database {
             }
         }
 
-        $this->connection = pg_connect(
-            "host=$host port=$port dbname=$dbname user=$user password=$password"
-        );
+        $this->connection = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
 
         if (!$this->connection) {
+            error_log("Failed to connect to the database: " . pg_last_error());
             echo "<script> location.href='Error.php'; </script>";
             exit;
         }
