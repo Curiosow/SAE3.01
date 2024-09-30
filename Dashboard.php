@@ -7,14 +7,14 @@ session_start();
 
 // Vérification si l'utilisateur n'est pas connecté
 if(!isset($_SESSION['groupe'])) {
-    header('location: Login.php');
+    header('location: OldLogin.php');
     exit();
 }
 
 // Vérification si l'utilisateur souhaite se déconnecter
 if(isset($_POST['disconnect'])) {
     session_destroy();
-    header('location: Login.php');
+    header('location: OldLogin.php');
     exit();
 }
 

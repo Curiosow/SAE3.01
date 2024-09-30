@@ -1,5 +1,6 @@
 <?php
 include "managers/UsersManager.php";
+
 session_start();
 
 if(isset($_SESSION['logged'])) {
@@ -11,24 +12,28 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
     $mail = $_POST['email-address'];
     $password = $_POST['password'];
 
-    $login_err = "";
-    if(hasAccount($mail)) {
-       $data = pg_fetch_assoc(getAccountFromMail($mail));
-       if(password_verify(trim($password), $data['password'])) {
-           $_SESSION["logged"] = true;
-           $_SESSION["mail"] = $data['mail'];
-           $_SESSION["role"] = $data['role'];
+    $mail_err = $password_err = "";
 
-           header('location: Dashboard.php');
-           exit();
-       } else {
-           $login_err = "Adresse mail ou mot de passe incorrect!";
-       }
+
+    if(!hasAccount(trim($mail))) {
+        if(!preg_match('/^[a-zA-Z0-9_@.]+$/', trim($_POST["email-address"]))) {
+            $mail_err = "Le mail peut contenir uniquement des lettres, nombres et tirets.";
+        }
     } else {
-        $login_err = "Adresse mail ou mot de passe incorrect!";
+        $mail_err = "Le mail est déjà utilisé.";
     }
-}
 
+    if(strlen(trim($_POST["password"])) < 6) {
+        $password_err = "Le mot de passe doit contenir au moins 6 caractères.";
+    }
+
+    if(empty($mail_err) && empty($password_err)) {
+        registerUser($mail, password_hash($password, PASSWORD_DEFAULT));
+        header('location: Login.php');
+        exit();
+    }
+
+}
 
 ?>
 <!DOCTYPE html>
@@ -45,11 +50,11 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
 
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             <img class="mx-auto h-10 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7_hvZN3QSpzxIuVu8EPWSRpIZD-Al7AKMIQ&s" alt="Your Company">
-            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Connectez-vous avec votre mail UPHF</h2>
+            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Enregistrez-vous avec votre mail UPHF</h2>
         </div>
 
         <?php
-        if(!empty($login_err)){
+        if(!empty($mail_err)) {
             echo '<div class="rounded-md bg-red-50 p-4">
                       <div class="flex">
                         <div class="flex-shrink-0">
@@ -61,7 +66,26 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                           <h3 class="text-sm font-medium text-red-800">Une erreur est survenue.</h3>
                           <div class="mt-2 text-sm text-red-700">
                             <ul role="list" class="list-disc space-y-1 pl-5">
-                              <li>'. $login_err . '</li>
+                              <li>'. $mail_err . '</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>';
+        }
+        if(!empty($password_err)) {
+            echo '<div class="rounded-md bg-red-50 p-4">
+                      <div class="flex">
+                        <div class="flex-shrink-0">
+                          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                        <div class="ml-3">
+                          <h3 class="text-sm font-medium text-red-800">Une erreur est survenue.</h3>
+                          <div class="mt-2 text-sm text-red-700">
+                            <ul role="list" class="list-disc space-y-1 pl-5">
+                              <li>'. $password_err . '</li>
                             </ul>
                           </div>
                         </div>
@@ -70,7 +94,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
         }
         ?>
 
-        <form class="space-y-6" action="Login.php" method="POST">
+        <form class="space-y-6" action="Register.php" method="POST">
             <div class="relative -space-y-px rounded-md shadow-sm">
                 <div class="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300"></div>
                 <div>
@@ -84,13 +108,13 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
             </div>
 
             <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Se connecter</button>
+                <button type="submit" class="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">S'enregistrer</button>
             </div>
         </form>
 
         <p class="text-center text-sm leading-6 text-gray-500">
-            Vous n'avez pas de compte ?
-            <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Enregistrez-vous ici</a>
+            Vous avez déjà un compte ?
+            <a href="Login.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
         </p>
 
     </div>
