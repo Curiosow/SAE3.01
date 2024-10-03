@@ -14,7 +14,6 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
 
     $mail_err = $password_err = "";
 
-
     if(!hasAccount(trim($mail))) {
         if(!preg_match('/^[a-zA-Z0-9_@.]+$/', trim($_POST["email-address"]))) {
             $mail_err = "Le mail peut contenir uniquement des lettres, nombres et tirets.";
@@ -31,7 +30,11 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
 
     if(empty($mail_err) && empty($password_err)) {
         registerUser($mail, password_hash($password, PASSWORD_DEFAULT));
-        header('location: Login.php');
+        $_SESSION["logged"] = true;
+        $_SESSION["mail"] = $mail;
+        $_SESSION["role"] = 'ELEVE';
+
+        header('location: ChooseGroup.php');
         exit();
     }
 

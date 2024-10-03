@@ -19,11 +19,10 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
            $_SESSION["mail"] = $data['mail'];
            $_SESSION["role"] = $data['role'];
 
-           // TESTS
-           $_SESSION['promotion'] = '2';
-           $_SESSION['formation'] = 'FI';
-           $_SESSION['groupe'] = 'A';
-           $_SESSION['sousgroupe'] = '1';
+           $_SESSION["promotion"] = $data['promotion'];
+           $_SESSION["formation"] = $data['formation'];
+           $_SESSION["groupe"] = $data['groupe'];
+           $_SESSION["sousgroupe"] = $data['sousgroupe'];
 
            header('location: Dashboard.php');
            exit();
@@ -97,6 +96,11 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
         <p class="text-center text-sm leading-6 text-gray-500">
             Vous n'avez pas de compte ?
             <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Enregistrez-vous ici</a>
+        </p>
+
+        <p class="text-center text-sm leading-6 text-gray-500">
+            Vous n'êtes pas enregistrer ?
+            <a href="OldLogin.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Cherchez votre EDT</a>
         </p>
 
     </div>
