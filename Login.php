@@ -19,6 +19,12 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
            $_SESSION["mail"] = $data['mail'];
            $_SESSION["role"] = $data['role'];
 
+           // TESTS
+           $_SESSION['promotion'] = '2';
+           $_SESSION['formation'] = 'FI';
+           $_SESSION['groupe'] = 'A';
+           $_SESSION['sousgroupe'] = '1';
+
            header('location: Dashboard.php');
            exit();
        } else {

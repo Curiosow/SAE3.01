@@ -18,6 +18,8 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
     if(!hasAccount(trim($mail))) {
         if(!preg_match('/^[a-zA-Z0-9_@.]+$/', trim($_POST["email-address"]))) {
             $mail_err = "Le mail peut contenir uniquement des lettres, nombres et tirets.";
+        } elseif (strpos($mail, '@uphf.fr') === false) {
+            $mail_err = "Le mail doit appartenir au domaine 'uphf.fr'.";
         }
     } else {
         $mail_err = "Le mail est déjà utilisé.";
