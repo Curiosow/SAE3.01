@@ -24,7 +24,7 @@ password:
 
 **Client:** HTML, TailWindCSS, JavaScript
 
-**Serveur:** PHP, Git, Github, Jetbrains : Code With Me
+**Serveur:** PHP, Git, Github, Jetbrains : Code With Me, Postgresql, Redis
 
 ## Live preview
 [Cliquez ici](http://87.106.121.50/Dashboard.php)
