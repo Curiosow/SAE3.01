@@ -2,6 +2,7 @@
 
 class Cours
 {
+
     public $code;
     public $typeseance;
     public $typeformation;
