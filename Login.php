@@ -99,7 +99,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
         </p>
 
         <p class="text-center text-sm leading-6 text-gray-500">
-            Vous n'êtes pas enregistrer ?
+            Vous n'êtes pas enregistré ?
             <a href="OldLogin.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Cherchez votre EDT</a>
         </p>
 
