@@ -11,13 +11,13 @@ class Database {
         $user = null;
         $password = null;
 
-        if (!file_exists('config.yml')) {
+        if (!file_exists('../config.yml')) {
             error_log("Configuration file not found.");
             echo "<script> location.href='Error.php'; </script>";
             exit;
         }
 
-        $config = file('config.yml');
+        $config = file('../config.yml');
 
         if ($config === false) {
             error_log("Failed to read configuration file.");

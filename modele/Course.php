@@ -172,4 +172,5 @@ class Course
     {
         $this->salle = $salle;
     }
+
 }

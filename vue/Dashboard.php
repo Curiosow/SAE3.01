@@ -1,7 +1,7 @@
 <?php
-include 'managers/ScheduleManager.php';
-include 'managers/CollegueManager.php';
-include 'managers/EnseignementManager.php';
+include '../modele/ScheduleManager.php';
+include '../modele/CollegueManager.php';
+include '../modele/EnseignementManager.php';
 
 session_start();
 
@@ -323,10 +323,11 @@ function getDayWeek($day) {
                     <path d="M0 0.5H240" stroke="#898888"/>
                 </svg>
                 <div class="mt-4 flex justify-center gap-12">
-                    <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
-                    <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
+                    <img class="grayscale opacity-65" src="../img/ics.png" alt="Image 1">
+                    <img class="grayscale opacity-65" src="../img/pdf.png" alt="Image 2">
                 </div>
             </div>
+
 
         </div>
     </div>
