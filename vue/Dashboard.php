@@ -1,9 +1,10 @@
 <?php
-include '../modele/ScheduleManager.php';
-include '../modele/CollegueManager.php';
-include '../modele/EnseignementManager.php';
+include "../controleur/Controleur.php";
 
 session_start();
+
+global $controleur;
+$controleur = new Controleur();
 
 // Vérification si l'utilisateur n'est pas connecté
 if(!isset($_SESSION['groupe'])) {
@@ -97,7 +98,7 @@ function generateDays() {
 
     $weekDates = getWeekDates($week);
     foreach ($weekDates as $weekDate) {
-        $courses = getDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        $courses = $controleur.controlGetDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
         foreach ($courses as $course) {
             $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
             $dispHoraire = $horraire->format("N");
@@ -200,6 +201,14 @@ function getSpan(DateTime $duration) {
     return $span;
 }
 
+function getDayWeek($day) {
+    global $week;
+    $resultDate = clone $week;
+    $resultDate->modify($day . ' this week');
+
+    return $resultDate;
+}
+
 function getWeekDay($firstDay) {
     global $week;
     $resultDate = clone $week;
@@ -213,13 +222,6 @@ function getWeekDay($firstDay) {
     return $resultDate;
 }
 
-function getDayWeek($day) {
-    global $week;
-    $resultDate = clone $week;
-    $resultDate->modify($day . ' this week');
-
-    return $resultDate;
-}
 ?>
 
 <!DOCTYPE html>
