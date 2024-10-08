@@ -1,6 +1,6 @@
 <?php
 
-class Cours
+class lesson
 {
 
     public $code;

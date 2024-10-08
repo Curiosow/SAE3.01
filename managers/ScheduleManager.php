@@ -1,5 +1,5 @@
 <?php
-include "Cours.php";
+include "lesson.php";
 include "Database.php";
 
 function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
