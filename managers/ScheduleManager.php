@@ -1,5 +1,5 @@
 <?php
-include "Course.php";
+include "Cours.php";
 include "Database.php";
 
 function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
@@ -24,7 +24,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
         } else if($version != intval($row['version']))
             continue;
 
-        $course = new Course();
+        $course = new Cours();
         $course->setCode($row['code']);
         $course->setTypeseance($row['typeseance']);
         $course->setTypeformation($row['typeformation']);

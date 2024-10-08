@@ -1,6 +1,6 @@
 <?php
 
-class Course
+class Cours
 {
     public $code;
     public $typeseance;
