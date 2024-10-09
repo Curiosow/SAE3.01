@@ -12,10 +12,13 @@ class Controleur
     public function __construct() {
 
     }
-    public function generateDays($week) {
+
+    function generateDays() {
+        global $week;
+
         $weekDates = getWeekDates($week);
         foreach ($weekDates as $weekDate) {
-            $courses = GetDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            $courses = getDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
             foreach ($courses as $course) {
                 $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
                 $dispHoraire = $horraire->format("N");
@@ -61,9 +64,9 @@ class Controleur
                 <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-xs leading-5 hover:bg-' . $color . '-100">
                 <form>
                 <button">
-                    <p class="text-'. $color . '-500 group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time></p>
-                    <p class="order-1 font-semibold text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . removeAfterTiret($course->getCode()) . '</p>
-                    <p class="order-1 font-semibold text-'. $color . '-700">' . getCollegueFullName($course->getCollegue()) . '</p>
+                    <p class="text-'. $color . '-500 font-semibold group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time></p>
+                    <p class="order-1 text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . getEnseignementShortName($course->getCode()) . '</p>
+                    <p class="order-1 text-'. $color . '-700">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
                 </button>
               </form>
               </a>';
