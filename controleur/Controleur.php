@@ -1,10 +1,10 @@
 <?php
-include "../modele/Database.php";
+//include "../modele/Database.php";
 include "../modele/CollegueManager.php";
-include "../modele/Course.php";
+//include "../modele/Course.php";
 include "../modele/EnseignementManager.php";
 include "../modele/ScheduleManager.php";
-include "../modele/UsersManager.php";
+//include "../modele/UsersManager.php";
 
 
 class Controleur
@@ -57,7 +57,7 @@ class Controleur
                     $dispMinute = '0' . $dispMinute;
 
                 // type="submit" name="viewCourse" value="' . $ser = serialize($course); echo $ser . '"
-                return '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
+                echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
                 <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-xs leading-5 hover:bg-' . $color . '-100">
                 <form>
                 <button">
@@ -69,7 +69,6 @@ class Controleur
               </a>';
             }
         }
-        return null;
     }
 
 }

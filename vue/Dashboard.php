@@ -1,8 +1,7 @@
 <?php
-include "../controleur/Controleur.php";
+include_once("../controleur/Controleur.php");
 
 session_start();
-global $controleur;
 $controleur = new Controleur();
 
 // Vérification si l'utilisateur n'est pas connecté
