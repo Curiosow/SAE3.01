@@ -143,9 +143,9 @@ function generateDays() {
                 <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-xs leading-5 hover:bg-' . $color . '-100">
                 <form>
                 <button">
-                    <p class="text-'. $color . '-500 group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time></p>
-                    <p class="order-1 font-semibold text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . removeAfterTiret($course->getCode()) . '</p>
-                    <p class="order-1 font-semibold text-'. $color . '-700">' . getCollegueFullName($course->getCollegue()) . '</p>
+                    <p class="text-'. $color . '-500 font-semibold group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time></p>
+                    <p class="order-1 text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . getEnseignementShortName($course->getCode()) . '</p>
+                    <p class="order-1 text-'. $color . '-700">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
                 </button>
               </form>
               </a>';
@@ -156,6 +156,16 @@ function generateDays() {
 function removeAfterTiret($string) {
     $parts = explode(' - ', $string);
     return $parts[0];
+}
+
+function transformTeacherName($fullName) {
+    $parts = explode(' ', $fullName);
+    if (count($parts) < 2) {
+        return $fullName;
+    }
+    $initial = substr($parts[0], 0, 1) . '.';
+    $lastName = $parts[1];
+    return $initial . ' ' . $lastName;
 }
 
 function getWeekDates(DateTime $date) {
