@@ -312,7 +312,7 @@ function getWeekDay($firstDay) {
             <div class="isolate flex flex-auto flex-col overflow-auto bg-white">
                 <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
                     <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
-                        <div class="-mr-px hidden grid-cols-7 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
+                        <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                             <div class="col-end-1 w-14"></div>
 
                             <!-- affichage de la semaine -->
@@ -331,25 +331,25 @@ function getWeekDay($firstDay) {
                             <div class="flex items-center justify-center py-3">
                                 <span>Ven <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('friday'); echo $thisDay->format('d M'); ?></span></span>
                             </div>
-                            <div class="flex items-center justify-center py-3">
+                            <!--<div class="flex items-center justify-center py-3">
                                 <span>Sam <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('saturday'); echo $thisDay->format('d M'); ?></span></span>
                             </div>
                             <div class="flex items-center justify-center py-3">
                                 <span>Dim <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('sunday'); echo $thisDay->format('d M'); ?></span></span>
-                            </div>
+                            </div>-->
 
                         </div>
                     </div>
 
                     <!-- Vertical lines -->
-                    <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-7 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-7">
+                    <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-5 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-7">
                         <div class="col-start-1 row-span-full"></div>
                         <div class="col-start-2 row-span-full"></div>
                         <div class="col-start-3 row-span-full"></div>
                         <div class="col-start-4 row-span-full"></div>
                         <div class="col-start-5 row-span-full"></div>
-                        <div class="col-start-6 row-span-full"></div>
-                        <div class="col-start-7 row-span-full"></div>
+                        <!--<div class="col-start-6 row-span-full"></div>
+                        <div class="col-start-7 row-span-full"></div>-->
                         <div class="col-start-8 row-span-full w-8"></div>
                     </div>
 
@@ -373,19 +373,19 @@ function getWeekDay($firstDay) {
 
 
                             <!-- Vertical lines -->
-                            <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-7 grid-rows-1 divide-x divide-gray-200 sm:grid sm:grid-cols-7">
+                            <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-5 grid-rows-1 divide-x divide-gray-200 sm:grid sm:grid-cols-5">
                                 <div class="col-start-1 row-span-full"></div>
                                 <div class="col-start-2 row-span-full"></div>
                                 <div class="col-start-3 row-span-full"></div>
                                 <div class="col-start-4 row-span-full"></div>
                                 <div class="col-start-5 row-span-full"></div>
-                                <div class="col-start-6 row-span-full"></div>
-                                <div class="col-start-7 row-span-full"></div>
+                                <!--<div class="col-start-6 row-span-full"></div>
+                                <div class="col-start-7 row-span-full"></div>-->
                                 <div class="col-start-8 row-span-full w-8"></div>
                             </div>
 
                             <!-- Events -->
-                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-7 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(21, minmax(4vh, 1fr)) auto">
+                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(21, minmax(4vh, 1fr)) auto">
                                 <!-- grid-row correspond à l'heure de début du cours, en partant de 7h30 qui correspond à 1-->
                                 <!-- Chaque incrément de cet argument augmente de 30 minutes le début, par exemple 8h : 2; 9h : 4 etc-->
                                 <!-- col-start correspond au jour de la semaine-->

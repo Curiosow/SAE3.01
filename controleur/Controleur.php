@@ -13,9 +13,7 @@ class Controleur
 
     }
 
-    function generateDays() {
-        global $week;
-
+    function generateDays($week) {
         $weekDates = getWeekDates($week);
         foreach ($weekDates as $weekDate) {
             $courses = getDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
