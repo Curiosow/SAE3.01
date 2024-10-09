@@ -1,5 +1,6 @@
 <?php
-include "managers/UsersManager.php";
+include "../modele/UsersManager.php";
+
 session_start();
 
 if(isset($_SESSION['logged'])) {

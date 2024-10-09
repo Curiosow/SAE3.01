@@ -1,9 +1,8 @@
 <?php
-include 'managers/ScheduleManager.php';
-include 'managers/CollegueManager.php';
-include 'managers/EnseignementManager.php';
+include_once("../controleur/Controleur.php");
 
 session_start();
+$controleur = new Controleur();
 
 // Vérification si l'utilisateur n'est pas connecté
 if(!isset($_SESSION['groupe'])) {
@@ -210,6 +209,14 @@ function getSpan(DateTime $duration) {
     return $span;
 }
 
+function getDayWeek($day) {
+    global $week;
+    $resultDate = clone $week;
+    $resultDate->modify($day . ' this week');
+
+    return $resultDate;
+}
+
 function getWeekDay($firstDay) {
     global $week;
     $resultDate = clone $week;
@@ -223,13 +230,6 @@ function getWeekDay($firstDay) {
     return $resultDate;
 }
 
-function getDayWeek($day) {
-    global $week;
-    $resultDate = clone $week;
-    $resultDate->modify($day . ' this week');
-
-    return $resultDate;
-}
 ?>
 
 <!DOCTYPE html>
@@ -333,10 +333,11 @@ function getDayWeek($day) {
                     <path d="M0 0.5H240" stroke="#898888"/>
                 </svg>
                 <div class="mt-4 flex justify-center gap-12">
-                    <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
-                    <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
+                    <img class="grayscale opacity-65" src="../img/ics.png" alt="Image 1">
+                    <img class="grayscale opacity-65" src="../img/pdf.png" alt="Image 2">
                 </div>
             </div>
+
 
         </div>
     </div>
@@ -450,7 +451,7 @@ function getDayWeek($day) {
                                 <!-- Chaque incrément de cet argument augmente de 30 minutes le début, par exemple 8h : 2; 9h : 4 etc-->
                                 <!-- col-start correspond au jour de la semaine-->
                                 <!-- span correspond à la durée du cours, plus précisemment au nombre de demi heures, par exemple 1h30 : 3-->
-                                <?php generateDays(); ?>
+                                <?php $controleur->generateDays($week); ?>
                             </ol>
                         </div>
                     </div>
