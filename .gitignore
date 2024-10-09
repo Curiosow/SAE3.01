@@ -1,7 +1,8 @@
 .gradle/
 .idea/
 /**/build/
-
+config.yml
+/Modele/config.yml
 # Ignore gradle
 gradlew
 gradlew.bat
