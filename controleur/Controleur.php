@@ -1,10 +1,7 @@
 <?php
-//include "../modele/Database.php";
 include "../modele/CollegueManager.php";
-//include "../modele/Course.php";
 include "../modele/EnseignementManager.php";
 include "../modele/ScheduleManager.php";
-//include "../modele/UsersManager.php";
 
 
 class Controleur
