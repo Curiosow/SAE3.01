@@ -342,7 +342,7 @@ function getWeekDay($firstDay) {
                     </div>
 
                     <!-- Vertical lines -->
-                    <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-5 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-7">
+                    <div class="col-start-1 col-end-2 row-start-1 hidden grid-cols-5 grid-rows-1 divide-x divide-gray-100 sm:grid sm:grid-cols-5">
                         <div class="col-start-1 row-span-full"></div>
                         <div class="col-start-2 row-span-full"></div>
                         <div class="col-start-3 row-span-full"></div>
@@ -358,16 +358,19 @@ function getWeekDay($firstDay) {
                         <div class="sticky left-0 z-10 w-14 flex-none bg-white ring-1 ring-gray-100"></div>
                         <div class="grid flex-auto grid-cols-1 grid-rows-1">
                             <!-- Horizontal lines -->
-                            <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(21, minmax(4vh , 1fr))">
+                            <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(18, minmax(4.3vh , 1fr))">
                                 <!-- Adjust top margin for mobile -->
                                 <div class="row-end-1 h-7"></div>
                                 <?php
-                                for ($i = 8; $i <= 18; $i++) {
+                                for ($i = 8; $i <= 16; $i++) {
                                     echo '<div>
                                     <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">' . $i . '</div>
                                     </div>
                                     <div></div>';
                                 }
+                                echo '<div>
+                                    <div class="sticky left-0 z-20 -ml-14 -mt-2.5 w-14 pr-2 text-right text-xs leading-5 text-gray-400">' . 17 . '</div>
+                                    </div>';
                                 ?>
                             </div>
 
@@ -385,7 +388,7 @@ function getWeekDay($firstDay) {
                             </div>
 
                             <!-- Events -->
-                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(21, minmax(4vh, 1fr)) auto">
+                            <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(18, minmax(4.3vh, 1fr)) auto">
                                 <!-- grid-row correspond à l'heure de début du cours, en partant de 7h30 qui correspond à 1-->
                                 <!-- Chaque incrément de cet argument augmente de 30 minutes le début, par exemple 8h : 2; 9h : 4 etc-->
                                 <!-- col-start correspond au jour de la semaine-->
