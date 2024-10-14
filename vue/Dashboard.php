@@ -195,14 +195,16 @@ function getWeekDay($firstDay) {
 <body>
 <!-- Static sidebar -->
 <div id="sidebar" class="lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col transition-width duration-300">
-    <!-- Sidebar component-->
-    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-black px-6 pb-4">
-        <!-- Bouton pour rétracter/étendre la sidebar -->
-        <button onclick="toggleSidebar()" class="text-white p-2 focus:outline-none">
+    <!-- Bouton pour rétracter/étendre la sidebar -->
+    <div class="absolute top-0 right-0 p-2">
+        <button onclick="toggleSidebar()" class="text-white focus:outline-none">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
             </svg>
         </button>
+    </div>
+    <!-- Sidebar component-->
+    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-black px-6 pb-4 pt-10">
         <!-- Calendrier -->
         <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed">
             <!-- Boutons mois précédents/suivants -->
@@ -248,7 +250,6 @@ function getWeekDay($firstDay) {
         </div>
     </div>
 </div>
-
 <div id="dashboard" class="lg:pl-72 transition-all duration-300">
     <div class="flex h-full flex-col">
         <!-- topbar (changeur de semaines) -->
