@@ -1,5 +1,7 @@
 <?php
-include "../modele/UsersManager.php";
+include "../controleur/UserControleur.php";
+
+$controleur = new UserControleur();
 
 session_start();
 
@@ -14,7 +16,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
 
     $mail_err = $password_err = "";
 
-    if(!hasAccount(trim($mail))) {
+    if(!$controleur->hasAccount(trim($mail))) {
         if(!preg_match('/^[a-zA-Z0-9_@.]+$/', trim($_POST["email-address"]))) {
             $mail_err = "Le mail peut contenir uniquement des lettres, nombres et tirets.";
         } elseif (strpos($mail, '@uphf.fr') === false) {
@@ -31,7 +33,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
     }
 
     if(empty($mail_err) && empty($password_err)) {
-        registerUser($mail, password_hash($password, PASSWORD_DEFAULT));
+        $controleur->registerUser($mail, password_hash($password, PASSWORD_DEFAULT));
         $_SESSION["logged"] = true;
         $_SESSION["mail"] = $mail;
         $_SESSION["role"] = 'ELEVE';

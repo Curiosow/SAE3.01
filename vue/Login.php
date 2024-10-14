@@ -1,5 +1,7 @@
 <?php
-include "../modele/UsersManager.php";
+include "../controleur/UserControleur.php";
+
+$controleur = new UserControleur();
 
 session_start();
 
@@ -13,8 +15,8 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
     $password = $_POST['password'];
 
     $login_err = "";
-    if(hasAccount($mail)) {
-       $data = pg_fetch_assoc(getAccountFromMail($mail));
+    if($controleur->hasAccount($mail)) {
+       $data = pg_fetch_assoc($controleur->getAccountFromMail($mail));
        if(password_verify(trim($password), $data['password'])) {
            $_SESSION["logged"] = true;
            $_SESSION["mail"] = $data['mail'];
