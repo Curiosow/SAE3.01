@@ -19,6 +19,8 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
             $mail_err = "Le mail peut contenir uniquement des lettres, nombres et tirets.";
         } elseif (strpos($mail, '@uphf.fr') === false) {
             $mail_err = "Le mail doit appartenir au domaine 'uphf.fr'.";
+        } else if (!emailExistsInCSV($mail)) {
+            $mail_err = "Votre mail n'est pas encore enregistré.";
         }
     } else {
         $mail_err = "Le mail est déjà utilisé.";
@@ -34,10 +36,75 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
         $_SESSION["mail"] = $mail;
         $_SESSION["role"] = 'ELEVE';
 
-        header('location: ChooseGroup.php');
+        $line = getLineFromCSVByEmail($mail);
+        switch ($line[3]) {
+            case '1':
+            case '2':
+                $_SESSION['promotion'] = '1';
+                break;
+            case '3':
+            case '4':
+                $_SESSION['promotion'] = '2';
+                break;
+            case '5':
+            case '6':
+                $_SESSION['promotion'] = '3';
+                break;
+        }
+
+        $formation = 'FI';
+        if(str_starts_with($line[4], 'FA'))
+            $formation = 'FA';
+        $_SESSION['formation'] = $formation;
+
+        $group = removePrefix($line[4]);
+        $_SESSION['groupe'] = $group[0];
+        $_SESSION['sousgroupe'] = $group[1];
+
+        $_SESSION['nom'] = $line[1];
+        $_SESSION['prenom'] = $line[2];
+        $_SESSION['civilite'] = $line[0];
+
+        header('location: Dashboard.php');
         exit();
     }
+}
 
+function removePrefix($string) {
+    if (strpos($string, 'FI') === 0) {
+        return substr($string, 2);
+    } elseif (strpos($string, 'FA') === 0) {
+        return substr($string, 2);
+    }
+    return $string;
+}
+
+function emailExistsInCSV($email) {
+    $file = fopen('../liste_groupes.csv', 'r');
+    if ($file !== false) {
+        while (($line = fgetcsv($file, 1000, ';')) !== false) {
+            if (isset($line[5]) && strcasecmp(trim($line[5]), $email) === 0) {
+                fclose($file);
+                return true;
+            }
+        }
+        fclose($file);
+    }
+    return false;
+}
+
+function getLineFromCSVByEmail($email) {
+    $file = fopen('liste_groupes.csv', 'r');
+    if ($file !== false) {
+        while (($line = fgetcsv($file, 1000, ';')) !== false) {
+            if (isset($line[5]) && strcasecmp(trim($line[5]), $email) === 0) {
+                fclose($file);
+                return $line;
+            }
+        }
+        fclose($file);
+    }
+    return null;
 }
 
 ?>
