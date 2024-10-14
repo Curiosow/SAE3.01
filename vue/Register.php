@@ -53,7 +53,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
         }
 
         $formation = 'FI';
-        if(str_starts_with($line[4], 'FA'))
+        if(strpos($line[4], 'FA') === 0)
             $formation = 'FA';
         $_SESSION['formation'] = $formation;
 
@@ -94,7 +94,7 @@ function emailExistsInCSV($email) {
 }
 
 function getLineFromCSVByEmail($email) {
-    $file = fopen('liste_groupes.csv', 'r');
+    $file = fopen('../liste_groupes.csv', 'r');
     if ($file !== false) {
         while (($line = fgetcsv($file, 1000, ';')) !== false) {
             if (isset($line[5]) && strcasecmp(trim($line[5]), $email) === 0) {
