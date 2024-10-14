@@ -38,7 +38,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
            }
 
            $formation = 'FI';
-           if(str_starts_with($line[4], 'FA'))
+           if(strpos($line[4], 'FA') === 0)
                $formation = 'FA';
            $_SESSION['formation'] = $formation;
 
