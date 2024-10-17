@@ -193,6 +193,46 @@ function getWeekDay($firstDay) {
     </script>
 </head>
 <body>
+
+<!-- cloche Icon -->
+<div class="absolute top-0 right-0 p-4">
+    <div class="relative">
+        <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
+            <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+        </button>
+        <!-- Notification Bulles -->
+        <span class="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-red-600"></span>
+    </div>
+</div>
+
+<!-- Notification Sidebar -->
+<div id="notificationSidebar" class="fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300">
+    <div class="p-4">
+        <div class="flex justify-between items-center">
+            <h2 class="text-lg font-semibold">Notifications</h2>
+            <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
+                <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <ul class="mt-4 space-y-2">
+            <li class="p-2 bg-gray-100 rounded-md">Notification 1</li>
+            <li class="p-2 bg-gray-100 rounded-md">Notification 2</li>
+            <li class="p-2 bg-gray-100 rounded-md">Notification 3</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function toggleNotificationSidebar() {
+        const sidebar = document.getElementById('notificationSidebar');
+        sidebar.classList.toggle('translate-x-full');
+    }
+</script>
+
 <!-- Static sidebar -->
 <div id="sidebar" class="lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col transition-width duration-300">
     <!-- Bouton pour rétracter/étendre la sidebar -->
