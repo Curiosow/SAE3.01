@@ -18,42 +18,46 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
     if($controleur->hasAccount($mail)) {
        $data = pg_fetch_assoc($controleur->getAccountFromMail($mail));
        if(password_verify(trim($password), $data['password'])) {
-           $_SESSION["logged"] = true;
-           $_SESSION["mail"] = $data['mail'];
-           $_SESSION["role"] = $data['role'];
+           if($data['verified']) {
+               $_SESSION["logged"] = true;
+               $_SESSION["mail"] = $data['mail'];
+               $_SESSION["role"] = $data['role'];
 
-           $line = getLineFromCSVByEmail($mail);
-           $_SESSION['line'] = $line;
-           switch ($line[3]) {
-               case '1':
-               case '2':
-                   $_SESSION['promotion'] = '1';
-                   break;
-               case '3':
-               case '4':
-                   $_SESSION['promotion'] = '2';
-                   break;
-               case '5':
-               case '6':
-                   $_SESSION['promotion'] = '3';
-                   break;
+               $line = getLineFromCSVByEmail($mail);
+               $_SESSION['line'] = $line;
+               switch ($line[3]) {
+                   case '1':
+                   case '2':
+                       $_SESSION['promotion'] = '1';
+                       break;
+                   case '3':
+                   case '4':
+                       $_SESSION['promotion'] = '2';
+                       break;
+                   case '5':
+                   case '6':
+                       $_SESSION['promotion'] = '3';
+                       break;
+               }
+
+               $formation = 'FI';
+               if(strpos($line[4], 'FA') === 0)
+                   $formation = 'FA';
+               $_SESSION['formation'] = $formation;
+
+               $group = removePrefix($line[4]);
+               $_SESSION['groupe'] = $group[0];
+               $_SESSION['sousgroupe'] = $group[1];
+
+               $_SESSION['nom'] = $line[1];
+               $_SESSION['prenom'] = $line[2];
+               $_SESSION['civilite'] = $line[0];
+
+               header('location: Dashboard.php');
+               exit();
+           } else {
+               $login_err = "Vous devez d'abord valider votre compte!";
            }
-
-           $formation = 'FI';
-           if(strpos($line[4], 'FA') === 0)
-               $formation = 'FA';
-           $_SESSION['formation'] = $formation;
-
-           $group = removePrefix($line[4]);
-           $_SESSION['groupe'] = $group[0];
-           $_SESSION['sousgroupe'] = $group[1];
-
-           $_SESSION['nom'] = $line[1];
-           $_SESSION['prenom'] = $line[2];
-           $_SESSION['civilite'] = $line[0];
-
-           header('location: Dashboard.php');
-           exit();
        } else {
            $login_err = "Adresse mail ou mot de passe incorrect!";
        }
@@ -105,7 +109,49 @@ function getLineFromCSVByEmail($email) {
         </div>
 
         <?php
-        if(!empty($login_err)){
+        if(isset($_SESSION['just_register']) && $_SESSION['just_register']) {
+            $_SESSION['just_register'] = false;
+            echo '<div class="rounded-md bg-green-50 p-4">
+                      <div class="flex">
+                        <div class="flex-shrink-0">
+                          <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                        <div class="ml-3">
+                          <h3 class="text-sm font-medium text-green-800">Enregistrement effectué avec succès !</h3>
+                          <div class="mt-2 text-sm text-green-700">
+                            <ul role="list" class="list-disc space-y-1 pl-5">
+                              <li>Vous avez reçu un mail de confirmation.</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>';
+        }
+
+        if(isset($_SESSION['just_register_confirm']) && $_SESSION['just_register_confirm']) {
+            $_SESSION['just_register_confirm'] = false;
+            echo '<div class="rounded-md bg-green-50 p-4">
+                      <div class="flex">
+                        <div class="flex-shrink-0">
+                          <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+                          </svg>
+                        </div>
+                        <div class="ml-3">
+                          <h3 class="text-sm font-medium text-green-800">Enregistrement effectué avec succès !</h3>
+                          <div class="mt-2 text-sm text-green-700">
+                            <ul role="list" class="list-disc space-y-1 pl-5">
+                              <li>Votre mail a été confirmé, il vous suffit de vous connecter.</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>';
+        }
+
+        if(!empty($login_err)) {
             echo '<div class="rounded-md bg-red-50 p-4">
                       <div class="flex">
                         <div class="flex-shrink-0">

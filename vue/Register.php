@@ -33,41 +33,43 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
     }
 
     if(empty($mail_err) && empty($password_err)) {
-        $controleur->registerUser($mail, password_hash($password, PASSWORD_DEFAULT));
-        $_SESSION["logged"] = true;
-        $_SESSION["mail"] = $mail;
-        $_SESSION["role"] = 'ELEVE';
+        $token = bin2hex(random_bytes(50));
 
+        $controleur->registerUser($mail, password_hash($password, PASSWORD_DEFAULT), $token);
+        $api_key = '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';
         $line = getLineFromCSVByEmail($mail);
-        switch ($line[3]) {
-            case '1':
-            case '2':
-                $_SESSION['promotion'] = '1';
-                break;
-            case '3':
-            case '4':
-                $_SESSION['promotion'] = '2';
-                break;
-            case '5':
-            case '6':
-                $_SESSION['promotion'] = '3';
-                break;
+        $nom = $line[1];
+        $prenom = $line[2];
+
+        $subject = 'Confirmez votre adresse e-mail';
+        $message = "Bonjour $nom $prenom,\n\nCliquez sur ce lien pour confirmer votre inscription : http://87.106.121.50/vue/Confirm.php?token=" . $token;
+
+        $data = array(
+            'sender' => array('name' => 'IUT Maubeuge - Emploi du temps', 'email' => 'bouttieroscar@gmail.com'),
+            'to' => array(array('email' => $mail)),
+            'subject' => $subject,
+            'textContent' => $message
+        );
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.sendinblue.com/v3/smtp/email');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'api-key: ' . $api_key,
+            'Content-Type: application/json'
+        ));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $response = curl_exec($ch);
+        if (curl_errno($ch)) {
+            header('location: Error.php');
+            exit();
         }
+        curl_close($ch);
 
-        $formation = 'FI';
-        if(strpos($line[4], 'FA') === 0)
-            $formation = 'FA';
-        $_SESSION['formation'] = $formation;
-
-        $group = removePrefix($line[4]);
-        $_SESSION['groupe'] = $group[0];
-        $_SESSION['sousgroupe'] = $group[1];
-
-        $_SESSION['nom'] = $line[1];
-        $_SESSION['prenom'] = $line[2];
-        $_SESSION['civilite'] = $line[0];
-
-        header('location: Dashboard.php');
+        $_SESSION['just_register'] = true;
+        header('location: Login.php');
         exit();
     }
 }
