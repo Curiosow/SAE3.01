@@ -191,6 +191,11 @@ function getLineFromCSVByEmail($email) {
         </form>
 
         <p class="text-center text-sm leading-6 text-gray-500">
+            Vous avez oublié votre mot de passe ?
+            <a href="ForgotPassword.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Changez-le ici</a>
+        </p>
+
+        <p class="text-center text-sm leading-6 text-gray-500">
             Vous n'avez pas de compte ?
             <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Enregistrez-vous ici</a>
         </p>
