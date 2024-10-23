@@ -1,5 +1,6 @@
 <?php
 include "../controleur/UserControleur.php";
+include "../modele/CollegueManager.php";
 
 $controleur = new UserControleur();
 
@@ -21,7 +22,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
             $mail_err = "Le mail peut contenir uniquement des lettres, nombres et tirets.";
         } elseif (strpos($mail, '@uphf.fr') === false) {
             $mail_err = "Le mail doit appartenir au domaine 'uphf.fr'.";
-        } else if (!emailExistsInCSV($mail)) {
+        } else if (!emailExistsInCSV($mail) && !isACollegue($mail)) {
             $mail_err = "Votre mail n'est pas encore enregistré.";
         }
     } else {
