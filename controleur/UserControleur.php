@@ -48,4 +48,24 @@ class UserControleur
 
         pg_query_params($connexion, $preparedStatement, array($token));
     }
+
+    function updateAccountPassword($token, $password) {
+        $preparedStatement = "UPDATE users SET password = $1, forgotoken = NULL WHERE forgotoken = $2";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        pg_query_params($connexion, $preparedStatement, array($password, $token));
+    }
+
+    function setAccountForgotToken($mail, $token) {
+        $preparedStatement = "UPDATE users SET forgotoken = $1 WHERE mail = $2";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        pg_query_params($connexion, $preparedStatement, array($token, $mail));
+    }
 }
