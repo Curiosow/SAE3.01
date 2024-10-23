@@ -176,6 +176,8 @@ function getWeekDay($firstDay) {
 <head>
     <meta charset="UTF-8">
     <title>Emploi du temps</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         function toggleSidebar() {
@@ -237,8 +239,13 @@ function getWeekDay($firstDay) {
 <div class="absolute top-0 right-0 p-4 flex items-center space-x-2">
     <div class="relative">
         <button onclick="toggleAbsencePopup()" class="text-black focus:outline-none">
-            <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            <svg class="h-6 w-6" fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                    <path d="M21.9,37c0-2.7,0.9-5.8,2.3-8.2c1.7-3,3.6-4.2,5.1-6.4c2.5-3.7,3-9,1.4-13c-1.6-4.1-5.4-6.5-9.8-6.4 s-8,2.8-9.4,6.9c-1.6,4.5-0.9,9.9,2.7,13.3c1.5,1.4,2.9,3.6,2.1,5.7c-0.7,2-3.1,2.9-4.8,3.7c-3.9,1.7-8.6,4.1-9.4,8.7 C1.3,45.1,3.9,49,8,49h17c0.8,0,1.3-1,0.8-1.6C23.3,44.5,21.9,40.8,21.9,37z"></path>
+                    <path d="M46.4,28.5c-4.7-4.7-12.3-4.7-17,0c-4.7,4.7-4.7,12.3,0,17c4.7,4.7,12.3,4.7,17,0 C51.1,40.8,51.1,33.2,46.4,28.5z M42.9,39.1c0.4,0.4,0.4,1.1-0.1,1.5l-1.4,1.4c-0.4,0.4-0.9,0.4-1.3-0.1L38,39.8l-2.2,2.2 c-0.4,0.4-0.9,0.4-1.3-0.1L33,40.5c-0.4-0.4-0.5-0.9-0.1-1.3l2.2-2.2L33,34.8c-0.4-0.4-0.5-0.9-0.1-1.3l1.4-1.4 c0.4-0.4,1.1-0.5,1.5-0.1l2.1,2.1l2.1-2.1c0.4-0.4,1.1-0.5,1.5-0.1l1.4,1.4c0.4,0.4,0.4,1.1-0.1,1.5l-2.1,2.1L42.9,39.1z"></path>
+                </g>
             </svg>
         </button>
     </div>
@@ -262,14 +269,34 @@ function getWeekDay($firstDay) {
                 </svg>
             </button>
         </div>
-        <form action="submit_absence.php" method="POST">
+        <form action="" method="POST">
             <div class="mb-4">
                 <label for="start-date" class="block text-sm font-medium text-gray-700">Date de début</label>
-                <input type="datetime-local" id="start-date" name="start-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <input type="text" id="start-date" name="start-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <script>
+                    flatpickr("#start-date", {
+                        enableTime: true,
+                        dateFormat: "d-m-Y H:i",
+                        time_24hr: true,
+                        minuteIncrement: 30,
+                        minTime: "08:00",
+                        maxTime: "17:00"
+                    });
+                </script>
             </div>
             <div class="mb-4">
                 <label for="end-date" class="block text-sm font-medium text-gray-700">Date de fin</label>
-                <input type="datetime-local" id="end-date" name="end-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <input type="text" id="end-date" name="end-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <script>
+                    flatpickr("#end-date", {
+                        enableTime: true,
+                        dateFormat: "d-m-Y H:i",
+                        time_24hr: true,
+                        minuteIncrement: 30,
+                        minTime: "08:00",
+                        maxTime: "17:00"
+                    });
+                </script>
             </div>
             <div class="mb-4">
                 <label for="reason" class="block text-sm font-medium text-gray-700">Motif</label>
