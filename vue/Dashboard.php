@@ -169,6 +169,8 @@ function getWeekDay($firstDay) {
     return $resultDate;
 }
 
+$version = "1.0.0";
+
 ?>
 
 <!DOCTYPE html>
@@ -195,6 +197,11 @@ function getWeekDay($firstDay) {
     </script>
 </head>
 <body>
+
+<!--section pour afficher la version -->
+<div class="absolute top-0 left-72 p-4">
+    <span class="text-sm text-black">Version: <?php echo $version; ?></span>
+</div>
 
 <!-- cloche Icon -->
 <div class="absolute top-0 right-0 p-4">
