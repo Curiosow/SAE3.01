@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
+                        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
+
+    <!--Premier
+    changeset-->
+    <changeSet id="1" author="Oscar">
+        <!-- Ajout des types -->
+        <sql>create type parcours as enum ('A', 'B', 'AB');</sql>
+        <sql>create type role as enum ('ELEVE', 'PROF', 'GESTIONNAIRE');</sql>
+        <sql>create type typeformation as enum ('FI', 'FA', 'MUT');</sql>
+        <sql>create type typesalle as enum ('Amphi', 'TD', 'TP', 'TDMachine', 'Active', 'Cyber');</sql>
+        <sql>create type typeseance as enum ('CM', 'TD', 'TP', 'PRJ', 'DS');</sql>
+
+        <!-- Création table schedule -->
+        <createTable tableName="schedule">
+            <column name="code" type="text">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="typeseance" type="typeseance">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="typeformation" type="typeformation">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="collegue" type="text" />
+
+            <column name="nomgroupe" type="text">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="semestre" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="noseance" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="horaire" type="timestamp" />
+
+            <column name="version" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="duration" type="interval">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="salle" type="text" />
+
+        </createTable>
+
+        <!-- Ajout contrainte unique table schedule -->
+        <addUniqueConstraint tableName="schedule"
+            columnNames="typeformation, code, typeseance, semestre, nomgroupe, collegue, noseance, version"></addUniqueConstraint>
+
+        <!-- Création table collegue -->
+        <createTable tableName="collegue">
+            <column name="prenom" type="text" />
+
+            <column name="nom" type="text" />
+
+            <column name="statut" type="text">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="volmin" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="volmax" type="integer">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="mail" type="text" />
+
+            <column name="tel" type="text" />
+
+            <column name="weight" type="integer" defaultValue="1">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="id" type="text">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="matiere" type="text" />
+        </createTable>
+
+        <!-- Ajout de la vérification volmax >= volmin -->
+        <sql>ALTER TABLE collegue ADD CONSTRAINT collegue_check CHECK (volmax >= volmin); </sql>
+
+        <!-- Création table enseignement -->
+        <createTable tableName="enseignement">
+            <column name="code" type="text">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="long" type="text">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="court" type="text">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="parcours" type="parcours" />
+
+            <column name="semestre" type="integer" />
+
+            <column name="discipline" type="text">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <!-- Création table users -->
+        <createTable tableName="users">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+
+            <column name="mail" type="varchar(100)">
+                <constraints nullable="false" unique="true" />
+            </column>
+
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="role" type="role" defaultValue="ELEVE">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="promotion" type="varchar(8)" />
+
+            <column name="group" type="varchar(8)" />
+
+            <column name="sousgroup" type="varchar(8)" />
+        </createTable>
+
+        <rollback>
+            <sql>drop table if exists schedule;</sql>
+            <sql>drop table if exists collegue;</sql>
+            <sql>drop
+            table if exists enseignement;</sql>
+            <sql>drop table if exists users;</sql>
+            <sql>drop type
+            if exists parcours;</sql>
+            <sql>drop type if exists role;</sql>
+            <sql>drop type if exists
+            typeformation;</sql>
+            <sql>drop type if exists typesalle;</sql>
+            <sql>drop type if exists
+            typeseance;</sql>
+        </rollback>
+    </changeSet>
+
+
+    <!-- Deuxieme
+    Changeset-->
+    <!-- Mise à jour de la table users -->
+    <changeSet id="2" author="Corentin">
+        <dropColumn tableName="users" columnName="promotion" />
+        <dropColumn tableName="users" columnName="group" />
+        <dropColumn tableName="users" columnName="sousgroup" />
+
+        <rollback>
+            <addColumn tableName="users">
+                <column name="promotion" type="VARCHAR(8)" />
+                <column name="group" type="VARCHAR(8)" />
+                <column name="sousgroup" type="VARCHAR(8)" />
+            </addColumn>
+        </rollback>
+    </changeSet>
+
+
+    <!-- Troisieme
+    Changeset-->
+    <!-- Mise à jour de la table users -->
+    <changeSet id="3" author="Corentin">
+        <addColumn tableName="users">
+            <column name="token" type="text" />
+            <column name="verified" type="boolean" defaultValue="false" />
+            <column name="text" type="text" />
+        </addColumn>
+    </changeSet>
+
+
+</databaseChangeLog>
