@@ -58,6 +58,27 @@ class NotificationControleur
         pg_query_params($connexion, $preparedStatement, array($lastId, $_SESSION['mail']));
     }
 
+    public function getAllNotifications()
+    {
+        $preparedStatement = "SELECT * FROM notifications WHERE role = $1";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        $role = $_SESSION["role"];
+
+        $result = pg_query_params($connexion, $preparedStatement, array($role));
+
+        $notifications = array();
+        while ($notif = pg_fetch_assoc($result)) {
+            $notification = new Notification($notif['id'], $notif['title'], $notif['content']);
+            array_push($notifications, $notification);
+        }
+
+        return $notifications;
+    }
+
     public function createNotification($title, $content, $role)
     {
         $preparedStatement = "INSERT INTO notifications (title, content, role) VALUES ($1, $2, $3)";
