@@ -1,0 +1,72 @@
+<?php
+include_once "../modele/Database.php";
+include "../modele/Notification.php";
+
+class NotificationControleur
+{
+    public function __construct()
+    {
+    }
+
+    public function getLastNotification($role)
+    {
+        $preparedStatement = "SELECT MAX(id) as lastId FROM notifications WHERE role = $1";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        $result = pg_query_params($connexion, $preparedStatement, array($role));
+
+        return pg_fetch_result($result, 0, 0);
+    }
+
+    public function getUnreadNotifications()
+    {
+        $preparedStatement = "SELECT * FROM notifications WHERE id > $1 AND id <= $2 AND role = $3";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        $lastNotif = $_SESSION['lastNotif'];
+        $role = $_SESSION["role"];
+        $lastId = $this->getLastNotification($role);
+
+        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $role));
+
+        $notifications = array();
+        while ($notif = pg_fetch_assoc($result)) {
+            $notification = new Notification($notif['id'], $notif['title'], $notif['content']);
+            array_push($notifications, $notification);
+        }
+
+        return $notifications;
+    }
+
+    public function setToLastNotification()
+    {
+        $role = $_SESSION["role"];
+        $lastId = $this->getLastNotification($role);
+
+        $preparedStatement = "UPDATE users SET lastnotif = $1 WHERE mail = $2";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        pg_query_params($connexion, $preparedStatement, array($lastId, $_SESSION['mail']));
+    }
+
+    public function createNotification($title, $content, $role)
+    {
+        $preparedStatement = "INSERT INTO notifications (title, content, role) VALUES ($1, $2, $3)";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        pg_query_params($connexion, $preparedStatement, array($title, $content, $role));
+    }
+
+}

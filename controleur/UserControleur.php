@@ -1,5 +1,5 @@
 <?php
-include "../modele/Database.php";
+include_once "../modele/Database.php";
 
 class UserControleur
 {
@@ -29,7 +29,7 @@ class UserControleur
     }
 
     public function getAccountFromMail($mail) {
-        $preparedStatement = "SELECT id, mail, password, role, verified FROM users WHERE mail = $1";
+        $preparedStatement = "SELECT id, mail, password, role, verified, lastnotif FROM users WHERE mail = $1";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
@@ -68,4 +68,6 @@ class UserControleur
 
         pg_query_params($connexion, $preparedStatement, array($token, $mail));
     }
+
+
 }

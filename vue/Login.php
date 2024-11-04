@@ -1,7 +1,9 @@
 <?php
 include "../controleur/UserControleur.php";
+include "../controleur/NotificationControleur.php";
 
 $controleur = new UserControleur();
+$notificationControleur = new NotificationControleur();
 
 session_start();
 
@@ -22,6 +24,8 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                $_SESSION["logged"] = true;
                $_SESSION["mail"] = $data['mail'];
                $_SESSION["role"] = $data['role'];
+               $_SESSION['lastNotif'] = $data['lastnotif'];
+               $notificationControleur->setToLastNotification();
 
                $line = getLineFromCSVByEmail($mail);
                $_SESSION['line'] = $line;
