@@ -69,4 +69,8 @@ class Controleur
         }
     }
 
+    function returnVersion() {
+        return getVersion();
+    }
+
 }
