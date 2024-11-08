@@ -208,50 +208,86 @@ $version = "1.0.0";
 <!-- cloche Icon -->
 <!-- Notification Sidebar -->
 <?php
-if(isset($_SESSION['logged'])) {
+if (isset($_SESSION['logged'])) {
     $notifications = $notificationsControleur->getUnreadNotifications();
 
     echo '
-<div class="absolute top-0 right-0 p-4">
-    <div class="relative">
-        <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
-            <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-        </button>
-        
-        <!-- Notification Bulles -->
-        ';
+    <div class="absolute top-0 right-0 p-4">
+        <div class="relative">
+            <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
+                <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+            </button>
+            <!-- Notification Bulles -->
+            ';
     if (sizeof($notifications) != 0)
         echo '<span class="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-red-600"></span>';
     echo '</div></div>';
 
     echo '<div id="notificationSidebar" class="fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300">
-    <div class="p-4">
-        <div class="flex justify-between items-center">
-            <h2 class="text-lg font-semibold">Notifications</h2>
-            <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
+        <div class="p-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-semibold">Notifications</h2>
+                <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <ul id="notificationList" class="mt-4 space-y-2">
+            ';
+    foreach ($notifications as $notification) {
+        echo '<li class="p-2 bg-gray-100 rounded-md">
+            <h3 class="font-semibold">' . $notification->getTitle() . '</h3>
+            <p class="text-sm">' . $notification->getContent() . '</p>
+            </li>';
+    }
+
+    echo '</ul>
+        </div>
+        <div class="absolute bottom-0 right-0 p-4">
+            <button id="showAllNotifications" class="rounded bg-white-800 px-2 py-1 text-xs font-semibold text--300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-white-900" onclick="toggleAllNotificationsLayer()">Afficher toutes les notifications</button>
+        </div>
+    </div>
+    ';
+}
+?>
+
+
+<!-- All Notifications Layer -->
+<div id="allNotificationsLayer" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-lg font-semibold">Toutes les Notifications</h2>
+            <button onclick="toggleAllNotificationsLayer()" class="text-black focus:outline-none">
                 <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
-        <ul class="mt-4 space-y-2">
-        ';
-    foreach ($notifications as $notification) {
-        echo '<li class="p-2 bg-gray-100 rounded-md">
-        <h3 class="font-semibold">' . $notification->getTitle() . '</h3>
-        <p class="text-sm">' . $notification->getContent() . '</p>
-        </li>';
-    }
-
-    echo '</ul>
+        <ul id="allNotificationList" class="mt-4 space-y-2">
+            <?php
+            $allNotifications = $notificationsControleur->getAllNotifications();
+            foreach ($allNotifications as $notification) {
+                echo '<li class="p-2 bg-gray-100 rounded-md">
+                    <h3 class="font-semibold">' . $notification->getTitle() . '</h3>
+                    <p class="text-sm">' . $notification->getContent() . '</p>
+                    </li>';
+            }
+            ?>
+        </ul>
     </div>
-</div>';
+</div>
 
-}
 
-?>
+<script>
+    function toggleAllNotificationsLayer() {
+        const layer = document.getElementById('allNotificationsLayer');
+        layer.classList.toggle('hidden');
+    }
+</script>
+
 
 <script>
     function toggleNotificationSidebar() {
@@ -259,6 +295,8 @@ if(isset($_SESSION['logged'])) {
         sidebar.classList.toggle('translate-x-full');
     }
 </script>
+
+
 
 <!-- Bouton pour signaler une absence -->
 <div class="absolute top-0 right-0 p-4 flex items-center space-x-2">
