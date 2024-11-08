@@ -171,7 +171,8 @@ function getWeekDay($firstDay) {
     return $resultDate;
 }
 
-$version = "1.0.0";
+// Récupération de la version la plus récente
+$version = $controleur->returnVersion();
 
 ?>
 
@@ -398,6 +399,8 @@ if(isset($_SESSION['logged'])) {
         </div>
     </div>
 </div>
+
+<!--Dashboard-->
 <div id="dashboard" class="lg:pl-72 transition-all duration-300">
     <div class="flex h-full flex-col">
         <!-- topbar (changeur de semaines) -->

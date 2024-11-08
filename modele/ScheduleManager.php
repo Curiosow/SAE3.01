@@ -58,3 +58,19 @@ function getSemestre($promotion, $date) {
             return null;
     }
 }
+
+function getVersion() {
+    $query = "SELECT MAX(version) AS version FROM schedule";
+    $connexion = Database::getInstance()->getConnection();
+
+    if(!$connexion) {
+        die('La communcation à la base de données a echouée : ' . pg_last_error());
+    }
+
+    $result = pg_query($connexion, $query);
+    if (!$result) {
+        die('La requête a échouée : ' . pg_last_error());
+    }
+
+    return pg_fetch_assoc($result)['version'];
+}
