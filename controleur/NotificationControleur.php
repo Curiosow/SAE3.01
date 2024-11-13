@@ -16,7 +16,8 @@ class NotificationControleur
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
-        $result = pg_query_params($connexion, $preparedStatement, array($this->getRoleListFromARole($role)));
+        $rolesArray = $this->getRoleListFromARole($role);
+        $result = pg_query_params($connexion, $preparedStatement, array($rolesArray));
 
         return pg_fetch_result($result, 0, 0);
     }
@@ -33,7 +34,8 @@ class NotificationControleur
         $role = $_SESSION["role"];
         $lastId = $this->getLastNotification($role);
 
-        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, array($this->getRoleListFromARole($role))));
+        $rolesArray = $this->getRoleListFromARole($role);
+        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $rolesArray));
 
         $notifications = array();
         while ($notif = pg_fetch_assoc($result)) {
@@ -60,15 +62,16 @@ class NotificationControleur
 
     public function getAllNotifications()
     {
-        $preparedStatement = "SELECT * FROM notifications WHERE role = $1";
+        $preparedStatement = "SELECT * FROM notifications WHERE role IN ($1)";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
         $role = $_SESSION["role"];
+        $rolesArray = $this->getRoleListFromARole($role);
 
-        $result = pg_query_params($connexion, $preparedStatement, array($role));
+        $result = pg_query_params($connexion, $preparedStatement, array($rolesArray));
 
         $notifications = array();
         while ($notif = pg_fetch_assoc($result)) {
@@ -95,24 +98,16 @@ class NotificationControleur
         $roleList = array();
         switch ($role) {
             case "GESTIONNAIRE":
-                array_push($roleList, "GESTIONNAIRE");
-                array_push($roleList, "PROF");
-                array_push($roleList, "ELEVE");
+                array_push($roleList, "GESTIONNAIRE", "PROF", "ELEVE");
                 break;
             case "PROF":
-                array_push($roleList, "PROF");
-                array_push($roleList, "ELEVE");
+                array_push($roleList, "PROF", "ELEVE");
                 break;
             case "ELEVE":
                 array_push($roleList, "ELEVE");
                 break;
         }
 
-        $quoteArray = array_map(function($element) {
-            return "'$element'";
-        }, $roleList);
-
-        return implode(", ", $quoteArray);
+        return implode(", ", $roleList);
     }
-
 }
