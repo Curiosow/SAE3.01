@@ -10,20 +10,21 @@ class NotificationControleur
 
     public function getLastNotification($role)
     {
-        $preparedStatement = "SELECT MAX(id) as lastId FROM notifications WHERE role = $1";
+        $preparedStatement = "SELECT MAX(id) as lastId FROM notifications WHERE role IN ($1)";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
-        $result = pg_query_params($connexion, $preparedStatement, array($role));
+        $rolesArray = $this->getRoleListFromARole($role);
+        $result = pg_query_params($connexion, $preparedStatement, array($rolesArray));
 
         return pg_fetch_result($result, 0, 0);
     }
 
     public function getUnreadNotifications()
     {
-        $preparedStatement = "SELECT * FROM notifications WHERE id > $1 AND id <= $2 AND role = $3";
+        $preparedStatement = "SELECT * FROM notifications WHERE id > $1 AND id <= $2 AND role in ($3)";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
@@ -33,7 +34,8 @@ class NotificationControleur
         $role = $_SESSION["role"];
         $lastId = $this->getLastNotification($role);
 
-        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $role));
+        $rolesArray = $this->getRoleListFromARole($role);
+        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $rolesArray));
 
         $notifications = array();
         while ($notif = pg_fetch_assoc($result)) {
@@ -60,15 +62,16 @@ class NotificationControleur
 
     public function getAllNotifications()
     {
-        $preparedStatement = "SELECT * FROM notifications WHERE role = $1";
+        $preparedStatement = "SELECT * FROM notifications WHERE role IN ($1)";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
         $role = $_SESSION["role"];
+        $rolesArray = $this->getRoleListFromARole($role);
 
-        $result = pg_query_params($connexion, $preparedStatement, array($role));
+        $result = pg_query_params($connexion, $preparedStatement, array($rolesArray));
 
         $notifications = array();
         while ($notif = pg_fetch_assoc($result)) {
@@ -90,4 +93,21 @@ class NotificationControleur
         pg_query_params($connexion, $preparedStatement, array($title, $content, $role));
     }
 
+    private function getRoleListFromARole($role)
+    {
+        $roleList = array();
+        switch ($role) {
+            case "GESTIONNAIRE":
+                array_push($roleList, "GESTIONNAIRE", "PROF", "ELEVE");
+                break;
+            case "PROF":
+                array_push($roleList, "PROF", "ELEVE");
+                break;
+            case "ELEVE":
+                array_push($roleList, "ELEVE");
+                break;
+        }
+
+        return implode(", ", $roleList);
+    }
 }
