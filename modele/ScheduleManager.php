@@ -2,7 +2,8 @@
 include "Lesson.php";
 include "Database.php";
 
-function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
+function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
+{
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
@@ -34,14 +35,15 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation) {
         $course->setNoseance($row['noseance']);
         $course->setHoraire($row['horaire']);
         $course->setDuration($row['duration']);
-        $course->setSalle($row['salle']);
+        $course->setSalle(getSalle($course->getTypeformation(), $course->getCode(), $course->getTypeseance(), $course->getSemestre(), $course->getNomgroupe(), $course->getCollegue(), $course->getNoseance()));
         $courses[] = $course;
     }
 
     return $courses;
 }
 
-function getSemestre($promotion, $date) {
+function getSemestre($promotion, $date)
+{
     if ($date instanceof DateTime)
         $date = $date->format('Y-m-d');
     $month = date('n', strtotime($date));
@@ -59,7 +61,8 @@ function getSemestre($promotion, $date) {
     }
 }
 
-function getVersion() {
+function getVersion()
+{
     $query = "SELECT MAX(version) AS version FROM schedule";
     $connexion = Database::getInstance()->getConnection();
 
@@ -74,3 +77,30 @@ function getVersion() {
 
     return pg_fetch_assoc($result)['version'];
 }
+
+function getSalle($formation, $code, $seance, $semestre, $groupe, $collegue, $noseance)
+{
+    $query = "SELECT salle, version FROM schedulesalle WHERE typeformation = $1 AND code = $2 AND typeseance = $3 AND semestre = $4 AND nomgroupe = $5 AND collegue = $6 AND noseance = $7 ORDER BY version DESC";
+    $connexion = Database::getInstance()->getConnection();
+
+    if(!$connexion) {
+        die('La communcation à la base de données a echouée : ' . pg_last_error());
+    }
+
+    $result = pg_query_params($connexion, $query, array($formation, $code, $seance, $semestre, $groupe, $collegue, $noseance));
+    if (!$result) {
+        die('La requête a échouée : ' . pg_last_error());
+    }
+
+    if(!isset(pg_fetch_assoc($result)['salle']))
+        return null;
+
+    return pg_fetch_assoc($result)['salle'];
+}
+
+/*
+ * /Users/curiosow/Documents/Cours/BUT2/SAE-EMPLOIDUTEMPS/SAE3.01/modele/ScheduleManager.php
+: Trying to access array offset on false in
+
+ *
+ */
