@@ -54,17 +54,67 @@ class Controleur
                 if($horraire->format("i") < 10 && $horraire->format("i") > 1)
                     $dispMinute = '0' . $dispMinute;
 
-                // type="submit" name="viewCourse" value="' . $ser = serialize($course); echo $ser . '"
+
+                $uniqueId = uniqid(); // Génère un identifiant unique pour chaque bloc
+
                 echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-                <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-'. $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
-                <form>
-                <button">
-                    <p class="text-'. $color . '-500 font-semibold group-hover:text-'. $color . '-700"><time>'. $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time></p>
-                    <p class="order-1 text-'. $color . '-700">' . $course->getTypeseance() . ' - ' . getEnseignementShortName($course->getCode()) . '</p>
-                    <p class="order-1 text-'. $color . '-700">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
-                </button>
-              </form>
-              </a>';
+    <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100" style="overflow: visible;">
+        <form>
+            <div>
+                <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
+                    <time>' . $dispHour . ':' . $dispMinute . ' - ' .
+                    (empty($course->getSalle()) ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) .
+                    '</time>
+                </p>
+                <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . getEnseignementShortName($course->getCode()) . '</p>
+                <p class="order-1 text-' . $color . '-700">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
+            </div>
+        </form>
+        
+        <!-- Bouton pour afficher linfo-bulle avec animation -->
+        <button data-ripple-light="true" data-tooltip-target="tooltip-' . $uniqueId . '"
+                class="select-none absolute top-0 right-0 m-2 rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none">
+                ⓘ
+        </button>
+        
+        <!-- Info-bulle avec animation et taille fixe pour éviter le redimensionnement -->
+        <div id="tooltip-' . $uniqueId . '" 
+             data-tooltip="tooltip-' . $uniqueId . '" 
+             data-tooltip-mount="opacity-100 scale-100"
+             data-tooltip-unmount="opacity-0 scale-0 pointer-events-none"
+             data-tooltip-transition="transition-all duration-200 origin-bottom"
+             class="absolute z-50 rounded-lg bg-black py-2 px-3 font-sans text-sm font-normal text-white focus:outline-none"
+             style="top: -10px; right: 0; min-width: 150px; max-width: 200px; white-space: normal;">
+                   Test
+                </div>
+    </a>
+</li>';
+?>
+
+<!-- Import Material Tailwind tooltip script -->
+<script
+  type="module"
+  src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
+></script>
+
+
+<script>
+// JavaScript pour afficher/masquer les info-bulles
+document.querySelectorAll('[data-tooltip-target]').forEach(button => {
+    button.addEventListener('mouseenter', () => {
+        const tooltipId = button.getAttribute('data-tooltip-target');
+        const tooltip = document.getElementById(tooltipId);
+        if (tooltip) tooltip.classList.remove('hidden');
+    });
+
+    button.addEventListener('mouseleave', () => {
+        const tooltipId = button.getAttribute('data-tooltip-target');
+        const tooltip = document.getElementById(tooltipId);
+        if (tooltip) tooltip.classList.add('hidden');
+    });
+});
+</script>
+<?php
             }
         }
     }
