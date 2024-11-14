@@ -248,7 +248,7 @@ if (isset($_SESSION['logged'])) {
     echo '</ul>
         </div>
         <div class="absolute bottom-0 right-0 p-4">
-            <button id="showAllNotifications" class="rounded bg-white-800 px-2 py-1 text-xs font-semibold text--300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-white-900" onclick="toggleAllNotificationsLayer()">Afficher toutes les notifications</button>
+            <button id="showAllNotifications" class="rounded bg-white-800 px-2 py-1 text-xs font-semibold text--300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100" onclick="toggleAllNotificationsLayer()">Afficher toutes les notifications</button>
         </div>
     </div>
     ';
@@ -336,7 +336,7 @@ if (isset($_SESSION['logged'])) {
         <form action="" method="POST">
             <div class="mb-4">
                 <label for="start-date" class="block text-sm font-medium text-gray-700">Date de début</label>
-                <input type="text" id="start-date" name="start-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <input type="date" id="start-date" name="start-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 <script>
                     flatpickr("#start-date", {
                         enableTime: true,
@@ -350,7 +350,7 @@ if (isset($_SESSION['logged'])) {
             </div>
             <div class="mb-4">
                 <label for="end-date" class="block text-sm font-medium text-gray-700">Date de fin</label>
-                <input type="text" id="end-date" name="end-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                <input type="date" id="end-date" name="end-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                 <script>
                     flatpickr("#end-date", {
                         enableTime: true,
@@ -374,9 +374,30 @@ if (isset($_SESSION['logged'])) {
 </div>
 
 <script>
+    let clickedDate = null;
+
     function toggleAbsencePopup() {
         const popup = document.getElementById('absencePopup');
         popup.classList.toggle('hidden');
+
+        if (clickedDate) {
+            flatpickr("#start-date", {
+                enableTime: true,
+                dateFormat: "d-m-Y H:i",
+                time_24hr: true,
+                minuteIncrement: 30,
+                minTime: "08:00",
+                maxTime: "17:00",
+                defaultDate: clickedDate
+            });
+        }
+    }
+
+    function handleDayClicked(day) {
+        clickedDate = day.getAttribute('data-date');
+        clickedDate = new Date(clickedDate);
+        clickedDate.setHours(8);
+        toggleAbsencePopup();
     }
 </script>
 
@@ -469,19 +490,19 @@ if (isset($_SESSION['logged'])) {
                     <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14"></div>
                         <!-- affichage de la semaine -->
-                        <div class="flex items-center justify-center py-3">
+                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('monday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
                             <span>Lun <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('monday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3">
+                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
                             <span>Mar <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3">
+                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
                             <span>Mer <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3">
+                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
                             <span>Jeu <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3">
+                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('friday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
                             <span>Ven <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('friday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
                     </div>

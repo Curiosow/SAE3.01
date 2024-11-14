@@ -10,24 +10,25 @@ class NotificationControleur
 
     public function getLastNotification($role)
     {
-        $preparedStatement = "SELECT MAX(id) as lastId FROM notifications WHERE role IN ($1)";
+        $preparedStatement = "SELECT MAX(id) as lastId FROM notifications WHERE role = ANY($1::role[])";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
-            die('La communcation à la base de données a echouée : ' . pg_last_error());
+            die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
         $rolesArray = $this->getRoleListFromARole($role);
-        $result = pg_query_params($connexion, $preparedStatement, array($rolesArray));
+        $rolesString = '{' . implode(',', $rolesArray) . '}';
+        $result = pg_query_params($connexion, $preparedStatement, array($rolesString));
 
         return pg_fetch_result($result, 0, 0);
     }
 
     public function getUnreadNotifications()
     {
-        $preparedStatement = "SELECT * FROM notifications WHERE id > $1 AND id <= $2 AND role in ($3)";
+        $preparedStatement = "SELECT * FROM notifications WHERE id > $1 AND id <= $2 AND role = ANY($3::role[])";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
-            die('La communcation à la base de données a echouée : ' . pg_last_error());
+            die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
         $lastNotif = $_SESSION['lastNotif'];
@@ -35,7 +36,8 @@ class NotificationControleur
         $lastId = $this->getLastNotification($role);
 
         $rolesArray = $this->getRoleListFromARole($role);
-        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $rolesArray));
+        $rolesString = '{' . implode(',', $rolesArray) . '}';
+        $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $rolesString));
 
         $notifications = array();
         while ($notif = pg_fetch_assoc($result)) {
@@ -53,7 +55,7 @@ class NotificationControleur
 
         $preparedStatement = "UPDATE users SET lastnotif = $1 WHERE mail = $2";
         $connexion = Database::getInstance()->getConnection();
-        if(!$connexion) {
+        if (!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
@@ -62,16 +64,17 @@ class NotificationControleur
 
     public function getAllNotifications()
     {
-        $preparedStatement = "SELECT * FROM notifications WHERE role IN ($1)";
+        $preparedStatement = "SELECT * FROM notifications WHERE role = ANY($1::role[])";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
-            die('La communcation à la base de données a echouée : ' . pg_last_error());
+            die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
         $role = $_SESSION["role"];
         $rolesArray = $this->getRoleListFromARole($role);
+        $rolesString = '{' . implode(',', $rolesArray) . '}';
 
-        $result = pg_query_params($connexion, $preparedStatement, array($rolesArray));
+        $result = pg_query_params($connexion, $preparedStatement, array($rolesString));
 
         $notifications = array();
         while ($notif = pg_fetch_assoc($result)) {
@@ -86,7 +89,7 @@ class NotificationControleur
     {
         $preparedStatement = "INSERT INTO notifications (title, content, role) VALUES ($1, $2, $3)";
         $connexion = Database::getInstance()->getConnection();
-        if(!$connexion) {
+        if (!$connexion) {
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
@@ -95,19 +98,13 @@ class NotificationControleur
 
     private function getRoleListFromARole($role)
     {
-        $roleList = array();
         switch ($role) {
             case "GESTIONNAIRE":
-                array_push($roleList, "GESTIONNAIRE", "PROF", "ELEVE");
-                break;
+                return array('GESTIONNAIRE', 'PROF', 'ELEVE');
             case "PROF":
-                array_push($roleList, "PROF", "ELEVE");
-                break;
+                return array('PROF', 'ELEVE');
             case "ELEVE":
-                array_push($roleList, "ELEVE");
-                break;
+                return array('ELEVE');
         }
-
-        return implode(", ", $roleList);
     }
 }
