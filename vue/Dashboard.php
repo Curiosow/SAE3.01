@@ -248,7 +248,7 @@ if (isset($_SESSION['logged'])) {
     echo '</ul>
         </div>
         <div class="absolute bottom-0 right-0 p-4">
-            <button id="showAllNotifications" class="rounded bg-white-800 px-2 py-1 text-xs font-semibold text--300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-white-900" onclick="toggleAllNotificationsLayer()">Afficher toutes les notifications</button>
+            <button id="showAllNotifications" class="rounded bg-white-800 px-2 py-1 text-xs font-semibold text--300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100" onclick="toggleAllNotificationsLayer()">Afficher toutes les notifications</button>
         </div>
     </div>
     ';
