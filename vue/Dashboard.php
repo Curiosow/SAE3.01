@@ -174,6 +174,9 @@ function getWeekDay($firstDay) {
 // Récupération de la version la plus récente
 $version = $controleur->returnVersion();
 
+// On inscrit ici le role de l'utilisateur pour le récupérer depuis JS
+$role = $_SESSION['role'];
+
 ?>
 
 <!DOCTYPE html>
@@ -203,7 +206,7 @@ $version = $controleur->returnVersion();
 
 <!--section pour afficher la version -->
 <div class="absolute top-0 left-72 p-4">
-    <span class="text-sm text-black">Version: <?php echo $version; ?></span>
+    <span class="text-sm text-black">Version: <?php echo $version; if(isset($_SESSION['role']) && $_SESSION['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_SESSION['role']; } ?></span>
 </div>
 
 <!-- cloche Icon -->
@@ -377,6 +380,11 @@ if (isset($_SESSION['logged'])) {
     let clickedDate = null;
 
     function toggleAbsencePopup() {
+        let role = <?php echo '"'. $role . '"'; ?>;
+        if (role == null || role === 'ELEVE') {
+            return;
+        }
+
         const popup = document.getElementById('absencePopup');
         popup.classList.toggle('hidden');
 
