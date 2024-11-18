@@ -255,6 +255,8 @@ if (isset($_SESSION['logged'])) {
             </div>
             <ul id="notificationList" class="mt-4 space-y-2">
             ';
+
+    $notifications = array_reverse($notifications);
     foreach ($notifications as $notification) {
         echo '<li class="p-2 bg-gray-100 rounded-md">
             <h3 class="font-semibold">' . $notification->getTitle() . '</h3>
