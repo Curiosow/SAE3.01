@@ -29,7 +29,7 @@ if(isset($_POST['absence'])) {
     $start_date = DateTime::createFromFormat('d-m-Y H:i', $_POST['start-date'])->format('d-m-Y H:i');
     $end_date = DateTime::createFromFormat('d-m-Y H:i', $_POST['end-date'])->format('d-m-Y H:i');
 
-    $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $_POST['reason'] . ".", "GESTIONNAIRE");
+    $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $_POST['reason'] . ".", "GESTIONNAIRE", true);
 }
 
 // Données de bases

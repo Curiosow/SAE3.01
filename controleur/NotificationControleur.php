@@ -1,9 +1,13 @@
 <?php
 include_once "../modele/Database.php";
 include "../modele/Notification.php";
+include_once "../controleur/UserControleur.php";
+
+$userControleur = new UserControleur();
 
 class NotificationControleur
 {
+
     public function __construct()
     {
     }
@@ -85,8 +89,9 @@ class NotificationControleur
         return $notifications;
     }
 
-    public function createNotification($title, $content, $role)
+    public function createNotification($title, $content, $role, $sendMail)
     {
+        global $userControleur;
         $preparedStatement = "INSERT INTO notifications (title, content, role) VALUES ($1, $2, $3)";
         $connexion = Database::getInstance()->getConnection();
         if (!$connexion) {
@@ -94,6 +99,45 @@ class NotificationControleur
         }
 
         pg_query_params($connexion, $preparedStatement, array($title, $content, $role));
+
+        if($sendMail) {
+            $api_key = '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';
+            $subject = 'Notification - ' . $title;
+            $message = "Vous avez reçu une notification !\n" . $content . "\n\nConnectez vous afin de lire cette notification.";
+
+            $accounts = $userControleur->getAccountsFromRole($role);
+            $mails = array();
+            foreach ($accounts as $user) {
+                $mails[] = $user['mail'];
+                $userControleur->testUser($user['id']);
+            }
+
+            $data = array(
+                'sender' => array('name' => 'IUT Maubeuge - Emploi du temps', 'email' => 'bouttieroscar@gmail.com'),
+                'to' => array_map(function ($email) {
+                    return ['email' => $email];
+                }, $mails),
+                'subject' => $subject,
+                'textContent' => $message
+            );
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://api.sendinblue.com/v3/smtp/email');
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'api-key: ' . $api_key,
+                'Content-Type: application/json'
+            ));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+
+            $response = curl_exec($ch);
+            if (curl_errno($ch)) {
+                header('location: Error.php');
+                exit();
+            }
+            curl_close($ch);
+        }
     }
 
     private function getRoleListFromARole($role)

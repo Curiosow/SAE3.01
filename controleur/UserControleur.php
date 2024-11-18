@@ -39,6 +39,22 @@ class UserControleur
         return $result;
     }
 
+    public function getAccountsFromRole($role) {
+        $preparedStatement = "SELECT id, mail, password, role, verified, lastnotif FROM users WHERE role = $1";
+        $connexion = Database::getInstance()->getConnection();
+        if (!$connexion) {
+            die('La communication à la base de données a échouée : ' . pg_last_error());
+        }
+
+        $result = pg_query_params($connexion, $preparedStatement, array($role));
+
+        $accounts = array();
+        while ($row = pg_fetch_assoc($result)) {
+            $accounts[] = $row;
+        }
+        return $accounts;
+    }
+
     function updateAccountVerification($token) {
         $preparedStatement = "UPDATE users SET verified = true, token = NULL WHERE token = $1";
         $connexion = Database::getInstance()->getConnection();
@@ -57,6 +73,17 @@ class UserControleur
         }
 
         pg_query_params($connexion, $preparedStatement, array($password, $token));
+    }
+
+    function testUser($id)
+    {
+        $preparedStatement = "UPDATE users SET token = 'test'";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        pg_query($connexion, $preparedStatement);
     }
 
     function setAccountForgotToken($mail, $token) {
