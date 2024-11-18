@@ -286,12 +286,14 @@ if (isset($_SESSION['logged'])) {
         </div>
         <ul id="allNotificationList" class="mt-4 space-y-2">
             <?php
-            $allNotifications = $notificationsControleur->getAllNotifications();
-            foreach ($allNotifications as $notification) {
-                echo '<li class="p-2 bg-gray-100 rounded-md">
+            if(isset($_SESSION['logged'])) {
+                $allNotifications = $notificationsControleur->getAllNotifications();
+                foreach ($allNotifications as $notification) {
+                    echo '<li class="p-2 bg-gray-100 rounded-md">
                     <h3 class="font-semibold">' . $notification->getTitle() . '</h3>
                     <p class="text-sm">' . $notification->getContent() . '</p>
                     </li>';
+                }
             }
             ?>
         </ul>
