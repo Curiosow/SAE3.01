@@ -26,8 +26,8 @@ if(isset($_POST['absence'])) {
     if(isset($_SESSION['collegue']))
         $id = $_SESSION['collegue'];
 
-    $start_date = DateTime::createFromFormat('Y-m-d H:i:s', $_POST['start-date'])->format('d m à H:i:s');
-    $end_date = DateTime::createFromFormat('Y-m-d H:i:s', $_POST['end-date'])->format('d m à H:i:s');
+    $start_date = DateTime::createFromFormat('d-m-Y H:i', $_POST['start-date'])->format('d-m-Y H:i');
+    $end_date = DateTime::createFromFormat('d-m-Y H:i', $_POST['end-date'])->format('d-m-Y H:i');
 
     $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $_POST['reason'] . ".", "GESTIONNAIRE");
 }
@@ -288,6 +288,7 @@ if (isset($_SESSION['logged'])) {
             <?php
             if(isset($_SESSION['logged'])) {
                 $allNotifications = $notificationsControleur->getAllNotifications();
+                $allNotifications = array_reverse($allNotifications);
                 foreach ($allNotifications as $notification) {
                     echo '<li class="p-2 bg-gray-100 rounded-md">
                     <h3 class="font-semibold">' . $notification->getTitle() . '</h3>
