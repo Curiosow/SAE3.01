@@ -20,6 +20,18 @@ if(isset($_POST['disconnect'])) {
     exit();
 }
 
+// Vérification si l'utilisateur souhaite soumettre une absence (pour les profs & gestionnaires)
+if(isset($_POST['absence'])) {
+    $id = $_SESSION['mail'];
+    if(isset($_SESSION['collegue']))
+        $id = $_SESSION['collegue'];
+
+    $start_date = DateTime::createFromFormat('Y-m-d H:i:s', $_POST['start-date'])->format('d m à H:i:s');
+    $end_date = DateTime::createFromFormat('Y-m-d H:i:s', $_POST['end-date'])->format('d m à H:i:s');
+
+    $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $_POST['reason'] . ".", "GESTIONNAIRE");
+}
+
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -336,7 +348,7 @@ if (isset($_SESSION['logged'])) {
                 </svg>
             </button>
         </div>
-        <form action="" method="POST">
+        <form action="Dashboard.php" method="POST">
             <div class="mb-4">
                 <label for="start-date" class="block text-sm font-medium text-gray-700">Date de début</label>
                 <input type="date" id="start-date" name="start-date" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -370,7 +382,7 @@ if (isset($_SESSION['logged'])) {
                 <textarea id="reason" name="reason" rows="4" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"></textarea>
             </div>
             <div class="flex justify-end">
-                <button type="submit" class="rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Soumettre</button>
+                <button type="submit" id="absence" name="absence" class="rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Soumettre</button>
             </div>
         </form>
     </div>

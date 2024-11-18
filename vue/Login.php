@@ -1,6 +1,7 @@
 <?php
 include "../controleur/UserControleur.php";
 include "../controleur/NotificationControleur.php";
+include "../modele/CollegueManager.php";
 
 $controleur = new UserControleur();
 $notificationControleur = new NotificationControleur();
@@ -24,6 +25,8 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                $_SESSION["logged"] = true;
                $_SESSION["mail"] = $data['mail'];
                $_SESSION["role"] = $data['role'];
+               if(isACollegue($data['mail']))
+                   $_SESSION['collegue'] = getCollegueId($data['mail']);
                $_SESSION['lastNotif'] = $data['lastnotif'];
                $notificationControleur->setToLastNotification();
 
