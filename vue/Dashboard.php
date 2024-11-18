@@ -187,7 +187,9 @@ function getWeekDay($firstDay) {
 $version = $controleur->returnVersion();
 
 // On inscrit ici le role de l'utilisateur pour le récupérer depuis JS
-$role = $_SESSION['role'];
+$role = 'ELEVE';
+if(isset($_SESSION['role']))
+    $role = $_SESSION['role'];
 
 ?>
 
