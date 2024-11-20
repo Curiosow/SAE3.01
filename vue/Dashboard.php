@@ -224,7 +224,7 @@ if(isset($_SESSION['role']))
 
 <!--section pour afficher la version -->
 <div class="absolute top-0 left-72 p-4">
-    <span class="text-sm text-black">Version: <?php echo $version; if(isset($_SESSION['role']) && $_SESSION['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_SESSION['role']; } ?></span>
+    <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_SESSION['role']) && $_SESSION['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_SESSION['role']; } ?></span>
 </div>
 
 <!-- cloche Icon -->
@@ -248,7 +248,7 @@ if (isset($_SESSION['logged'])) {
     echo '</div></div>';
 
     echo '<div id="notificationSidebar" class="fixed inset-y-0 right-0 z-50 w-64 bg-white shadow-lg transform translate-x-full transition-transform duration-300">
-        <div class="p-4">
+        <div class="p-4 max-h-full overflow-y-scroll">
             <div class="flex justify-between items-center">
                 <h2 class="text-lg font-semibold">Notifications</h2>
                 <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
@@ -270,7 +270,7 @@ if (isset($_SESSION['logged'])) {
 
     echo '</ul>
         </div>
-        <div class="absolute bottom-0 right-0 p-4">
+        <div class="absolute bottom-0 p-4 pl-12 pr-12 bg-white">
             <button id="showAllNotifications" class="rounded bg-white-800 px-2 py-1 text-xs font-semibold text--300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-100" onclick="toggleAllNotificationsLayer()">Afficher toutes les notifications</button>
         </div>
     </div>
@@ -281,7 +281,7 @@ if (isset($_SESSION['logged'])) {
 
 <!-- All Notifications Layer -->
 <div id="allNotificationsLayer" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-3/4 max-w-3xl max-h-[44rem] overflow-y-scroll">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-semibold">Toutes les Notifications</h2>
             <button onclick="toggleAllNotificationsLayer()" class="text-black focus:outline-none">
