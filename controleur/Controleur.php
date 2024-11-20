@@ -55,43 +55,43 @@ class Controleur
                     $dispMinute = '0' . $dispMinute;
 
 
-                $uniqueId = uniqid(); // Génère un identifiant unique pour chaque bloc
+                $uniqueId = uniqid(); // Génère un identifiant unique
 
                 echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-    <a class="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100" style="overflow: visible;">
+    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
         <form>
             <div>
                 <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
-                    <time>' . $dispHour . ':' . $dispMinute . ' - ' .
-                    (empty($course->getSalle()) ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) .
-                    '</time>
+                    <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time>
                 </p>
                 <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . getEnseignementShortName($course->getCode()) . '</p>
                 <p class="order-1 text-' . $color . '-700">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
             </div>
         </form>
-        
-        <!-- Bouton pour afficher linfo-bulle avec animation -->
-        <button data-ripple-light="true" data-tooltip-target="tooltip-' . $uniqueId . '"
-                class="select-none absolute top-0 right-0 m-2 rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none">
-                ⓘ
+
+        <!-- Bouton pour afficher l\'info-bulle -->
+        <button data-tooltip-target="tooltip-' . $uniqueId . '"
+                class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
+                style="position: absolute; top: 0; right: 0;">
+            ⓘ
         </button>
-        
-        <!-- Info-bulle avec animation et taille fixe pour éviter le redimensionnement -->
-        <div id="tooltip-' . $uniqueId . '" 
-             data-tooltip="tooltip-' . $uniqueId . '" 
-             data-tooltip-mount="opacity-100 scale-100"
-             data-tooltip-unmount="opacity-0 scale-0 pointer-events-none"
-             data-tooltip-transition="transition-all duration-200 origin-bottom"
-             class="absolute z-50 rounded-lg bg-black py-2 px-3 font-sans text-sm font-normal text-white focus:outline-none"
-             style="top: -10px; right: 0; min-width: 150px; max-width: 200px; white-space: normal;">
-                   Test
-                </div>
+
+        <!-- Info-bulle avec animation -->
+        <div id="tooltip-' . $uniqueId . '"
+             data-tooltip="tooltip-' . $uniqueId . '"
+             class="hidden absolute z-50 whitespace-normal break-words rounded-lg bg-white py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity duration-200 ease-in-out" style="width: 200px; right: -210px; top: 0;">
+            <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
+            <p class="text-purple-500">' . getEnseignementShortName($course->getCode()) . '</p>
+            <p class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</p>
+            <p class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</p>
+            <p class="text-red-500">' . $course->getNomgroupe() . '</p>
+            <p class="text-orange-500">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
+        </div>
     </a>
 </li>';
 ?>
 
-<!-- Import Material Tailwind tooltip script -->
+
 <script
   type="module"
   src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
