@@ -150,6 +150,7 @@ function getGridRow(DateTime $dateTime) {
     return $gridRow;
 }
 
+
 function getSpan(DateTime $duration) {
     $hours = (int) $duration->format('H');
     $minutes = (int) $duration->format('i');
@@ -162,6 +163,7 @@ function getSpan(DateTime $duration) {
     return $span;
 }
 
+//La fonction getDayWeek renvoie la date d'un jour spécifique de la semaine en cours. Elle prend un jour en paramètre et modifie la date de la semaine clonée pour correspondre au jour spécifié
 function getDayWeek($day) {
     global $week;
     $resultDate = clone $week;
@@ -170,6 +172,7 @@ function getDayWeek($day) {
     return $resultDate;
 }
 
+//La fonction getWeekDay renvoie la date soit du lundi, soit du dimanche de la semaine en cours, en fonction du paramètre firstDay.
 function getWeekDay($firstDay) {
     global $week;
     $resultDate = clone $week;
@@ -202,6 +205,7 @@ if(isset($_SESSION['role']))
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // cette fonction permet de rétracter ou d'étendre la sidebar
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('dashboard');
@@ -305,6 +309,7 @@ if (isset($_SESSION['logged'])) {
 
 
 <script>
+    // Fonction pour bascule la visibilité de l'élément ayant l'ID allNotificationsLayer en ajoutant ou en supprimant la classe hidden.
     function toggleAllNotificationsLayer() {
         const layer = document.getElementById('allNotificationsLayer');
         layer.classList.toggle('hidden');
@@ -313,6 +318,7 @@ if (isset($_SESSION['logged'])) {
 
 
 <script>
+    // Fonction pour afficher la sidebar des notifications
     function toggleNotificationSidebar() {
         const sidebar = document.getElementById('notificationSidebar');
         sidebar.classList.toggle('translate-x-full');
@@ -397,7 +403,7 @@ if (isset($_SESSION['logged'])) {
 
 <script>
     let clickedDate = null;
-
+    // Fonction qui vérifie le rôle de l'utilisateur et bascule la visibilité de la fenêtre popup d'absence si le rôle n'est pas un élève
     function toggleAbsencePopup() {
         let role = <?php echo '"'. $role . '"'; ?>;
         if (role == null || role === 'ELEVE') {
@@ -419,7 +425,7 @@ if (isset($_SESSION['logged'])) {
             });
         }
     }
-
+    // Fonction qui gère l'événement lorsqu'un jour est cliqué dans le calendrier
     function handleDayClicked(day) {
         clickedDate = day.getAttribute('data-date');
         clickedDate = new Date(clickedDate);
