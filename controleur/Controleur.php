@@ -55,6 +55,7 @@ class Controleur
                     $dispMinute = '0' . $dispMinute;
 
 
+
                 $uniqueId = uniqid(); // Génère un identifiant unique
 
                 echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
@@ -81,11 +82,11 @@ class Controleur
              data-tooltip="tooltip-' . $uniqueId . '"
              class="hidden absolute z-50 whitespace-normal break-words rounded-lg bg-white py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity duration-200 ease-in-out" style="width: 200px; right: -210px; top: 0;">
             <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
-            <p class="text-purple-500">' . getEnseignementShortName($course->getCode()) . '</p>
-            <p class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</p>
-            <p class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</p>
-            <p class="text-red-500">' . $course->getNomgroupe() . '</p>
-            <p class="text-orange-500">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</p>
+            <span>Cours : </span><span class="text-purple-500">' . getEnseignementShortName($course->getCode()) . '</span><br>
+            <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
+            <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
+            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>
+            <span class="text-orange-500">' . transformTeacherName(getCollegueFullName($course->getCollegue())) . '</span>
         </div>
     </a>
 </li>';
