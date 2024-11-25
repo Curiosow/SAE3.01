@@ -1,6 +1,8 @@
 <?php
 include "Lesson.php";
 include "Database.php";
+include_once "EnseignementManager.php";
+include_once "CollegueManager.php";
 
 function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
 {
@@ -35,6 +37,9 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         $course->setNoseance($row['noseance']);
         $course->setHoraire($row['horaire']);
         $course->setDuration($row['duration']);
+        $course->setEnseignementLongName(getEnseignementFullName($row['code']));
+        $course->setEnseignementShortName(getEnseignementShortName($row['code']));
+        $course->setCollegueFullName(getCollegueFullName($row['collegue']));
         $course->setSalle(getSalle($course->getTypeformation(), $course->getCode(), $course->getTypeseance(), $course->getSemestre(), $course->getNomgroupe(), $course->getCollegue(), $course->getNoseance()));
         $courses[] = $course;
     }

@@ -111,16 +111,6 @@ function removeAfterTiret($string) {
     return $parts[0];
 }
 
-function transformTeacherName($fullName) {
-    $parts = explode(' ', $fullName);
-    if (count($parts) < 2) {
-        return $fullName;
-    }
-    $initial = substr($parts[0], 0, 1) . '.';
-    $lastName = $parts[1];
-    return $initial . ' ' . $lastName;
-}
-
 function getWeekDates(DateTime $date) {
     $startOfWeek = clone $date;
     $endOfWeek = clone $date;
