@@ -41,6 +41,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         $course->setEnseignementShortName(getEnseignementShortName($row['code']));
         $course->setCollegueFullName(getCollegueFullName($row['collegue']));
         $course->setSalle(getSalle($course->getTypeformation(), $course->getCode(), $course->getTypeseance(), $course->getSemestre(), $course->getNomgroupe(), $course->getCollegue(), $course->getNoseance()));
+        $course->setDiscipline(getDiscipline($row['code']));
         $courses[] = $course;
     }
 
@@ -102,10 +103,3 @@ function getSalle($formation, $code, $seance, $semestre, $groupe, $collegue, $no
 
     return pg_fetch_assoc($result)['salle'];
 }
-
-/*
- * /Users/curiosow/Documents/Cours/BUT2/SAE-EMPLOIDUTEMPS/SAE3.01/modele/ScheduleManager.php
-: Trying to access array offset on false in
-
- *
- */

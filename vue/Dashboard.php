@@ -32,6 +32,10 @@ if(isset($_POST['absence'])) {
     $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $_POST['reason'] . ".", "GESTIONNAIRE", true);
 }
 
+if(isset($_POST['gestio-ping-modification'])) {
+    $notificationsControleur->createNotification("Changement d'emploi du temps", "Une modification de votre emploi du temps a été effectuée.", "ELEVE", false);
+}
+
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -210,12 +214,11 @@ if(isset($_SESSION['role']))
         }
     </script>
 </head>
-<body>
+<body onload="toggleSidebar()">
 
-<!--section pour afficher la version -->
+<!--section pour afficher la version
 <div class="absolute top-0 left-72 p-4">
-    <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_SESSION['role']) && $_SESSION['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_SESSION['role']; } ?></span>
-</div>
+</div> -->
 
 <!-- cloche Icon -->
 <!-- Notification Sidebar -->
@@ -468,9 +471,17 @@ if (isset($_SESSION['logged'])) {
 
         <!-- Sidebar footer -->
         <div class="mt-auto flex-col justify-center hide-when-collapsed">
+            <?php
+            if ($role != null && $role == "GESTIONNAIRE") {
+                echo '<form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
+                <button type="submit" id="gestio-ping-modification" name="gestio-ping-modification" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Notifier changement EDT</button>
+            </form>';
+            }
+            ?>
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="disconnect" name="disconnect" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Se déconnecter</button>
             </form>
+            <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_SESSION['role']) && $_SESSION['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_SESSION['role']; } ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
             </svg>

@@ -16,6 +16,7 @@ class lesson
     public $enseignementShortName;
     public $enseignementLongName;
     public $collegueFullName;
+    public $discipline;
 
     /**
      * @return mixed
@@ -223,6 +224,22 @@ class lesson
     public function setCollegueFullName($collegueFullName)
     {
         $this->collegueFullName = $collegueFullName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDiscipline()
+    {
+        return $this->discipline;
+    }
+
+    /**
+     * @param mixed $discipline
+     */
+    public function setDiscipline($discipline): void
+    {
+        $this->discipline = $discipline;
     }
 
 }

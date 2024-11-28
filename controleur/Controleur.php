@@ -12,8 +12,10 @@ class Controleur
 
     function generateDays($week) {
         $weekDates = getWeekDates($week);
+
+        $disciplineColors = getDisciplineColors();
         foreach ($weekDates as $weekDate) {
-            $courses = getDay($weekDate, $weekDate->format('d'), (int) getSemestre((int) $_SESSION['promotion'], $weekDate), $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
             foreach ($courses as $course) {
                 $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
                 $dispHoraire = $horraire->format("N");
@@ -22,28 +24,9 @@ class Controleur
                 $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
                 $dispSpan = getSpan($duree);
 
-                $color = 'red';
-                switch ($course->getTypeseance()) {
-                    case 'CM':
-                        $color = 'purple';
-                        break;
-
-                    case "TD":
-                        $color = 'blue';
-                        break;
-
-                    case "TP":
-                        $color = 'green';
-                        break;
-
-                    case "DS":
-                        $color = 'orange';
-                        break;
-
-                    case "PRJ":
-                        $color = 'yellow';
-                        break;
-                }
+                $color="gray";
+                if(array_key_exists($course->getDiscipline(), $disciplineColors))
+                    $color = $disciplineColors[$course->getDiscipline()];
 
                 $dispHour = (int)$horraire->format("H");
                 //$dispHour = $dispHour + 1;
@@ -53,8 +36,6 @@ class Controleur
                 $dispMinute = $horraire->format("i") . '';
                 if($horraire->format("i") < 10 && $horraire->format("i") > 1)
                     $dispMinute = '0' . $dispMinute;
-
-
 
                 $uniqueId = uniqid(); // Génère un identifiant unique
 
@@ -69,8 +50,8 @@ class Controleur
                 <p class="order-1 text-' . $color . '-700">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
             </div>
         </form>
-
-        <!-- Bouton pour afficher l\'info-bulle -->
+        
+        <!-- Bouton pour afficher l\'info-bulle  -->
         <button data-tooltip-target="tooltip-' . $uniqueId . '"
                 class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
                 style="position: absolute; top: 0; right: 0;">
@@ -95,6 +76,7 @@ class Controleur
                 }
 
                 echo '</div>
+                
     </a>
 </li>';
 ?>
