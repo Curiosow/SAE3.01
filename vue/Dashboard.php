@@ -112,18 +112,6 @@ function removeAfterTiret($string) {
     return $parts[0];
 }
 
-//La fonction transformTeacherName prend un nom complet en entrée et le transforme en un format où le prénom est abrégé à son initiale suivie d'un point,
-// tandis que le nom de famille est conservé en entier. Si le nom fourni ne contient pas au moins deux parties, il est retourné tel quel.
-function transformTeacherName($fullName) {
-    $parts = explode(' ', $fullName);
-    if (count($parts) < 2) {
-        return $fullName;
-    }
-    $initial = substr($parts[0], 0, 1) . '.';
-    $lastName = $parts[1];
-    return $initial . ' ' . $lastName;
-}
-
 
 //La fonction getWeekDates retourne un tableau d'objets DateTime représentant chaque jour de la semaine pour la date donnée.
 // Elle commence par le lundi et se termine par le dimanche.
