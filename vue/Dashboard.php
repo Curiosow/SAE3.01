@@ -134,7 +134,7 @@ function getWeekDates(DateTime $date) {
 }
 
 //La fonction getGridRow calcule un indice de ligne de grille en fonction d'un objet DateTime donné.
-// Cet indice est utilisé pour placer des événements dans une disposition en grille, représentant probablement un emploi du temps ou un calendrier.
+//Cet indice est utilisé pour placer des événements dans une disposition en grille, représentant probablement un emploi du temps ou un calendrier.
 function getGridRow(DateTime $dateTime) {
     $hour = (int) $dateTime->format('H');
     $minute = (int) $dateTime->format('i');
