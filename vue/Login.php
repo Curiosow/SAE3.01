@@ -32,7 +32,8 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
 
                $line = getLineFromCSVByEmail($mail);
                $_SESSION['line'] = $line;
-               switch ($line[3]) {
+               $_SESSION['semestre'] = $line[3];
+               /*switch ($line[3]) {
                    case '1':
                    case '2':
                        $_SESSION['promotion'] = '1';
@@ -45,7 +46,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                    case '6':
                        $_SESSION['promotion'] = '3';
                        break;
-               }
+               }*/
 
                $formation = 'FI';
                if(strpos($line[4], 'FA') === 0)

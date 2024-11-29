@@ -106,15 +106,21 @@ function generateCalendar() {
     }
 }
 
-//La fonction removeAfterTiret divise une chaîne en utilisant le délimiteur ' - ' et retourne la partie située avant la première occurrence de ce délimiteur.
 function removeAfterTiret($string) {
     $parts = explode(' - ', $string);
     return $parts[0];
 }
 
+function transformTeacherName($fullName) {
+    $parts = explode(' ', $fullName);
+    if (count($parts) < 2) {
+        return $fullName;
+    }
+    $initial = substr($parts[0], 0, 1) . '.';
+    $lastName = $parts[1];
+    return $initial . ' ' . $lastName;
+}
 
-//La fonction getWeekDates retourne un tableau d'objets DateTime représentant chaque jour de la semaine pour la date donnée.
-// Elle commence par le lundi et se termine par le dimanche.
 function getWeekDates(DateTime $date) {
     $startOfWeek = clone $date;
     $endOfWeek = clone $date;
@@ -133,8 +139,6 @@ function getWeekDates(DateTime $date) {
     return $weekDates;
 }
 
-//La fonction getGridRow calcule un indice de ligne de grille en fonction d'un objet DateTime donné.
-//Cet indice est utilisé pour placer des événements dans une disposition en grille, représentant probablement un emploi du temps ou un calendrier.
 function getGridRow(DateTime $dateTime) {
     $hour = (int) $dateTime->format('H');
     $minute = (int) $dateTime->format('i');
@@ -146,8 +150,7 @@ function getGridRow(DateTime $dateTime) {
     return $gridRow;
 }
 
-//La fonction getSpan calcule une valeur d'intervalle (span) en fonction de la durée fournie sous forme d'objet DateTime.
-// L'intervalle est déterminé en convertissant les heures et les minutes de la durée en une unité spécifique.
+
 function getSpan(DateTime $duration) {
     $hours = (int) $duration->format('H');
     $minutes = (int) $duration->format('i');
@@ -160,8 +163,7 @@ function getSpan(DateTime $duration) {
     return $span;
 }
 
-//La fonction getDayWeek renvoie la date d'un jour spécifique de la semaine en cours.
-// Elle prend un jour en paramètre et modifie la date de la semaine clonée pour correspondre au jour spécifié
+//La fonction getDayWeek renvoie la date d'un jour spécifique de la semaine en cours. Elle prend un jour en paramètre et modifie la date de la semaine clonée pour correspondre au jour spécifié
 function getDayWeek($day) {
     global $week;
     $resultDate = clone $week;

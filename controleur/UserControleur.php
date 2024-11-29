@@ -96,5 +96,15 @@ class UserControleur
         pg_query_params($connexion, $preparedStatement, array($token, $mail));
     }
 
+    function getAllRessources()
+    {
+        $preparedStatement = "SELECT * FROM ressource";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        return pg_query($connexion, $preparedStatement);
+    }
 
 }

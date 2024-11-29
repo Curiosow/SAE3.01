@@ -13,6 +13,10 @@ class lesson
     public $horaire;
     public $duration;
     public $salle;
+    public $enseignementShortName;
+    public $enseignementLongName;
+    public $collegueFullName;
+    public $discipline;
 
     /**
      * @return mixed
@@ -172,6 +176,70 @@ class lesson
     public function setSalle($salle)
     {
         $this->salle = $salle;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnseignementShortName()
+    {
+        return $this->enseignementShortName;
+    }
+
+    /**
+     * @param mixed $enseignementShortName
+     */
+    public function setEnseignementShortName($enseignementShortName)
+    {
+        $this->enseignementShortName = $enseignementShortName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnseignementLongName()
+    {
+        return $this->enseignementLongName;
+    }
+
+    /**
+     * @param mixed $enseignementLongName
+     */
+    public function setEnseignementLongName($enseignementLongName)
+    {
+        $this->enseignementLongName = $enseignementLongName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCollegueFullName()
+    {
+        return $this->collegueFullName;
+    }
+
+    /**
+     * @param mixed $collegueFullName
+     */
+    public function setCollegueFullName($collegueFullName)
+    {
+        $this->collegueFullName = $collegueFullName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDiscipline()
+    {
+        return $this->discipline;
+    }
+
+    /**
+     * @param mixed $discipline
+     */
+    public function setDiscipline($discipline): void
+    {
+        $this->discipline = $discipline;
     }
 
 }
