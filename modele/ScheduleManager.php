@@ -9,7 +9,18 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
-    $preparedStatement = "SELECT * FROM schedule WHERE DATE(horaire) = $1 AND semestre = $2 AND (typeformation = $3 OR typeformation = 'MUT') AND (nomgroupe = $4 OR nomgroupe = $5 OR nomgroupe = 'CM') ORDER BY version DESC";
+    /*$preparedStatement = "SELECT * FROM schedule
+         WHERE DATE(horaire) = $1 AND semestre = $2 AND (typeformation = $3 OR typeformation = 'MUT') AND (nomgroupe = $4 OR nomgroupe = $5 OR nomgroupe = 'CM') 
+         ORDER BY version DESC";*/
+    $preparedStatement = "
+        SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
+        FROM schedule s
+        LEFT JOIN enseignement e ON s.code = e.code
+        LEFT JOIN collegue c ON s.collegue = c.id
+        LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
+        WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM')
+        ORDER BY s.version DESC";
+
     $connexion = Database::getInstance()->getConnection();
     if(!$connexion) {
         die('La communcation à la base de données a echouée : ' . pg_last_error());
@@ -27,7 +38,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         } else if($version != intval($row['version']))
             continue;
 
-        $course = new Lesson();
+        /*$course = new Lesson();
         $course->setCode($row['code']);
         $course->setTypeseance($row['typeseance']);
         $course->setTypeformation($row['typeformation']);
@@ -42,6 +53,22 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         $course->setCollegueFullName(getCollegueFullName($row['collegue']));
         $course->setSalle(getSalle($course->getTypeformation(), $course->getCode(), $course->getTypeseance(), $course->getSemestre(), $course->getNomgroupe(), $course->getCollegue(), $course->getNoseance()));
         $course->setDiscipline(getDiscipline($row['code']));
+        $courses[] = $course;*/
+        $course = new Lesson();
+        $course->setCode($row['code']);
+        $course->setTypeseance($row['typeseance']);
+        $course->setTypeformation($row['typeformation']);
+        $course->setCollegue($row['collegue']);
+        $course->setNomgroupe($row['nomgroupe']);
+        $course->setSemestre($row['semestre']);
+        $course->setNoseance($row['noseance']);
+        $course->setHoraire($row['horaire']);
+        $course->setDuration($row['duration']);
+        $course->setEnseignementLongName($row['enseignement_longname']);
+        $course->setEnseignementShortName($row['enseignement_shortname']);
+        $course->setCollegueFullName($row['prenom'] . ' ' . $row['nom']);
+        $course->setSalle($row['salle']);
+        $course->setDiscipline($row['discipline']);
         $courses[] = $course;
     }
 
