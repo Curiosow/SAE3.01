@@ -1,7 +1,7 @@
 <?php
 include "../controleur/UserControleur.php";
 include "../controleur/NotificationControleur.php";
-include "../modele/CollegueManager.php";
+include "../modele/managers/CollegueManager.php";
 
 $controleur = new UserControleur();
 $notificationControleur = new NotificationControleur();

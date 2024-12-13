@@ -1,6 +1,7 @@
 <?php
 include_once("../controleur/Controleur.php");
 include_once("../controleur/NotificationControleur.php");
+include_once("../controleur/UtilsControleur.php");
 
 session_start();
 
@@ -14,27 +15,13 @@ if(!isset($_SESSION['groupe'])) {
 }
 
 // Vérification si l'utilisateur souhaite se déconnecter
-if(isset($_POST['disconnect'])) {
-    session_destroy();
-    header('location: Login.php');
-    exit();
-}
+if(isset($_POST['disconnect'])) disconnect();
 
 // Vérification si l'utilisateur souhaite soumettre une absence (pour les profs & gestionnaires)
-if(isset($_POST['absence'])) {
-    $id = $_SESSION['mail'];
-    if(isset($_SESSION['collegue']))
-        $id = $_SESSION['collegue'];
+if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['start_date'], $_POST['end_date'], $_POST['reason']);
 
-    $start_date = DateTime::createFromFormat('d-m-Y H:i', $_POST['start-date'])->format('d-m-Y H:i');
-    $end_date = DateTime::createFromFormat('d-m-Y H:i', $_POST['end-date'])->format('d-m-Y H:i');
-
-    $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $_POST['reason'] . ".", "GESTIONNAIRE", true);
-}
-
-if(isset($_POST['gestio-ping-modification'])) {
-    $notificationsControleur->createNotification("Changement d'emploi du temps", "Une modification de votre emploi du temps a été effectuée.", "ELEVE", false);
-}
+// Vérification si l'utilisateur souhaite soumettre une notification de modification (pour les gestionnaires)
+if(isset($_POST['gestio-ping-modification'])) notifModificationStudent($notificationsControleur);
 
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
@@ -66,54 +53,6 @@ if (isset($_POST['weekOffSet'])) {
 $date = $date->modify($_SESSION['monthOffSet'] . ' month');
 $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
-
-function generateCalendar() {
-    global $date, $realDate;
-    $month = $date->format('m');
-    $year = $date->format('Y');
-
-    // Trouver le premier et le dernier jour du mois
-    $firstDayOfMonth = date('Y-m-01', strtotime("$year-$month-01"));
-    $lastDayOfMonth = date('Y-m-t', strtotime($firstDayOfMonth));
-
-    // Trouver le jour de la semaine du premier et du dernier jour du mois
-    $startDayOfWeek = date('N', strtotime($firstDayOfMonth));
-    $endDayOfWeek = date('N', strtotime($lastDayOfMonth));
-
-    $startDate = date('Y-m-d', strtotime($firstDayOfMonth . ' -' . ($startDayOfWeek - 1) . ' days'));
-    $endDate = date('Y-m-d', strtotime($lastDayOfMonth . ' +' . (7 - $endDayOfWeek) . ' days'));
-
-    $currentDate = $startDate;
-    $calendar = [];
-
-    while ($currentDate <= $endDate) {
-        $calendar[] = $currentDate;
-        $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
-    }
-
-    $actualDay = clone $realDate;
-    $actualDay = $actualDay->format('Y-m-d');
-    foreach ($calendar as $d) {
-        $day = date('d', strtotime($d));
-        $cMonth = date('m', strtotime($d));
-
-        $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-white focus:z-10';
-        if ($d == $actualDay) {
-            $buttonClass = 'rounded-full border-2 border-sky-700 bg-black-50 py-1.5 text-white focus:z-10';
-        } elseif ($cMonth != $month) {
-            $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-gray-600 focus:z-10';
-        }
-
-        echo '<button type="button" class="' . $buttonClass . '">
-            <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">' . $day . '</time>
-        </button>';
-    }
-}
-
-function removeAfterTiret($string) {
-    $parts = explode(' - ', $string);
-    return $parts[0];
-}
 
 function getWeekDates(DateTime $date) {
     $startOfWeek = clone $date;
@@ -181,7 +120,7 @@ function getWeekDay($firstDay) {
 }
 
 // Récupération de la version la plus récente
-$version = $controleur->returnVersion();
+$version = returnVersion();
 
 // On inscrit ici le role de l'utilisateur pour le récupérer depuis JS
 $role = 'ELEVE';
@@ -465,7 +404,7 @@ if (isset($_SESSION['logged'])) {
                 <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
             </div>
             <div class="isolate mt-2 grid grid-cols-7 gap-px rounded-lg bg-black text-sm shadow ring-1 ring-black">
-                <?php generateCalendar(); ?>
+                <?php $controleur->generateCalendar(); ?>
             </div>
         </div>
 
@@ -518,6 +457,7 @@ if (isset($_SESSION['logged'])) {
             </form>
         </header>
 
+        <!-- Content -->
         <div class="isolate flex flex-auto flex-col overflow-auto bg-white">
             <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
                 <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">

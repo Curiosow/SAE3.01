@@ -1,7 +1,7 @@
 <?php
-include "../modele/CollegueManager.php";
-include "../modele/EnseignementManager.php";
-include "../modele/ScheduleManager.php";
+include "../modele/managers/CollegueManager.php";
+include "../modele/managers/EnseignementManager.php";
+include "../modele/managers/ScheduleManager.php";
 
 
 class Controleur
@@ -81,7 +81,6 @@ class Controleur
 </li>';
 ?>
 
-
 <script
   type="module"
   src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
@@ -109,10 +108,6 @@ document.querySelectorAll('[data-tooltip-target]').forEach(button => {
         }
     }
 
-    function returnVersion() {
-        return getVersion();
-    }
-
     function transformTeacherName($fullName) {
         $parts = explode(' ', $fullName);
         if (count($parts) < 2) {
@@ -121,6 +116,49 @@ document.querySelectorAll('[data-tooltip-target]').forEach(button => {
         $initial = substr($parts[0], 0, 1) . '.';
         $lastName = $parts[1];
         return $initial . ' ' . $lastName;
+    }
+
+    function generateCalendar() {
+        global $date, $realDate;
+        $month = $date->format('m');
+        $year = $date->format('Y');
+
+        // Trouver le premier et le dernier jour du mois
+        $firstDayOfMonth = date('Y-m-01', strtotime("$year-$month-01"));
+        $lastDayOfMonth = date('Y-m-t', strtotime($firstDayOfMonth));
+
+        // Trouver le jour de la semaine du premier et du dernier jour du mois
+        $startDayOfWeek = date('N', strtotime($firstDayOfMonth));
+        $endDayOfWeek = date('N', strtotime($lastDayOfMonth));
+
+        $startDate = date('Y-m-d', strtotime($firstDayOfMonth . ' -' . ($startDayOfWeek - 1) . ' days'));
+        $endDate = date('Y-m-d', strtotime($lastDayOfMonth . ' +' . (7 - $endDayOfWeek) . ' days'));
+
+        $currentDate = $startDate;
+        $calendar = [];
+
+        while ($currentDate <= $endDate) {
+            $calendar[] = $currentDate;
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+        }
+
+        $actualDay = clone $realDate;
+        $actualDay = $actualDay->format('Y-m-d');
+        foreach ($calendar as $d) {
+            $day = date('d', strtotime($d));
+            $cMonth = date('m', strtotime($d));
+
+            $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-white focus:z-10';
+            if ($d == $actualDay) {
+                $buttonClass = 'rounded-full border-2 border-sky-700 bg-black-50 py-1.5 text-white focus:z-10';
+            } elseif ($cMonth != $month) {
+                $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-gray-600 focus:z-10';
+            }
+
+            echo '<button type="button" class="' . $buttonClass . '">
+            <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">' . $day . '</time>
+        </button>';
+        }
     }
 
 }

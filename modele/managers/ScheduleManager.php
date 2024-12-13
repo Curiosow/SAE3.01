@@ -1,6 +1,6 @@
 <?php
-include "Lesson.php";
-include "Database.php";
+include ("../modele/Lesson.php");
+include ("../modele/Database.php");
 include_once "EnseignementManager.php";
 include_once "CollegueManager.php";
 
@@ -9,9 +9,6 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
-    /*$preparedStatement = "SELECT * FROM schedule
-         WHERE DATE(horaire) = $1 AND semestre = $2 AND (typeformation = $3 OR typeformation = 'MUT') AND (nomgroupe = $4 OR nomgroupe = $5 OR nomgroupe = 'CM') 
-         ORDER BY version DESC";*/
     $preparedStatement = "
         SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
         FROM schedule s
@@ -38,22 +35,6 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         } else if($version != intval($row['version']))
             continue;
 
-        /*$course = new Lesson();
-        $course->setCode($row['code']);
-        $course->setTypeseance($row['typeseance']);
-        $course->setTypeformation($row['typeformation']);
-        $course->setCollegue($row['collegue']);
-        $course->setNomgroupe($row['nomgroupe']);
-        $course->setSemestre($row['semestre']);
-        $course->setNoseance($row['noseance']);
-        $course->setHoraire($row['horaire']);
-        $course->setDuration($row['duration']);
-        $course->setEnseignementLongName(getEnseignementFullName($row['code']));
-        $course->setEnseignementShortName(getEnseignementShortName($row['code']));
-        $course->setCollegueFullName(getCollegueFullName($row['collegue']));
-        $course->setSalle(getSalle($course->getTypeformation(), $course->getCode(), $course->getTypeseance(), $course->getSemestre(), $course->getNomgroupe(), $course->getCollegue(), $course->getNoseance()));
-        $course->setDiscipline(getDiscipline($row['code']));
-        $courses[] = $course;*/
         $course = new Lesson();
         $course->setCode($row['code']);
         $course->setTypeseance($row['typeseance']);
@@ -109,24 +90,4 @@ function getVersion()
     }
 
     return pg_fetch_assoc($result)['version'];
-}
-
-function getSalle($formation, $code, $seance, $semestre, $groupe, $collegue, $noseance)
-{
-    $query = "SELECT salle, version FROM schedulesalle WHERE typeformation = $1 AND code = $2 AND typeseance = $3 AND semestre = $4 AND nomgroupe = $5 AND collegue = $6 AND noseance = $7 ORDER BY version DESC";
-    $connexion = Database::getInstance()->getConnection();
-
-    if(!$connexion) {
-        die('La communcation à la base de données a echouée : ' . pg_last_error());
-    }
-
-    $result = pg_query_params($connexion, $query, array($formation, $code, $seance, $semestre, $groupe, $collegue, $noseance));
-    if (!$result) {
-        die('La requête a échouée : ' . pg_last_error());
-    }
-
-    if(!isset(pg_fetch_assoc($result)['salle']))
-        return null;
-
-    return pg_fetch_assoc($result)['salle'];
 }

@@ -2,6 +2,7 @@
 include_once "../modele/Database.php";
 include "../modele/Notification.php";
 include_once "../controleur/UserControleur.php";
+include_once "../controleur/UtilsControleur.php";
 
 $userControleur = new UserControleur();
 
@@ -20,7 +21,7 @@ class NotificationControleur
             die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
-        $rolesArray = $this->getRoleListFromARole($role);
+        $rolesArray = getRoleListFromARole($role);
         $rolesString = '{' . implode(',', $rolesArray) . '}';
         $result = pg_query_params($connexion, $preparedStatement, array($rolesString));
 
@@ -39,7 +40,7 @@ class NotificationControleur
         $role = $_SESSION["role"];
         $lastId = $this->getLastNotification($role);
 
-        $rolesArray = $this->getRoleListFromARole($role);
+        $rolesArray = getRoleListFromARole($role);
         $rolesString = '{' . implode(',', $rolesArray) . '}';
         $result = pg_query_params($connexion, $preparedStatement, array($lastNotif, $lastId, $rolesString));
 
@@ -75,7 +76,7 @@ class NotificationControleur
         }
 
         $role = $_SESSION["role"];
-        $rolesArray = $this->getRoleListFromARole($role);
+        $rolesArray = getRoleListFromARole($role);
         $rolesString = '{' . implode(',', $rolesArray) . '}';
 
         $result = pg_query_params($connexion, $preparedStatement, array($rolesString));
@@ -137,18 +138,6 @@ class NotificationControleur
                 exit();
             }
             curl_close($ch);
-        }
-    }
-
-    private function getRoleListFromARole($role)
-    {
-        switch ($role) {
-            case "GESTIONNAIRE":
-                return array('GESTIONNAIRE', 'PROF', 'ELEVE');
-            case "PROF":
-                return array('PROF', 'ELEVE');
-            case "ELEVE":
-                return array('ELEVE');
         }
     }
 }
