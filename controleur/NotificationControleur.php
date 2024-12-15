@@ -1,6 +1,6 @@
 <?php
 include_once "../modele/Database.php";
-include "../modele/Notification.php";
+include_once "../modele/Notification.php";
 include_once "../controleur/UserControleur.php";
 include_once "../controleur/UtilsControleur.php";
 

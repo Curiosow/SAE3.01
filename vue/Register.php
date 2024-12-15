@@ -1,6 +1,6 @@
 <?php
-include "../controleur/UserControleur.php";
-include "../modele/managers/CollegueManager.php";
+include_once "../controleur/UserControleur.php";
+include_once "../modele/managers/CollegueManager.php";
 
 $controleur = new UserControleur();
 

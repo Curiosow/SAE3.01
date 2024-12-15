@@ -152,8 +152,29 @@ if(isset($_SESSION['role']))
             });
         }
     </script>
+    <script
+            type="module"
+            src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
+    ></script>
+
+    <script>
+        // JavaScript pour afficher/masquer les info-bulles
+        document.querySelectorAll('[data-tooltip-target]').forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                const tooltipId = button.getAttribute('data-tooltip-target');
+                const tooltip = document.getElementById(tooltipId);
+                if (tooltip) tooltip.classList.remove('hidden');
+            });
+
+            button.addEventListener('mouseleave', () => {
+                const tooltipId = button.getAttribute('data-tooltip-target');
+                const tooltip = document.getElementById(tooltipId);
+                if (tooltip) tooltip.classList.add('hidden');
+            });
+        });
+    </script>
 </head>
-<body onload="toggleSidebar()">
+<body>
 
 <!--section pour afficher la version
 <div class="absolute top-0 left-72 p-4">
@@ -209,7 +230,6 @@ if (isset($_SESSION['logged'])) {
     ';
 }
 ?>
-
 
 <!-- All Notifications Layer -->
 <div id="allNotificationsLayer" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
@@ -367,7 +387,7 @@ if (isset($_SESSION['logged'])) {
 </script>
 
 <!-- Static sidebar -->
-<div id="sidebar" class="lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col transition-width duration-300">
+<div id="sidebar" class="lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-16 lg:flex-col transition-width duration-300">
     <!-- Bouton pour rétracter/étendre la sidebar -->
     <div class="absolute top-0 right-0 p-2">
         <button onclick="toggleSidebar()" class="text-white focus:outline-none">
@@ -379,7 +399,7 @@ if (isset($_SESSION['logged'])) {
     <!-- Sidebar component-->
     <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-black px-6 pb-4 pt-10">
         <!-- Calendrier -->
-        <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed">
+        <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed hidden">
             <!-- Boutons mois précédents/suivants -->
             <div class="flex items-center text-gray-400">
                 <form action="Dashboard.php" method="post" class="flex w-full">
@@ -409,7 +429,7 @@ if (isset($_SESSION['logged'])) {
         </div>
 
         <!-- Sidebar footer -->
-        <div class="mt-auto flex-col justify-center hide-when-collapsed">
+        <div class="mt-auto flex-col justify-center hide-when-collapsed hidden">
             <?php
             if ($role != null && $role == "GESTIONNAIRE") {
                 echo '<form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
@@ -433,7 +453,7 @@ if (isset($_SESSION['logged'])) {
 </div>
 
 <!--Dashboard-->
-<div id="dashboard" class="lg:pl-72 transition-all duration-300">
+<div id="dashboard" class="lg:pl-16 transition-all duration-300">
     <div class="flex h-full flex-col">
         <!-- topbar (changeur de semaines) -->
         <header class="flex justify-center items-center border-b border-gray-200 px-4 py-2">

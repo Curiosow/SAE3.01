@@ -1,7 +1,7 @@
 <?php
-include "../modele/managers/CollegueManager.php";
-include "../modele/managers/EnseignementManager.php";
-include "../modele/managers/ScheduleManager.php";
+include_once "../modele/managers/CollegueManager.php";
+include_once "../modele/managers/EnseignementManager.php";
+include_once "../modele/managers/ScheduleManager.php";
 
 
 class Controleur
@@ -61,7 +61,7 @@ class Controleur
         <!-- Info-bulle avec animation -->
         <div id="tooltip-' . $uniqueId . '"
              data-tooltip="tooltip-' . $uniqueId . '"
-             class="hidden absolute z-50 whitespace-normal break-words rounded-lg bg-white py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity duration-200 ease-in-out" style="width: 200px; right: -210px; top: 0;">
+             class="absolute z-50 whitespace-normal break-words rounded-lg bg-white py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 duration-200 ease-in-out" style="width: 200px; right: -210px; top: 0;">
             <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
             <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
             <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
@@ -80,29 +80,6 @@ class Controleur
     </a>
 </li>';
 ?>
-
-<script
-  type="module"
-  src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
-></script>
-
-
-<script>
-// JavaScript pour afficher/masquer les info-bulles
-document.querySelectorAll('[data-tooltip-target]').forEach(button => {
-    button.addEventListener('mouseenter', () => {
-        const tooltipId = button.getAttribute('data-tooltip-target');
-        const tooltip = document.getElementById(tooltipId);
-        if (tooltip) tooltip.classList.remove('hidden');
-    });
-
-    button.addEventListener('mouseleave', () => {
-        const tooltipId = button.getAttribute('data-tooltip-target');
-        const tooltip = document.getElementById(tooltipId);
-        if (tooltip) tooltip.classList.add('hidden');
-    });
-});
-</script>
 <?php
             }
         }
