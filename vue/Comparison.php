@@ -1,6 +1,7 @@
 <?php
 include_once("../controleur/Controleur.php");
 include_once("../controleur/NotificationControleur.php");
+include_once("../controleur/UtilsControleur.php");
 
 session_start();
 
@@ -181,7 +182,7 @@ function getWeekDay($firstDay) {
 }
 
 // Récupération de la version la plus récente
-$version = $controleur->returnVersion();
+$version = returnVersion();
 
 // On inscrit ici le role de l'utilisateur pour le récupérer depuis JS
 $role = 'ELEVE';
