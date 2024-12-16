@@ -10,12 +10,17 @@ class Controleur
 
     }
 
-    function generateDays($week) {
+    function generateDays($week, $previousVersion = false) {
         $weekDates = getWeekDates($week);
 
         $disciplineColors = getDisciplineColors();
         foreach ($weekDates as $weekDate) {
-            $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            if ($previousVersion) {
+                $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            } else {
+                $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            }
+
             foreach ($courses as $course) {
                 $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
                 $dispHoraire = $horraire->format("N");
