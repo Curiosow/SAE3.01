@@ -1,5 +1,4 @@
 <?php
-include_once "../modele/Database.php";
 
 class UserControleur
 {

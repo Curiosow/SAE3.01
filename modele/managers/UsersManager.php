@@ -1,5 +1,5 @@
 <?php
-include "Database.php";
+include_once '../modele/Database.php';
 
 function hasAccount($mail) {
     $preparedStatement = "SELECT count(*) FROM users WHERE mail = $1";
