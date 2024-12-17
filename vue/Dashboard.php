@@ -402,7 +402,7 @@ if (isset($_SESSION['logged'])) {
         <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed hidden">
             <!-- Boutons mois précédents/suivants -->
             <div class="flex items-center text-gray-400">
-                <form action="Dashboard.php" method="post" class="flex w-full">
+                <form action="Dashboard.php" method="POST" class="flex w-full">
                     <button type="submit" name="monthOffSet" value="<?php echo ($_SESSION['monthOffSet'] - 1); ?>" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Mois précédent</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

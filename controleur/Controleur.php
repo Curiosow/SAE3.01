@@ -137,9 +137,20 @@ class Controleur
                 $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-gray-600 focus:z-10';
             }
 
-            echo '<button type="button" class="' . $buttonClass . '">
-            <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">' . $day . '</time>
-        </button>';
+            // Calculer l'offset de la semaine par rapport à la semaine actuelle
+            $weekOffset = (new DateTime($d))->diff(new DateTime($actualDay))->days / 7;
+            if ($d < $actualDay) {
+                $weekOffset = -ceil($weekOffset);
+            } else {
+                $weekOffset = floor($weekOffset);
+            }
+
+            echo '<form action="Dashboard.php" method="POST" style="display:inline;">
+            <input type="hidden" name="weekOffSet" value="' . $weekOffset . '">
+            <button type="submit" class="' . $buttonClass . '">
+                <time class="mx-auto flex h-7 w-7 items-center justify-center rounded-full">' . $day . '</time>
+            </button>
+        </form>';
         }
     }
 
