@@ -1,5 +1,4 @@
 <?php
-include_once("../modele/managers/ScheduleManager.php");
 
 function disconnect() {
     session_destroy();
