@@ -89,6 +89,7 @@ class NotificationControleur
         return $notifications;
     }
 
+
     public function createNotification($title, $content, $role, $sendMail)
     {
         global $userControleur;
