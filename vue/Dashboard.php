@@ -54,6 +54,9 @@ $date = $date->modify($_SESSION['monthOffSet'] . ' month');
 $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
 
+// Vérification si l'utilisateur souhaite faire un pdf du mois actuel
+if(isset($_POST['PDF'])) getCalendarPdf($week);
+
 function getWeekDates(DateTime $date) {
     $startOfWeek = clone $date;
     $endOfWeek = clone $date;
@@ -126,7 +129,6 @@ $version = returnVersion();
 $role = 'ELEVE';
 if(isset($_SESSION['role']))
     $role = $_SESSION['role'];
-
 ?>
 
 <!DOCTYPE html>
@@ -453,10 +455,14 @@ if (isset($_SESSION['logged'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
             </svg>
-            <div class="mt-4 flex justify-center gap-12">
-                <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
-                <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
-            </div>
+            <form action="Dashboard.php" method="POST">
+                <div class="mt-4 flex justify-center gap-12">
+                    <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
+                    <button type="submit" name="PDF" value="PDF" style="border: none; background: none; padding: 0;">
+                        <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
