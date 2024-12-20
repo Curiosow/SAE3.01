@@ -138,6 +138,10 @@ if(isset($_SESSION['role']))
     <title>Emploi du temps</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script
+            type="module"
+            src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js">
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // cette fonction permet de rétracter ou d'étendre la sidebar
@@ -154,10 +158,6 @@ if(isset($_SESSION['role']))
             });
         }
     </script>
-    <script
-            type="module"
-            src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
-    ></script>
 
     <script>
         // JavaScript pour afficher/masquer les info-bulles
@@ -262,6 +262,9 @@ if (isset($_SESSION['logged'])) {
 </div>
 
 
+
+
+
 <script>
     // Fonction pour bascule la visibilité de l'élément ayant l'ID allNotificationsLayer en ajoutant ou en supprimant la classe hidden.
     function toggleAllNotificationsLayer() {
@@ -270,6 +273,13 @@ if (isset($_SESSION['logged'])) {
     }
 </script>
 
+<script>
+    // Fonction pour afficher la popup de Comparaison
+    function toggleComparisonLayer() {
+        const layer = document.getElementById('ComparisonLayer');
+        layer.classList.toggle('hidden');
+    }
+</script>
 
 <script>
     // Fonction pour afficher la sidebar des notifications
