@@ -1,6 +1,6 @@
 <?php
 include "../modele/Lesson.php";
-include "../modele/Database.php";
+//include "../modele/Database.php";
 include_once "EnseignementManager.php";
 include_once "CollegueManager.php";
 
