@@ -39,18 +39,20 @@ function getCalendarPdf($date) {
     $pdf->AddPage('L');
     $pdf->SetFont('Arial', 'B', 12);
 
-    // Title
     $pdf->Cell(0, 10, 'Emploi du temps de la semaine', 0, 1, 'C');
 
-    // Days of the week header
+    // Draw border around the entire schedule
+    $pdf->Rect(10, 20, 270, 167.5); // Adjusted height to move the bottom border down
+
+    // header du calendrier
     $pdf->SetFont('Arial', 'B', 12);
-    $daysOfWeek = [' ', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven'];
+    $daysOfWeek = [' ', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
     foreach ($daysOfWeek as $day) {
         $pdf->Cell(45, 15, $day, 1, 0, 'C');
     }
     $pdf->Ln();
 
-    // Time slots and courses
+    // timings
     $pdf->SetFont('Arial', '', 12);
     $timeSlots = [
         '08:00', '09:00', '10:00', '11:00',
@@ -61,25 +63,32 @@ function getCalendarPdf($date) {
     foreach ($timeSlots as $timeSlot) {
         $pdf->Cell(45, 15, $timeSlot, 1);
         for ($i = 0; $i < 5; $i++) {
-            $pdf->Cell(45, 15, '', 1); // Empty cells for each day of the week
+            $pdf->Cell(45, 15); // No border for empty cells
         }
         $pdf->Ln();
     }
 
-    // Fill in the courses
+    // Remplissage cours
     $weekDates = getWeekDates($date);
     foreach ($weekDates as $day) {
         $courses = getDay($day, $day->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
         foreach ($courses as $course) {
             $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
-            $dayOfWeek = $horraire->format('N') - 1; // 0 (Mon) to 6 (Sun)
-            $timeSlotIndex = (int)$horraire->format('H') - 8; // Assuming time slots start at 08:00
+            $dayOfWeek = $horraire->format('N') - 1; // 0 = Lundi | 6 = Dimanche
+            //$timeSlotIndex = (int)$horraire->format('H') - 8;
+            $timeSlotIndex = getGridRow($horraire);
+            $duration = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
+
+            $hour = (int) $duration->format('H');
+            $minute = (int) $duration->format('i');
+            $total = ($hour * 15 + $minute * 7.5) / 5;
+
+            //$duration = $course->getDuration();
 
             if ($timeSlotIndex >= 0 && $timeSlotIndex < count($timeSlots)) {
-                $pdf->SetXY(10 + 45 * ($dayOfWeek + 1), 35 + 15 * $timeSlotIndex);
+                $pdf->SetXY(10 + 45 * ($dayOfWeek + 1), 35 + 7.5 * $timeSlotIndex);
                 $str = iconv('UTF-8', 'windows-1252', $course->getenseignementShortName());
-                $pdf->Cell(45, 15, $str, 1, 0, 'C');
-                //$pdf->Cell(45, 15, $course->getSalle(), 1, 1, 'C');
+                $pdf->Cell(45, $total, $str, 1, 0, 'C'); // Cell height based on course duration
             }
         }
     }
