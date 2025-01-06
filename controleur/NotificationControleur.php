@@ -1,5 +1,4 @@
 <?php
-include_once "../modele/Database.php";
 include_once "../modele/Notification.php";
 include_once "../controleur/UserControleur.php";
 include_once "../controleur/UtilsControleur.php";
@@ -89,6 +88,7 @@ class NotificationControleur
 
         return $notifications;
     }
+
 
     public function createNotification($title, $content, $role, $sendMail)
     {

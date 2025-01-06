@@ -1,5 +1,6 @@
 <?php
-include_once("../modele/managers/ScheduleManager.php");
+include_once "../controleur/pdf/fpdf.php";
+include_once "../modele/managers/ScheduleManager.php";
 
 function disconnect() {
     session_destroy();
@@ -31,6 +32,68 @@ function getRoleListFromARole($role) {
         case "ELEVE":
             return array('ELEVE');
     }
+}
+
+function getCalendarPdf($date) {
+    $pdf = new FPDF();
+    $pdf->AddPage('L');
+    $pdf->SetFont('Arial', 'B', 12);
+
+    $pdf->Cell(0, 10, 'Emploi du temps de la semaine', 0, 1, 'C');
+
+    // Draw border around the entire schedule
+    $pdf->Rect(10, 20, 270, 167.5); // Adjusted height to move the bottom border down
+
+    // header du calendrier
+    $pdf->SetFont('Arial', 'B', 12);
+    $daysOfWeek = [' ', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+    foreach ($daysOfWeek as $day) {
+        $pdf->Cell(45, 15, $day, 1, 0, 'C');
+    }
+    $pdf->Ln();
+
+    // timings
+    $pdf->SetFont('Arial', '', 12);
+    $timeSlots = [
+        '08:00', '09:00', '10:00', '11:00',
+        '12:00', '13:00', '14:00', '15:00',
+        '16:00', '17:00'
+    ];
+
+    foreach ($timeSlots as $timeSlot) {
+        $pdf->Cell(45, 15, $timeSlot, 1);
+        for ($i = 0; $i < 5; $i++) {
+            $pdf->Cell(45, 15); // No border for empty cells
+        }
+        $pdf->Ln();
+    }
+
+    // Remplissage cours
+    $weekDates = getWeekDates($date);
+    foreach ($weekDates as $day) {
+        $courses = getDay($day, $day->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        foreach ($courses as $course) {
+            $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
+            $dayOfWeek = $horraire->format('N') - 1; // 0 = Lundi | 6 = Dimanche
+            //$timeSlotIndex = (int)$horraire->format('H') - 8;
+            $timeSlotIndex = getGridRow($horraire);
+            $duration = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
+
+            $hour = (int) $duration->format('H');
+            $minute = (int) $duration->format('i');
+            $total = ($hour * 15 + $minute * 7.5) / 5;
+
+            //$duration = $course->getDuration();
+
+            if ($timeSlotIndex >= 0 && $timeSlotIndex < count($timeSlots)) {
+                $pdf->SetXY(10 + 45 * ($dayOfWeek + 1), 35 + 7.5 * $timeSlotIndex);
+                $str = iconv('UTF-8', 'windows-1252', $course->getenseignementShortName());
+                $pdf->Cell(45, $total, $str, 1, 0, 'C'); // Cell height based on course duration
+            }
+        }
+    }
+
+    $pdf->Output('D', 'Emploi_du_temps_semaine.pdf');
 }
 
 function returnVersion() {

@@ -1,6 +1,6 @@
 <?php
-include "Lesson.php";
-include "Database.php";
+include "../modele/Lesson.php";
+//include "../modele/Database.php";
 include_once "EnseignementManager.php";
 include_once "CollegueManager.php";
 
@@ -130,8 +130,6 @@ function getSalle($formation, $code, $seance, $semestre, $groupe, $collegue, $no
 
     return pg_fetch_assoc($result)['salle'];
 }
-
-
 // Récupère la version actuelle
 function getCurrentVersion()
 {

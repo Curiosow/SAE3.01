@@ -86,7 +86,7 @@ function removePrefix($string) {
 function getLineFromCSVByEmail($email) {
     $file = fopen('../liste_groupes.csv', 'r');
     if ($file !== false) {
-        while (($line = fgetcsv($file, 1000, ';')) !== false) {
+        while (($line = fgetcsv($file, 1000, ';', '"', '\\')) !== false) {
             if (isset($line[5]) && strcasecmp(trim($line[5]), $email) === 0) {
                 fclose($file);
                 return $line;
