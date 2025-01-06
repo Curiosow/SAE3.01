@@ -261,22 +261,10 @@ if (isset($_SESSION['logged'])) {
     </div>
 </div>
 
-
-
-
-
 <script>
     // Fonction pour bascule la visibilité de l'élément ayant l'ID allNotificationsLayer en ajoutant ou en supprimant la classe hidden.
     function toggleAllNotificationsLayer() {
         const layer = document.getElementById('allNotificationsLayer');
-        layer.classList.toggle('hidden');
-    }
-</script>
-
-<script>
-    // Fonction pour afficher la popup de Comparaison
-    function toggleComparisonLayer() {
-        const layer = document.getElementById('ComparisonLayer');
         layer.classList.toggle('hidden');
     }
 </script>
