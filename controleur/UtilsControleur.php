@@ -42,7 +42,7 @@ function getCalendarPdf($date) {
     $pdf->Cell(0, 10, 'Emploi du temps de la semaine', 0, 1, 'C');
 
     // Draw border around the entire schedule
-    $pdf->Rect(10, 20, 270, 167.5); // Adjusted height to move the bottom border down
+    $pdf->Rect(10, 20, 270, 165); // Adjusted height to move the bottom border down
 
     // header du calendrier
     $pdf->SetFont('Arial', 'B', 12);
