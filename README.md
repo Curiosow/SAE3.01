@@ -27,4 +27,4 @@ password:
 **Serveur:** PHP, Git, Github, Jetbrains : Code With Me, PostgreSQL, Redis, Brevo
 
 ## Live preview
-[Cliquez ici](http://87.106.121.50/vue/Dashboard.php)
+[Cliquez ici](http://edt.curiosow.fr/vue/Dashboard.php)
