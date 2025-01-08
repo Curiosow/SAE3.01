@@ -283,8 +283,7 @@ if (isset($_SESSION['logged'])) {
     <!-- Bouton pour signaler une absence -->
     <?php
     if ($role != null && $role != 'ELEVE') {
-        echo '<div class="absolute top-0 right-0 p-4 flex items-center space-x-2">
-        <div class="relative">
+        echo '<div class="relative">
             <button onclick="toggleAbsencePopup()" class="text-black focus:outline-none">
                 <svg class="h-6 w-6" fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
