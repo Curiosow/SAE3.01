@@ -54,6 +54,9 @@ $date = $date->modify($_SESSION['monthOffSet'] . ' month');
 $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
 
+// Vérification si l'utilisateur souhaite faire un pdf du mois actuel
+if(isset($_POST['PDF'])) getCalendarPdf($week);
+
 function getWeekDates(DateTime $date) {
     $startOfWeek = clone $date;
     $endOfWeek = clone $date;
@@ -126,7 +129,6 @@ $version = returnVersion();
 $role = 'ELEVE';
 if(isset($_SESSION['role']))
     $role = $_SESSION['role'];
-
 ?>
 
 <!DOCTYPE html>
@@ -136,6 +138,10 @@ if(isset($_SESSION['role']))
     <title>Emploi du temps</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script
+            type="module"
+            src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js">
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         // cette fonction permet de rétracter ou d'étendre la sidebar
@@ -152,10 +158,6 @@ if(isset($_SESSION['role']))
             });
         }
     </script>
-    <script
-            type="module"
-            src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js"
-    ></script>
 
     <script>
         // JavaScript pour afficher/masquer les info-bulles
@@ -259,7 +261,6 @@ if (isset($_SESSION['logged'])) {
     </div>
 </div>
 
-
 <script>
     // Fonction pour bascule la visibilité de l'élément ayant l'ID allNotificationsLayer en ajoutant ou en supprimant la classe hidden.
     function toggleAllNotificationsLayer() {
@@ -267,7 +268,6 @@ if (isset($_SESSION['logged'])) {
         layer.classList.toggle('hidden');
     }
 </script>
-
 
 <script>
     // Fonction pour afficher la sidebar des notifications
@@ -278,28 +278,36 @@ if (isset($_SESSION['logged'])) {
 </script>
 
 
-
-<!-- Bouton pour signaler une absence -->
 <div class="absolute top-0 right-0 p-4 flex items-center space-x-2">
-    <div class="relative">
-        <button onclick="toggleAbsencePopup()" class="text-black focus:outline-none">
-            <svg class="h-6 w-6" fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                <g id="SVGRepo_iconCarrier">
-                    <path d="M21.9,37c0-2.7,0.9-5.8,2.3-8.2c1.7-3,3.6-4.2,5.1-6.4c2.5-3.7,3-9,1.4-13c-1.6-4.1-5.4-6.5-9.8-6.4 s-8,2.8-9.4,6.9c-1.6,4.5-0.9,9.9,2.7,13.3c1.5,1.4,2.9,3.6,2.1,5.7c-0.7,2-3.1,2.9-4.8,3.7c-3.9,1.7-8.6,4.1-9.4,8.7 C1.3,45.1,3.9,49,8,49h17c0.8,0,1.3-1,0.8-1.6C23.3,44.5,21.9,40.8,21.9,37z"></path>
-                    <path d="M46.4,28.5c-4.7-4.7-12.3-4.7-17,0c-4.7,4.7-4.7,12.3,0,17c4.7,4.7,12.3,4.7,17,0 C51.1,40.8,51.1,33.2,46.4,28.5z M42.9,39.1c0.4,0.4,0.4,1.1-0.1,1.5l-1.4,1.4c-0.4,0.4-0.9,0.4-1.3-0.1L38,39.8l-2.2,2.2 c-0.4,0.4-0.9,0.4-1.3-0.1L33,40.5c-0.4-0.4-0.5-0.9-0.1-1.3l2.2-2.2L33,34.8c-0.4-0.4-0.5-0.9-0.1-1.3l1.4-1.4 c0.4-0.4,1.1-0.5,1.5-0.1l2.1,2.1l2.1-2.1c0.4-0.4,1.1-0.5,1.5-0.1l1.4,1.4c0.4,0.4,0.4,1.1-0.1,1.5l-2.1,2.1L42.9,39.1z"></path>
-                </g>
-            </svg>
-        </button>
-    </div>
+
+    <!-- Bouton pour signaler une absence -->
+    <?php
+    if ($role != null && $role != 'ELEVE') {
+        echo '<div class="relative">
+            <button onclick="toggleAbsencePopup()" class="text-black focus:outline-none">
+                <svg class="h-6 w-6" fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <path d="M21.9,37c0-2.7,0.9-5.8,2.3-8.2c1.7-3,3.6-4.2,5.1-6.4c2.5-3.7,3-9,1.4-13c-1.6-4.1-5.4-6.5-9.8-6.4 s-8,2.8-9.4,6.9c-1.6,4.5-0.9,9.9,2.7,13.3c1.5,1.4,2.9,3.6,2.1,5.7c-0.7,2-3.1,2.9-4.8,3.7c-3.9,1.7-8.6,4.1-9.4,8.7 C1.3,45.1,3.9,49,8,49h17c0.8,0,1.3-1,0.8-1.6C23.3,44.5,21.9,40.8,21.9,37z"></path>
+                        <path d="M46.4,28.5c-4.7-4.7-12.3-4.7-17,0c-4.7,4.7-4.7,12.3,0,17c4.7,4.7,12.3,4.7,17,0 C51.1,40.8,51.1,33.2,46.4,28.5z M42.9,39.1c0.4,0.4,0.4,1.1-0.1,1.5l-1.4,1.4c-0.4,0.4-0.9,0.4-1.3-0.1L38,39.8l-2.2,2.2 c-0.4,0.4-0.9,0.4-1.3-0.1L33,40.5c-0.4-0.4-0.5-0.9-0.1-1.3l2.2-2.2L33,34.8c-0.4-0.4-0.5-0.9-0.1-1.3l1.4-1.4 c0.4-0.4,1.1-0.5,1.5-0.1l2.1,2.1l2.1-2.1c0.4-0.4,1.1-0.5,1.5-0.1l1.4,1.4c0.4,0.4,0.4,1.1-0.1,1.5l-2.1,2.1L42.9,39.1z"></path>
+                    </g>
+                </svg>
+            </button>
+        </div>';
+    }
+
+    if (isset($_SESSION['logged'])) {
+       echo '
     <div class="relative">
         <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
             <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
         </button>
-    </div>
+    </div>';
+    }
+    ?>
 </div>
 
 <!-- Pop-up pour signaler une absence -->
@@ -402,7 +410,7 @@ if (isset($_SESSION['logged'])) {
         <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed hidden">
             <!-- Boutons mois précédents/suivants -->
             <div class="flex items-center text-gray-400">
-                <form action="Dashboard.php" method="post" class="flex w-full">
+                <form action="Dashboard.php" method="POST" class="flex w-full">
                     <button type="submit" name="monthOffSet" value="<?php echo ($_SESSION['monthOffSet'] - 1); ?>" class="-m-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500">
                         <span class="sr-only">Mois précédent</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -444,10 +452,14 @@ if (isset($_SESSION['logged'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
             </svg>
-            <div class="mt-4 flex justify-center gap-12">
-                <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
-                <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
-            </div>
+            <form action="Dashboard.php" method="POST">
+                <div class="mt-4 flex justify-center gap-12">
+                    <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
+                    <button type="submit" name="PDF" value="PDF" style="border: none; background: none; padding: 0;">
+                        <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -478,7 +490,7 @@ if (isset($_SESSION['logged'])) {
         </header>
 
         <!-- Content -->
-        <div class="isolate flex flex-auto flex-col overflow-auto bg-white">
+        <div class="isolate flex flex-auto flex-col overflow-hidden bg-white">
             <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
                 <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
                     <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
