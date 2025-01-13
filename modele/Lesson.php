@@ -17,6 +17,7 @@ class lesson
     public $enseignementLongName;
     public $collegueFullName;
     public $discipline;
+    public $version;
 
     /**
      * @return mixed
@@ -240,6 +241,30 @@ class lesson
     public function setDiscipline($discipline): void
     {
         $this->discipline = $discipline;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVersion()
+    {
+        return $this->version;
+    }
+
+    /**
+     * @param mixed $version
+     */
+    public function setVersion($version): void
+    {
+        $this->version = $version;
+    }
+
+    public function __toString()
+    {
+        return $this->code . "\t" . $this->typeseance . "\t" . $this->typeformation . "\t" .
+            $this->collegue . "\t" . $this->nomgroupe . "\t" . $this->semestre . "\t" .
+            $this->noseance . "\t" . $this->horaire . "\t" . $this->duration . "\t" .
+            $this->salle . "\t" . $this->enseignementShortName . "\t" . $this->discipline . "\t" .$this->version;
     }
 
 }
