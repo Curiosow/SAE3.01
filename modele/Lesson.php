@@ -264,7 +264,7 @@ class lesson
         return $this->code . "\t" . $this->typeseance . "\t" . $this->typeformation . "\t" .
             $this->collegue . "\t" . $this->nomgroupe . "\t" . $this->semestre . "\t" .
             $this->noseance . "\t" . $this->horaire . "\t" . $this->duration . "\t" .
-            $this->salle . "\t" . $this->enseignementShortName . "\t" . $this->discipline . "\t" .$this->version;
+            $this->salle . "\t" . $this->enseignementShortName . "\t" . $this->discipline;
     }
 
 }
