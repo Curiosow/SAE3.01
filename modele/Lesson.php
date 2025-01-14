@@ -261,10 +261,10 @@ class lesson
 
     public function __toString()
     {
-        return $this->code . "\t" . $this->typeseance . "\t" . $this->typeformation . "\t" .
-            $this->collegue . "\t" . $this->nomgroupe . "\t" . $this->semestre . "\t" .
-            $this->noseance . "\t" . $this->horaire . "\t" . $this->duration . "\t" .
-            $this->salle . "\t" . $this->enseignementShortName . "\t" . $this->discipline;
+        return 'code=' . $this->code . "\ttype=" . $this->typeseance . "\tformation=" . $this->typeformation .
+            "\tcollegue=" . $this->collegue . "\tgroupe=" . $this->nomgroupe . "\tsemestre=" . $this->semestre .
+            "\tseance=" . $this->noseance . "\thoraire=" . $this->horaire . "\tduration=" . $this->duration .
+            "\tsalle=" . $this->salle . "\tenseignement=" . $this->enseignementShortName . "\tdiscipline=" . $this->discipline;
     }
 
 }
