@@ -14,14 +14,22 @@ class Controleur
         $weekDates = getWeekDates($week);
 
         $disciplineColors = getDisciplineColors();
+
         foreach ($weekDates as $weekDate) {
+
             if ($previousVersion) {
                 $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
             } else {
                 $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
             }
 
+            $alreadyPlace = [];
             foreach ($courses as $course) {
+                if(in_array($course, $alreadyPlace))
+                    continue;
+
+                $alreadyPlace[] = $course;
+
                 $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
                 $dispHoraire = $horraire->format("N");
                 $dispGridRow = getGridRow($horraire);

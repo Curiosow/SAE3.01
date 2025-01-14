@@ -92,11 +92,86 @@ function getCalendarPdf($date) {
     $pdf->Output('D', 'Emploi_du_temps_semaine.pdf');
 }
 
+function getCalendarIcal($date) {
+    //Evenèment au format ICS
+    $ics = "BEGIN:VCALENDAR\n";
+    $ics .= "VERSION:2.0\n";
+    $ics .= "PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
+
+    $weekDates = getWeekDates($date);
+    foreach ($weekDates as $day) {
+        $courses = getDay($day, $day->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        $alreadyPlace = [];
+        foreach ($courses as $course) {
+            if(in_array($course, $alreadyPlace))
+                continue;
+
+            $alreadyPlace[] = $course;
+
+            $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
+            $horraire->modify('+1 hour');
+
+            $test = $horraire->getTimestamp();
+            $endTimestamp = getEndTimestamp($test, $course->getDuration());
+
+            //Variables
+            $date_debut = $test;
+            $date_fin = $endTimestamp;
+            $objet = $course->getEnseignementShortName();
+
+            $lieu = 'Pas de salle';
+            if($course->getSalle() !== null)
+                $lieu = 'Salle ' . $course->getSalle();
+            if($course->getSalle() == '200')
+                $lieu = 'Amphi.';
+
+            $details = $course->getEnseignementLongName() . ' - ' . $course->getCollegueFullName();
+
+            $ics .= "BEGIN:VEVENT\n";
+            $ics .= "X-WR-TIMEZONE:Europe/Paris\n";
+            $ics .= "DTSTART:".date('Ymd',$date_debut)."T".date('His',$date_debut)."\n";
+            $ics .= "DTEND:".date('Ymd',$date_fin)."T".date('His',$date_fin)."\n";
+            $ics .= "SUMMARY:".$objet."\n";
+            $ics .= "LOCATION:".$lieu."\n";
+            $ics .= "DESCRIPTION:".$details."\n";
+            $ics .= "END:VEVENT\n";
+        }
+    }
+    $ics .= "END:VCALENDAR\n";
+
+    //Création du fichier
+    $fichier = 'Emploi_du_temps_semaine.ics';
+    $f = fopen($fichier, 'w+');
+    fputs($f, $ics);
+
+    $filePath = 'Emploi_du_temps_semaine.ics';
+
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($filePath));
+
+    readfile($filePath);
+
+    unlink($fichier);
+}
+
 function countMinutes($time) {
     $timeParts = explode(':', $time);
     $hours = $timeParts[0];
     $minutes = $timeParts[1];
     return $hours * 60 + $minutes;
+}
+
+function getEndTimestamp($startTimestamp, $duration) {
+    $durationParts = explode(':', $duration);
+    $hours = (int)$durationParts[0];
+    $minutes = (int)$durationParts[1];
+    $totalMinutes = ($hours * 60) + $minutes;
+    return $startTimestamp + ($totalMinutes * 60);
 }
 
 function returnVersion() {

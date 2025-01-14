@@ -6,6 +6,7 @@ include_once "CollegueManager.php";
 
 function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
 {
+
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
@@ -35,6 +36,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         if($version == -1) {
             $v = $row['version'];
             $version = intval($v);
+            //$version = intval(returnVersion());
         } else if($version != intval($row['version']))
             continue;
 
@@ -69,6 +71,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
         $course->setCollegueFullName($row['prenom'] . ' ' . $row['nom']);
         $course->setSalle($row['salle']);
         $course->setDiscipline($row['discipline']);
+        //$course->setVersion($version);
         $courses[] = $course;
     }
 

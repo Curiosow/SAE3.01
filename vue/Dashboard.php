@@ -57,6 +57,9 @@ $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
 // Vérification si l'utilisateur souhaite faire un pdf du mois actuel
 if(isset($_POST['PDF'])) getCalendarPdf($week);
 
+// Vérification si l'utilisateur souhaite faire un ical du mois actuel
+if(isset($_POST['ICAL'])) getCalendarIcal($week);
+
 function getWeekDates(DateTime $date) {
     $startOfWeek = clone $date;
     $endOfWeek = clone $date;
@@ -454,7 +457,10 @@ if (isset($_SESSION['logged'])) {
             </svg>
             <form action="Dashboard.php" method="POST">
                 <div class="mt-4 flex justify-center gap-12">
-                    <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
+                    <button type="submit" name="ICAL" value="ICAL" style="border: none; background: none; padding: 0;">
+                        <img class="grayscale opacity-65" src="img/ics.png" alt="Image 1">
+                    </button>
+
                     <button type="submit" name="PDF" value="PDF" style="border: none; background: none; padding: 0;">
                         <img class="grayscale opacity-65" src="img/pdf.png" alt="Image 2">
                     </button>
