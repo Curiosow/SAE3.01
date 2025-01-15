@@ -49,6 +49,10 @@ if (isset($_POST['weekOffSet'])) {
     }
 }
 
+if (isset($_GET['error']) && $_GET['error'] == 'validation_expired') {
+    echo "<p style='color: red;'>Le délai de 24 heures pour valider ou refuser est dépassé.</p>";
+}
+
 // Modification des données par rapport à l'utilisateur
 $date = $date->modify($_SESSION['monthOffSet'] . ' month');
 $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
@@ -259,11 +263,12 @@ if(isset($_SESSION['role']))
     </form>
     <!-- Valider and Refuser Buttons -->
     <div class="absolute right-4 flex space-x-2">
-    <span class="isolate inline-flex rounded-md shadow-sm">
-        <button type="button" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Valider</button>
-        <button type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
-
-    </span>
+        <form method="POST" action="validation.php">
+        <span class="isolate inline-flex rounded-md shadow-sm">
+            <button type="submit" name="validate" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Valider</button>
+            <button type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
+        </span>
+        </form>
     </div>
 </header>
 

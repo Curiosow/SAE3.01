@@ -23,6 +23,12 @@ function notifModificationStudent($notificationsControleur) {
     $notificationsControleur->createNotification("Changement d'emploi du temps", "Une modification de votre emploi du temps a été effectuée.", "ELEVE", false);
 }
 
+function notifNewVersion($notificationsControleur)
+{
+    $notificationsControleur->createNotification("Changement d'emploi du temps", "Veuillez valider si l'emploi du temps vous convient.\n Liens : ", "GESTIONNAIRE,PROF", false);
+
+}
+
 function getRoleListFromARole($role) {
     switch ($role) {
         case "GESTIONNAIRE":

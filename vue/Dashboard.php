@@ -21,7 +21,7 @@ if(isset($_POST['disconnect'])) disconnect();
 if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['start_date'], $_POST['end_date'], $_POST['reason']);
 
 // Vérification si l'utilisateur souhaite soumettre une notification de modification (pour les gestionnaires)
-if(isset($_POST['gestio-ping-modification'])) notifModificationStudent($notificationsControleur);
+if(isset($_POST['gestio-ping-modification'])) notifNewVersion($notificationsControleur);
 
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
@@ -160,23 +160,6 @@ if(isset($_SESSION['role']))
                 element.classList.toggle('hidden');
             });
         }
-    </script>
-
-    <script>
-        // JavaScript pour afficher/masquer les info-bulles
-        document.querySelectorAll('[data-tooltip-target]').forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                const tooltipId = button.getAttribute('data-tooltip-target');
-                const tooltip = document.getElementById(tooltipId);
-                if (tooltip) tooltip.classList.remove('hidden');
-            });
-
-            button.addEventListener('mouseleave', () => {
-                const tooltipId = button.getAttribute('data-tooltip-target');
-                const tooltip = document.getElementById(tooltipId);
-                if (tooltip) tooltip.classList.add('hidden');
-            });
-        });
     </script>
 </head>
 <body>
