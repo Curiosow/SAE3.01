@@ -116,58 +116,79 @@ function getWeekDay($firstDay) {
     return $resultDate;
 }
 
-function generateDays2($week, $previousVersion = false) {
-    $weekDates = getWeekDates($week);
+function isCourseModified($currentCourse, $previousCourses) {
+    foreach ($previousCourses as $prevCourse) {
+        if ((string)$currentCourse == (string)$prevCourse) {
+            return false;
+        }
+    }
+}
 
-    $disciplineColors = getDisciplineColors();
-    foreach ($weekDates as $weekDate) {
-        if ($previousVersion) {
-            $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
-        } else {
-            $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+function getDifference($currentCourse, $previousCourses) {
+    foreach ($previousCourses as $prevCourse) {
+        $prvToString = explode("\t", $prevCourse);
+        $curToString = explode("\t", $currentCourse);
+
+        foreach ($prvToString as $keyValue) {
+            if($keyValue != $curToString[array_search($keyValue, $prvToString)]) {
+                $keyAndValue = explode("=", $keyValue);
+                return $keyAndValue[0];
+            }
+
         }
 
+    }
+
+    return null;
+}
+
+function generateDays2($week, $isPreviousVersion = false) {
+    $weekDates = getWeekDates($week);
+    $disciplineColors = getDisciplineColors();
+
+    foreach ($weekDates as $weekDate) {
+        if ($isPreviousVersion) {
+            $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        } else {
+            $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            $previousCourses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        }
+
+        $alreadyPlace = [];
         foreach ($courses as $course) {
+            if(in_array($course, $alreadyPlace))
+                continue;
+
+            $alreadyPlace[] = $course;
+
+            $modificationReason = !$isPreviousVersion ? isCourseModified($course, $previousCourses) : false;
+            $isModified = $modificationReason !== false;
+
             $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
             $dispHoraire = $horraire->format("N");
             $dispGridRow = getGridRow($horraire);
-
             $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
             $dispSpan = getSpan($duree);
-
-            $color="gray";
-            if(array_key_exists($course->getDiscipline(), $disciplineColors))
-                $color = $disciplineColors[$course->getDiscipline()];
-
-            $dispHour = (int)$horraire->format("H");
-            //$dispHour = $dispHour + 1;
-            if($dispHour < 10 && $dispHour > 1)
-                $dispHour = '0' . $dispHour;
-
-            $dispMinute = $horraire->format("i") . '';
-            if($horraire->format("i") < 10 && $horraire->format("i") > 1)
-                $dispMinute = '0' . $dispMinute;
-
-            $uniqueId = uniqid(); // Génère un identifiant unique
+            $color = array_key_exists($course->getDiscipline(), $disciplineColors) ? $disciplineColors[$course->getDiscipline()] : "gray";
+            $dispHour = str_pad($horraire->format("H"), 2, '0', STR_PAD_LEFT);
+            $dispMinute = str_pad($horraire->format("i"), 2, '0', STR_PAD_LEFT);
+            $uniqueId = uniqid();
 
             echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
+    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100 ' . ($isModified ? 'border-2 border-red-500' : '') . '">
         <form>
             <div>
                 <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
                     <time>' . $dispHour . ':' . $dispMinute . '</time>
                 </p>
-                <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>            </div>
+                <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
+            </div>
         </form>
-        
-        <!-- Bouton pour afficher l\'info-bulle  -->
         <button data-tooltip-target="tooltip-' . $uniqueId . '"
                 class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
                 style="position: absolute; top: 0; right: 0;">
             ⓘ
         </button>
-
-        <!-- Info-bulle avec animation -->
         <div id="tooltip-' . $uniqueId . '"
              data-tooltip="tooltip-' . $uniqueId . '"
              class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 duration-200 ease-in-out border border-black" style="width: 200px; right: -210px; top: 0;">
@@ -176,15 +197,14 @@ function generateDays2($week, $previousVersion = false) {
             <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
             <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
             <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>
-            
+            <span>Code : </span><span class="text-red-500">' . $course->getCode() . '</span><br>
             ';
-
+            if($isModified) {
+                echo '<span>Difference : </span><span class="text-red-500">' . getDifference($course, $previousCourses) . '</span><br>';
+            }
             echo '</div>
-                
-    </a>
+       </a>
 </li>';
-            ?>
-            <?php
         }
     }
 }
@@ -232,12 +252,34 @@ if(isset($_SESSION['role']))
             <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
                 <span class="sr-only">Semaine suivante</span>
                 <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5-4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                 </svg>
             </button>
         </div>
     </form>
+    <!-- Valider and Refuser Buttons -->
+    <div class="absolute right-4 flex space-x-2">
+    <span class="isolate inline-flex rounded-md shadow-sm">
+        <button type="button" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Valider</button>
+        <button type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
+
+    </span>
+    </div>
 </header>
+
+<!-- Refus -->
+<div id="refuseModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
+    <div class="bg-white p-8 rounded shadow-lg w-1/3">
+        <h2 class="text-lg font-semibold mb-4">Justification du refus</h2>
+        <form action="Comparison.php" method="POST">
+            <textarea name="justification" rows="6" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="Entrez la justification ici..."></textarea>
+            <div class="flex justify-end space-x-2">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" onclick="document.getElementById('refuseModal').classList.add('hidden')">Annuler</button>
+                <button type="submit" name="refuse" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Refuser</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <!-- Content -->
 <div class="flex h-full flex-col">
@@ -287,8 +329,8 @@ if(isset($_SESSION['role']))
                             }
                             ?>
                         </div>
-                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
-                            <?php generateDays2($week); ?>
+                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
+                            <?php generateDays2($week, true); // Previous version ?>
                         </ol>
                     </div>
                 </div>
@@ -340,8 +382,8 @@ if(isset($_SESSION['role']))
                             }
                             ?>
                         </div>
-                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
-                            <?php generateDays2($week); ?>
+                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
+                            <?php generateDays2($week, false); // Current version ?>
                         </ol>
                     </div>
                 </div>
