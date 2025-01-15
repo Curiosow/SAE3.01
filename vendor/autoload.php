@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '512M');
+
 // Register The Composer Auto Loader
 require __DIR__ . '/../vendor/autoload.php';
 
