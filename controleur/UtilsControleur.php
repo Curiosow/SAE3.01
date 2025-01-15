@@ -25,8 +25,8 @@ function notifModificationStudent($notificationsControleur) {
 
 function notifNewVersion($notificationsControleur)
 {
-    $notificationsControleur->createNotification("Changement d'emploi du temps", "Veuillez valider si l'emploi du temps vous convient.\n Liens : ", "GESTIONNAIRE,PROF", false);
-
+    $message = "Veuillez valider si l'emploi du temps vous convient.\n Liens : <a href='Comparison.php'>Comparer</a>";
+    $notificationsControleur->createNotification("Changement d'emploi du temps", $message, "GESTIONNAIRE", false);
 }
 
 function getRoleListFromARole($role) {
