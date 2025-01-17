@@ -9,7 +9,7 @@ $controleur = new Controleur();
 $notificationsControleur = new NotificationControleur();
 
 // Vérification si l'utilisateur n'est pas connecté
-if(!isset($_SESSION['groupe'])) {
+if(!isset($_COOKIE['groupe'])) {
     header('location: Login.php');
     exit();
 }
@@ -130,8 +130,8 @@ $version = returnVersion();
 
 // On inscrit ici le role de l'utilisateur pour le récupérer depuis JS
 $role = 'ELEVE';
-if(isset($_SESSION['role']))
-    $role = $_SESSION['role'];
+if(isset($_COOKIE['role']))
+    $role = $_COOKIE['role'];
 ?>
 
 <!DOCTYPE html>
@@ -171,7 +171,7 @@ if(isset($_SESSION['role']))
 <!-- cloche Icon -->
 <!-- Notification Sidebar -->
 <?php
-if (isset($_SESSION['logged'])) {
+if (isset($_COOKIE['logged'])) {
     $notifications = $notificationsControleur->getUnreadNotifications();
 
     echo '
@@ -232,7 +232,7 @@ if (isset($_SESSION['logged'])) {
         </div>
         <ul id="allNotificationList" class="mt-4 space-y-2">
             <?php
-            if(isset($_SESSION['logged'])) {
+            if(isset($_COOKIE['logged'])) {
                 $allNotifications = $notificationsControleur->getAllNotifications();
                 $allNotifications = array_reverse($allNotifications);
                 foreach ($allNotifications as $notification) {
@@ -283,7 +283,7 @@ if (isset($_SESSION['logged'])) {
         </div>';
     }
 
-    if (isset($_SESSION['logged'])) {
+    if (isset($_COOKIE['logged'])) {
        echo '
     <div class="relative">
         <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
@@ -434,7 +434,7 @@ if (isset($_SESSION['logged'])) {
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="disconnect" name="disconnect" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Se déconnecter</button>
             </form>
-            <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_SESSION['role']) && $_SESSION['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_SESSION['role']; } ?></span>
+            <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_COOKIE['role']) && $_COOKIE['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_COOKIE['role']; } ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
             </svg>

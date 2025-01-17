@@ -9,7 +9,7 @@ $controleur = new Controleur();
 $notificationsControleur = new NotificationControleur();
 
 // Vérification si l'utilisateur n'est pas connecté
-if(!isset($_SESSION['groupe'])) {
+if(!isset($_COOKIE['groupe'])) {
     header('location: Login.php');
     exit();
 }

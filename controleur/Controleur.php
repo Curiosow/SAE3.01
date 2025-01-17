@@ -18,9 +18,9 @@ class Controleur
         foreach ($weekDates as $weekDate) {
 
             if ($previousVersion) {
-                $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+                $courses = getDay($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
             } else {
-                $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+                $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
             }
 
             $alreadyPlace = [];

@@ -4,14 +4,50 @@ include_once "../modele/managers/ScheduleManager.php";
 
 function disconnect() {
     session_destroy();
+
+    unset($_COOKIE['role']);
+    setcookie("role", null, time() - 3600);
+
+    unset($_COOKIE['groupe']);
+    setcookie("groupe", null, time() - 3600);
+
+    unset($_COOKIE['logged']);
+    setcookie("logged", null, time() - 3600);
+
+    unset($_COOKIE['mail']);
+    setcookie("mail", null, time() - 3600);
+
+    unset($_COOKIE['collegue']);
+    setcookie("collegue", null, time() - 3600);
+
+    unset($_COOKIE['line']);
+    setcookie("line", null, time() - 3600);
+
+    unset($_COOKIE['semestre']);
+    setcookie("semestre", null, time() - 3600);
+
+    unset($_COOKIE['formation']);
+    setcookie("formation", null, time() - 3600);
+
+    unset($_COOKIE['sousgroupe']);
+    setcookie("sousgroupe", null, time() - 3600);
+
+    unset($_COOKIE['nom']);
+    setcookie("nom", null, time() - 3600);
+
+    unset($_COOKIE['prenom']);
+    setcookie("prenom", null, time() - 3600);
+
+    unset($_COOKIE['civilite']);
+    setcookie("civilite", null, time() - 3600);
     header('location: Login.php');
     exit();
 }
 
 function createAbsence($notificationsControleur, $start_date, $end_date, $reason) {
-    $id = $_SESSION['mail'];
-    if(isset($_SESSION['collegue']))
-        $id = $_SESSION['collegue'];
+    $id = $_COOKIE['mail'];
+    if(isset($_COOKIE['collegue']))
+        $id = $_COOKIE['collegue'];
 
     $start_date = DateTime::createFromFormat('d-m-Y H:i', $start_date)->format('d-m-Y H:i');
     $end_date = DateTime::createFromFormat('d-m-Y H:i', $end_date)->format('d-m-Y H:i');
@@ -26,7 +62,7 @@ function notifModificationStudent($notificationsControleur) {
 function notifNewVersion($notificationsControleur)
 {
     $message = "Veuillez valider si l'emploi du temps vous convient.\n Liens : <a href='Comparison.php'>Comparer</a>";
-    $notificationsControleur->createNotification("Changement d'emploi du temps", $message, "GESTIONNAIRE", false);
+    $notificationsControleur->createNotification("Changement d'emploi du temps", $message, "PROF", false);
 }
 
 function getRoleListFromARole($role) {
@@ -77,7 +113,7 @@ function getCalendarPdf($date) {
     // Remplissage cours
     $weekDates = getWeekDates($date);
     foreach ($weekDates as $day) {
-        $courses = getDay($day, $day->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
         foreach ($courses as $course) {
 
             $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
@@ -106,7 +142,7 @@ function getCalendarIcal($date) {
 
     $weekDates = getWeekDates($date);
     foreach ($weekDates as $day) {
-        $courses = getDay($day, $day->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+        $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
         $alreadyPlace = [];
         foreach ($courses as $course) {
             if(in_array($course, $alreadyPlace))
