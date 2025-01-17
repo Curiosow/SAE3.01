@@ -35,8 +35,8 @@ class NotificationControleur
             die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
-        $lastNotif = $_SESSION['lastNotif'];
-        $role = $_SESSION["role"];
+        $lastNotif = $_COOKIE['lastNotif'];
+        $role = $_COOKIE["role"];
         $lastId = $this->getLastNotification($role);
 
         $rolesArray = getRoleListFromARole($role);
@@ -54,7 +54,7 @@ class NotificationControleur
 
     public function setToLastNotification()
     {
-        $role = $_SESSION["role"];
+        $role = $_COOKIE["role"];
         $lastId = $this->getLastNotification($role);
 
         $preparedStatement = "UPDATE users SET lastnotif = $1 WHERE mail = $2";
@@ -63,7 +63,7 @@ class NotificationControleur
             die('La communcation à la base de données a echouée : ' . pg_last_error());
         }
 
-        pg_query_params($connexion, $preparedStatement, array($lastId, $_SESSION['mail']));
+        pg_query_params($connexion, $preparedStatement, array($lastId, $_COOKIE['mail']));
     }
 
     public function getAllNotifications()
@@ -74,7 +74,7 @@ class NotificationControleur
             die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
-        $role = $_SESSION["role"];
+        $role = $_COOKIE["role"];
         $rolesArray = getRoleListFromARole($role);
         $rolesString = '{' . implode(',', $rolesArray) . '}';
 

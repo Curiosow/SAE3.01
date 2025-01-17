@@ -22,17 +22,18 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
        $data = pg_fetch_assoc($controleur->getAccountFromMail($mail));
        if(password_verify(trim($password), $data['password'])) {
            if($data['verified']) {
-               $_SESSION["logged"] = true;
-               $_SESSION["mail"] = $data['mail'];
-               $_SESSION["role"] = $data['role'];
+               setcookie("logged", true, time() + 30*24*60*60, "/");
+               setcookie("mail", $data['mail'], time() + 30*24*60*60, "/");
+               setcookie("role", $data['role'], time() + 30*24*60*60, "/");
+
                if(isACollegue($data['mail']))
-                   $_SESSION['collegue'] = getCollegueId($data['mail']);
-               $_SESSION['lastNotif'] = $data['lastnotif'];
+                   setcookie("collegue", getCollegueId($data['mail']), time() + 30*24*60*60, "/");
+               setcookie("lastNotif", $data['lastnotif'], time() + 30*24*60*60, "/");
                $notificationControleur->setToLastNotification();
 
                $line = getLineFromCSVByEmail($mail);
-               $_SESSION['line'] = $line;
-               $_SESSION['semestre'] = $line[3];
+               //setcookie("line", $line, time() + 30*24*60*60, "/");
+               setcookie("semestre", $line[3], time() + 30*24*60*60, "/");
                /*switch ($line[3]) {
                    case '1':
                    case '2':
@@ -51,15 +52,15 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                $formation = 'FI';
                if(strpos($line[4], 'FA') === 0)
                    $formation = 'FA';
-               $_SESSION['formation'] = $formation;
+               setcookie("formation", $formation, time() + 30*24*60*60, "/");
 
                $group = removePrefix($line[4]);
-               $_SESSION['groupe'] = $group[0];
-               $_SESSION['sousgroupe'] = $group[1];
+               setcookie("groupe", $group[0], time() + 30*24*60*60, "/");
+               setcookie("sousgroupe", $group[1], time() + 30*24*60*60, "/");
 
-               $_SESSION['nom'] = $line[1];
-               $_SESSION['prenom'] = $line[2];
-               $_SESSION['civilite'] = $line[0];
+               setcookie("nom", $line[1], time() + 30*24*60*60, "/");
+               setcookie("prenom", $line[2], time() + 30*24*60*60, "/");
+               setcookie("civilite", $line[0], time() + 30*24*60*60, "/");
 
                header('location: Dashboard.php');
                exit();
