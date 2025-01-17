@@ -263,7 +263,7 @@ class lesson
     {
         return 'code=' . $this->code . "\ttype=" . $this->typeseance . "\tformation=" . $this->typeformation .
             "\tcollegue=" . $this->collegue . "\tgroupe=" . $this->nomgroupe . "\tsemestre=" . $this->semestre .
-            "\tseance=" . $this->noseance . "\thoraire=" . $this->horaire . "\tduration=" . $this->duration .
+            "\thoraire=" . $this->horaire . "\tduration=" . $this->duration .
             "\tsalle=" . $this->salle . "\tenseignement=" . $this->enseignementShortName . "\tdiscipline=" . $this->discipline;
     }
 

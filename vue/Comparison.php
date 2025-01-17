@@ -152,10 +152,10 @@ function generateDays2($week, $isPreviousVersion = false) {
 
     foreach ($weekDates as $weekDate) {
         if ($isPreviousVersion) {
-            $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
         } else {
-            $courses = getDay($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
-            $previousCourses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_SESSION['semestre'], $_SESSION['groupe'], (int) $_SESSION['sousgroupe'], $_SESSION['formation']);
+            $courses = getDay($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
+            $previousCourses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
         }
 
         $alreadyPlace = [];
@@ -216,8 +216,8 @@ function generateDays2($week, $isPreviousVersion = false) {
 $version = returnVersion();
 
 $role = 'ELEVE';
-if(isset($_SESSION['role']))
-    $role = $_SESSION['role'];
+if(isset($_COOKIE['role']))
+    $role = $_COOKIE['role'];
 ?>
 
 <!DOCTYPE html>
@@ -263,12 +263,16 @@ if(isset($_SESSION['role']))
     </form>
     <!-- Valider and Refuser Buttons -->
     <div class="absolute right-4 flex space-x-2">
-        <form method="POST" action="validation.php">
+        <form method="POST" action="../modele/validation.php">
+            <input type="hidden" name="justification" value="ok">
         <span class="isolate inline-flex rounded-md shadow-sm">
-            <button type="submit" name="validate" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Valider</button>
-            <button type="button" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
+            <button type="submit" name="action" value="ACCEPTE" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Valider</button>
         </span>
         </form>
+            <input type="hidden" name="action" value="REFUSE">
+            <span class="isolate inline-flex rounded-md shadow-sm">
+                <button type="submit" class="relative -ml-px inline-flex items-center rounded-r-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
+            </span>
     </div>
 </header>
 
@@ -276,11 +280,11 @@ if(isset($_SESSION['role']))
 <div id="refuseModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
     <div class="bg-white p-8 rounded shadow-lg w-1/3">
         <h2 class="text-lg font-semibold mb-4">Justification du refus</h2>
-        <form action="Comparison.php" method="POST">
+        <form action="../modele/validation.php" method="post">
             <textarea name="justification" rows="6" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="Entrez la justification ici..."></textarea>
             <div class="flex justify-end space-x-2">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" onclick="document.getElementById('refuseModal').classList.add('hidden')">Annuler</button>
-                <button type="submit" name="refuse" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Refuser</button>
+                <button type="submit" name="action" value="REFUSE" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Refuser</button>
             </div>
         </form>
     </div>
