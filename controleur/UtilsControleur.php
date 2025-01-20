@@ -135,7 +135,7 @@ function getCalendarPdf($date) {
 }
 
 function getCalendarIcal($date) {
-    //Evenèment au format ICS
+    // Evenèment au format ICS
     $ics = "BEGIN:VCALENDAR\n";
     $ics .= "VERSION:2.0\n";
     $ics .= "PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
@@ -145,8 +145,7 @@ function getCalendarIcal($date) {
         $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
         $alreadyPlace = [];
         foreach ($courses as $course) {
-            if(in_array($course, $alreadyPlace))
-                continue;
+            if (in_array($course, $alreadyPlace)) continue;
 
             $alreadyPlace[] = $course;
 
@@ -156,47 +155,63 @@ function getCalendarIcal($date) {
             $test = $horraire->getTimestamp();
             $endTimestamp = getEndTimestamp($test, $course->getDuration());
 
-            //Variables
+            // Variables
             $date_debut = $test;
             $date_fin = $endTimestamp;
             $objet = $course->getEnseignementShortName();
 
             $lieu = 'Pas de salle';
-            if($course->getSalle() !== null)
-                $lieu = 'Salle ' . $course->getSalle();
-            if($course->getSalle() == '200')
-                $lieu = 'Amphi.';
+            if ($course->getSalle() !== null) $lieu = 'Salle ' . $course->getSalle();
+            if ($course->getSalle() == '200') $lieu = 'Amphi.';
 
             $details = $course->getEnseignementLongName() . ' - ' . $course->getCollegueFullName();
 
             $ics .= "BEGIN:VEVENT\n";
             $ics .= "X-WR-TIMEZONE:Europe/Paris\n";
-            $ics .= "DTSTART:".date('Ymd',$date_debut)."T".date('His',$date_debut)."\n";
-            $ics .= "DTEND:".date('Ymd',$date_fin)."T".date('His',$date_fin)."\n";
-            $ics .= "SUMMARY:".$objet."\n";
-            $ics .= "LOCATION:".$lieu."\n";
-            $ics .= "DESCRIPTION:".$details."\n";
+            $ics .= "DTSTART:" . date('Ymd', $date_debut) . "T" . date('His', $date_debut) . "\n";
+            $ics .= "DTEND:" . date('Ymd', $date_fin) . "T" . date('His', $date_fin) . "\n";
+            $ics .= "SUMMARY:" . $objet . "\n";
+            $ics .= "LOCATION:" . $lieu . "\n";
+            $ics .= "DESCRIPTION:" . $details . "\n";
             $ics .= "END:VEVENT\n";
         }
     }
     $ics .= "END:VCALENDAR\n";
 
-    //Création du fichier
-    $fichier = 'Emploi_du_temps_semaine.ics';
-    $f = fopen($fichier, 'w+');
-    fputs($f, $ics);
+    // Création du fichier
 
-    $filePath = 'Emploi_du_temps_semaine.ics';
+    /*
+     * Si il y a une erreur de permission sur la création/utilisation du fichier :
+     *
+     * chmod 755 /var/www/html/
+     * chown www-data:www-data /var/www/html/
+     *
+     * Ces deux commandes donnent les permissions nécessaires.
+     */
+
+    $fichier = '../Emploi_du_temps_semaine.ics';
+    $f = fopen($fichier, 'w+');
+    if ($f === false) {
+        die('Erreur lors de l\'ouverture du fichier pour écriture.');
+    }
+    if (fputs($f, $ics) === false) {
+        die('Erreur lors de l\'écriture dans le fichier.');
+    }
+    fclose($f);
+
+    if (!file_exists($fichier)) {
+        die('Le fichier n\'a pas été créé.');
+    }
 
     header('Content-Description: File Transfer');
     header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+    header('Content-Disposition: attachment; filename="' . basename($fichier) . '"');
     header('Expires: 0');
     header('Cache-Control: must-revalidate');
     header('Pragma: public');
-    header('Content-Length: ' . filesize($filePath));
+    header('Content-Length: ' . filesize($fichier));
 
-    readfile($filePath);
+    readfile($fichier);
 
     unlink($fichier);
 }
