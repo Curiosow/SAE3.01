@@ -30,9 +30,9 @@ M.;Compte;Test;0;FIA1;test@mail.fr
 
 ## Technologies
 
-**Client:** HTML, TailWindCSS, JavaScript
+**Client:** PHP, HTML, TailWindCSS, JavaScript
 
-**Serveur:** PHP, Git, Github, Jetbrains : Code With Me, PostgreSQL, Redis, Brevo
+**Serveur:** Git, Github, Jetbrains : Code With Me, PostgreSQL, Redis, Brevo
 
 ## Live preview
 [Cliquez ici](https://edt.curiosow.fr/vue/Dashboard.php)
