@@ -8,7 +8,7 @@ $notificationControleur = new NotificationControleur();
 
 session_start();
 
-if(isset($_SESSION['logged'])) {
+if(isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
     header('location: Dashboard.php');
     exit();
 }
@@ -22,18 +22,40 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
        $data = pg_fetch_assoc($controleur->getAccountFromMail($mail));
        if(password_verify(trim($password), $data['password'])) {
            if($data['verified']) {
-               setcookie("logged", true, time() + 30*24*60*60, "/");
-               setcookie("mail", $data['mail'], time() + 30*24*60*60, "/");
-               setcookie("role", $data['role'], time() + 30*24*60*60, "/");
 
-               if(isACollegue($data['mail']))
-                   setcookie("collegue", getCollegueId($data['mail']), time() + 30*24*60*60, "/");
-               setcookie("lastNotif", $data['lastnotif'], time() + 30*24*60*60, "/");
-               $notificationControleur->setToLastNotification();
+               if(!isset($_COOKIE['logged']))
+                   setcookie("logged", true, time() + 30*24*60*60, "/");
+               else
+                   setcookie("logged", true);
+
+               if(!isset($_COOKIE['mail']))
+                   setcookie("mail", $data['mail'], time() + 30*24*60*60, "/");
+               else
+                   setcookie("mail", $data['mail']);
+
+               if(!isset($_COOKIE['role']))
+                   setcookie("role", $data['role'], time() + 30*24*60*60, "/");
+               else
+                   setcookie("role", $data['role']);
+
+               if(isACollegue($data['mail'])) {
+                   if(!isset($_COOKIE['collegue']))
+                       setcookie("collegue", getCollegueId($data['mail']), time() + 30*24*60*60, "/");
+                   else
+                       setcookie("collegue", getCollegueId($data['mail']));
+               }
+
+               if(!isset($_COOKIE['lastNotif']))
+                   setcookie("lastNotif", $data['lastnotif'], time() + 30*24*60*60, "/");
+               else
+                   setcookie("lastNotif", $data['lastnotif']);
 
                $line = getLineFromCSVByEmail($mail);
                //setcookie("line", $line, time() + 30*24*60*60, "/");
-               setcookie("semestre", $line[3], time() + 30*24*60*60, "/");
+               if(!isset($_COOKIE['semestre']))
+                   setcookie("semestre", $line[3], time() + 30*24*60*60, "/");
+               else
+                   setcookie("semestre", $line[3]);
                /*switch ($line[3]) {
                    case '1':
                    case '2':
@@ -52,15 +74,38 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                $formation = 'FI';
                if(strpos($line[4], 'FA') === 0)
                    $formation = 'FA';
-               setcookie("formation", $formation, time() + 30*24*60*60, "/");
+
+               if(!isset($_COOKIE['formation']))
+                   setcookie("formation", $formation, time() + 30*24*60*60, "/");
+               else
+                   setcookie("formation", $formation);
 
                $group = removePrefix($line[4]);
-               setcookie("groupe", $group[0], time() + 30*24*60*60, "/");
-               setcookie("sousgroupe", $group[1], time() + 30*24*60*60, "/");
 
-               setcookie("nom", $line[1], time() + 30*24*60*60, "/");
-               setcookie("prenom", $line[2], time() + 30*24*60*60, "/");
-               setcookie("civilite", $line[0], time() + 30*24*60*60, "/");
+               if(!isset($_COOKIE['groupe']))
+                   setcookie("groupe", $group[0], time() + 30*24*60*60, "/");
+               else
+                   setcookie("groupe", $group[0]);
+
+               if(!isset($_COOKIE['sousgroupe']))
+                   setcookie("sousgroupe", $group[1], time() + 30*24*60*60, "/");
+               else
+                   setcookie("sousgroupe", $group[1]);
+
+               if(!isset($_COOKIE['nom']))
+                   setcookie("nom", $line[1], time() + 30*24*60*60, "/");
+               else
+                   setcookie("nom", $line[1]);
+
+               if(!isset($_COOKIE['prenom']))
+                   setcookie("prenom", $line[2], time() + 30*24*60*60, "/");
+               else
+                   setcookie("prenom", $line[2]);
+
+               if(!isset($_COOKIE['civilite']))
+                   setcookie("civilite", $line[0], time() + 30*24*60*60, "/");
+               else
+                   setcookie("civilite", $line[0]);
 
                header('location: Dashboard.php');
                exit();

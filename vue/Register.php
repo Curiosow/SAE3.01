@@ -6,7 +6,7 @@ $controleur = new UserControleur();
 
 session_start();
 
-if(isset($_SESSION['logged'])) {
+if(isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
     header('location: Dashboard.php');
     exit();
 }

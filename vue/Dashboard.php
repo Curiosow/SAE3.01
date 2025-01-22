@@ -9,7 +9,7 @@ $controleur = new Controleur();
 $notificationsControleur = new NotificationControleur();
 
 // Vérification si l'utilisateur n'est pas connecté
-if(!isset($_COOKIE['groupe'])) {
+if(!isset($_COOKIE['groupe']) || $_COOKIE['groupe'] == "NONE") {
     header('location: Login.php');
     exit();
 }
@@ -18,7 +18,7 @@ if(!isset($_COOKIE['groupe'])) {
 if(isset($_POST['disconnect'])) disconnect();
 
 // Vérification si l'utilisateur souhaite soumettre une absence (pour les profs & gestionnaires)
-if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['start_date'], $_POST['end_date'], $_POST['reason']);
+if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['start-date'], $_POST['end-date'], $_POST['reason']);
 
 // Vérification si l'utilisateur souhaite soumettre une notification de modification (pour les gestionnaires)
 if(isset($_POST['gestio-ping-modification'])) notifNewVersion($notificationsControleur);
@@ -130,8 +130,10 @@ $version = returnVersion();
 
 // On inscrit ici le role de l'utilisateur pour le récupérer depuis JS
 $role = 'ELEVE';
-if(isset($_COOKIE['role']))
+if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
     $role = $_COOKIE['role'];
+    $notificationsControleur->setToLastNotification();
+}
 ?>
 
 <!DOCTYPE html>
@@ -171,7 +173,7 @@ if(isset($_COOKIE['role']))
 <!-- cloche Icon -->
 <!-- Notification Sidebar -->
 <?php
-if (isset($_COOKIE['logged'])) {
+if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
     $notifications = $notificationsControleur->getUnreadNotifications();
 
     echo '
@@ -232,7 +234,7 @@ if (isset($_COOKIE['logged'])) {
         </div>
         <ul id="allNotificationList" class="mt-4 space-y-2">
             <?php
-            if(isset($_COOKIE['logged'])) {
+            if(isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                 $allNotifications = $notificationsControleur->getAllNotifications();
                 $allNotifications = array_reverse($allNotifications);
                 foreach ($allNotifications as $notification) {
@@ -283,7 +285,7 @@ if (isset($_COOKIE['logged'])) {
         </div>';
     }
 
-    if (isset($_COOKIE['logged'])) {
+    if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
        echo '
     <div class="relative">
         <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
@@ -434,7 +436,7 @@ if (isset($_COOKIE['logged'])) {
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="disconnect" name="disconnect" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Se déconnecter</button>
             </form>
-            <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_COOKIE['role']) && $_COOKIE['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_COOKIE['role']; } ?></span>
+            <span class="text-xs text-gray-400">Version: <?php echo $version; if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE" && $_COOKIE['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_COOKIE['role']; } ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
             </svg>
@@ -466,7 +468,7 @@ if (isset($_COOKIE['logged'])) {
                             <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <button type="submit" name="weekOffSet" value="0" class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M') ?></button>
+                    <button type="submit" name="weekOffSet" value="0" class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?></button>
                     <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"></span>
                     <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
                         <span class="sr-only">Semaine suivante</span>

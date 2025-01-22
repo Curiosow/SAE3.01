@@ -5,7 +5,7 @@ session_start();
 $controleur = new UserControleur();
 $resources = $controleur->getAllRessources();
 
-if(isset($_COOKIE['groupe'])) {
+if(isset($_COOKIE['groupe']) && $_COOKIE['groupe'] != "NONE") {
     header('location: Dashboard.php');
     exit();
 }
@@ -28,10 +28,27 @@ if(isset($_COOKIE['groupe'])) {
 }*/
 
 if(isset($_POST['groupe'])) {
-    setcookie("semestre", getSemestre($_POST['promotion'], new DateTime()), time() + 30*24*60*60, "/");
-    setcookie("formation", $_POST['formation'], time() + 30*24*60*60, "/");
-    setcookie("groupe", $_POST['groupe'], time() + 30*24*60*60, "/");
-    setcookie("sousgroupe", $_POST['sousgroupe'], time() + 30*24*60*60, "/");
+
+    if(!isset($_COOKIE["semestre"]))
+        setcookie("semestre", getSemestre($_POST['promotion'], new DateTime()), time() + 30*24*60*60, "/");
+    else
+        setcookie("semestre", getSemestre($_POST['promotion'], new DateTime()));
+
+    if(!isset($_COOKIE["formation"]))
+        setcookie("formation", $_POST['formation'], time() + 30*24*60*60, "/");
+    else
+        setcookie("formation", $_POST['formation']);
+
+    if(!isset($_COOKIE["groupe"]))
+        setcookie("groupe", $_POST['groupe'], time() + 30*24*60*60, "/");
+    else
+        setcookie("groupe", $_POST['groupe']);
+
+    if(!isset($_COOKIE["sousgroupe"]))
+        setcookie("sousgroupe", $_POST['sousgroupe'], time() + 30*24*60*60, "/");
+    else
+        setcookie("sousgroupe", $_POST['sousgroupe']);
+
     header('location: Dashboard.php');
     exit();
 }

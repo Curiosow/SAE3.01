@@ -6,40 +6,40 @@ function disconnect() {
     session_destroy();
 
     unset($_COOKIE['role']);
-    setcookie("role", null, time() - 3600);
+    setcookie("role", "NONE");
 
     unset($_COOKIE['groupe']);
-    setcookie("groupe", null, time() - 3600);
+    setcookie("groupe", "NONE");
 
     unset($_COOKIE['logged']);
-    setcookie("logged", null, time() - 3600);
+    setcookie("logged", "NONE");
 
     unset($_COOKIE['mail']);
-    setcookie("mail", null, time() - 3600);
+    setcookie("mail", "NONE");
 
     unset($_COOKIE['collegue']);
-    setcookie("collegue", null, time() - 3600);
+    setcookie("collegue", "NONE");
 
     unset($_COOKIE['line']);
-    setcookie("line", null, time() - 3600);
+    setcookie("line", "NONE");
 
     unset($_COOKIE['semestre']);
-    setcookie("semestre", null, time() - 3600);
+    setcookie("semestre", "NONE");
 
     unset($_COOKIE['formation']);
-    setcookie("formation", null, time() - 3600);
+    setcookie("formation", "NONE");
 
     unset($_COOKIE['sousgroupe']);
-    setcookie("sousgroupe", null, time() - 3600);
+    setcookie("sousgroupe", "NONE");
 
     unset($_COOKIE['nom']);
-    setcookie("nom", null, time() - 3600);
+    setcookie("nom", "NONE");
 
     unset($_COOKIE['prenom']);
-    setcookie("prenom", null, time() - 3600);
+    setcookie("prenom", "NONE");
 
     unset($_COOKIE['civilite']);
-    setcookie("civilite", null, time() - 3600);
+    setcookie("civilite", "NONE");
     header('location: Login.php');
     exit();
 }

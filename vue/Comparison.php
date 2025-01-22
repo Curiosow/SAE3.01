@@ -9,7 +9,7 @@ $controleur = new Controleur();
 $notificationsControleur = new NotificationControleur();
 
 // Vérification si l'utilisateur n'est pas connecté
-if(!isset($_COOKIE['groupe'])) {
+if(!isset($_COOKIE['groupe']) || $_COOKIE['groupe'] == "NONE") {
     header('location: Login.php');
     exit();
 }
@@ -216,7 +216,7 @@ function generateDays2($week, $isPreviousVersion = false) {
 $version = returnVersion();
 
 $role = 'ELEVE';
-if(isset($_COOKIE['role']))
+if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
     $role = $_COOKIE['role'];
 ?>
 
