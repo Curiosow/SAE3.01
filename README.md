@@ -20,6 +20,13 @@ user:
 password: 
 ```
 
+Ne pas oublier de glisser votre fichier en .csv qui contient tous les élèves et professeurs pour que les inscriptions puissent être possibles.
+Cependant, ce n'est pas obligatoire
+```csv
+civ;nom;prénom;semestre;nomRessource;mail
+M.;Compte;Test;0;FIA1;test@mail.fr
+```
+
 ## Technologies
 
 **Client:** HTML, TailWindCSS, JavaScript
