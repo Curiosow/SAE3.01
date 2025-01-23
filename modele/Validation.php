@@ -6,50 +6,28 @@ include_once "../controleur/NotificationControleur.php";
 session_start();
 $connexion = Database::getInstance()->getConnection();
 
+if(!$connexion) {
+    die('La communcation à la base de données a echouée : ' . pg_last_error());
+}
+
+
 if (isset($_POST['action']) && isset($_POST['justification'])) {
     $action = $_POST['action'];
     $mail = $_COOKIE['mail'];
     $justification = $_POST['justification'];
 
-    // Vérifie si l'utilisateur est encore dans le délai
-    $preparedStatement = "SELECT created_at FROM validations WHERE mail = $1";
-    $result = pg_query_params($connexion, $preparedStatement, array($mail));
-    if ($row = pg_fetch_assoc($result)) {
-        $createdAt = new DateTime($row['created_at']);
-        $now = new DateTime();
-        $interval = $createdAt->diff($now);
-
-        if ($interval->days == 0 && $interval->h < 24) {
-            header("Location: ../vue/comparison.php?error=validation_expired");
-            exit();
-        }
-    }
-
     // Enregistre ou met à jour la validation
-    $preparedStatement = "INSERT INTO validations (mail, status, justification, created_at)
-                          VALUES ($1, $2, $3, CURRENT_TIMESTAMP)
+    $preparedStatement = "INSERT INTO validations (mail, status, justification)
+                          VALUES ($1, $2, $3)
                           ON CONFLICT (\"mail\") DO UPDATE
-                          SET status = $2, justification = $3, created_at = CURRENT_TIMESTAMP";
-    $result = pg_query_params($connexion, $preparedStatement, array($mail, $action, $justification));
+                          SET status = $2, justification = $3";
+    pg_query_params($connexion, $preparedStatement, array($mail, $action, $justification));
+
+    $getAllResponses = "SELECT mail, status, justification, created_at FROM validations";
+    $result = pg_query($connexion, $getAllResponses);
 
     if (!$result) {
-        // Log the error message
-        error_log("Error in query: " . pg_last_error($connexion));
-        die("An error occurred while processing your request.");
-    }
-
-    // Vérifie si tout le monde a répondu ou si le délai est dépassé
-    //$rolesString = '{GESTIONNAIRE,PROF}'; // Les rôles concernés
-    //$userControleur = new UserControleur();
-    //$accounts = $userControleur->getAccountsFromRole($rolesString);
-
-    $query = "SELECT mail, status, justification, created_at FROM validations";
-    $result = pg_query($connexion, $query);
-
-    if (!$result) {
-        // Log the error message
-        error_log("Error in query: " . pg_last_error($connexion));
-        die("An error occurred while processing your request.");
+        die('La communcation à la base de données a echouée : ' . pg_last_error());
     }
 
     $responses = [];

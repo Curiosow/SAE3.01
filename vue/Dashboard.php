@@ -20,7 +20,7 @@ if(isset($_POST['disconnect'])) disconnect();
 // Vérification si l'utilisateur souhaite soumettre une absence (pour les profs & gestionnaires)
 if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['start-date'], $_POST['end-date'], $_POST['reason']);
 
-// Vérification si l'utilisateur souhaite soumettre une notification de modification (pour les gestionnaires)
+// Vérification si l'utilisateur souhaite soumettre une notification de modification d'edt aux professeurs (pour les gestionnaires)
 if(isset($_POST['gestio-ping-modification'])) notifNewVersion($notificationsControleur);
 
 // Données de bases
@@ -535,7 +535,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 
                         <!-- Events -->
                         <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
-                            <?php $controleur->generateDays($week); ?>
+                            <?php $controleur->generateDays($week, (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
                         </ol>
                     </div>
                 </div>

@@ -51,25 +51,12 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
                    setcookie("lastNotif", $data['lastnotif']);
 
                $line = getLineFromCSVByEmail($mail);
-               //setcookie("line", $line, time() + 30*24*60*60, "/");
+
                if(!isset($_COOKIE['semestre']))
                    setcookie("semestre", $line[3], time() + 30*24*60*60, "/");
                else
                    setcookie("semestre", $line[3]);
-               /*switch ($line[3]) {
-                   case '1':
-                   case '2':
-                       $_SESSION['promotion'] = '1';
-                       break;
-                   case '3':
-                   case '4':
-                       $_SESSION['promotion'] = '2';
-                       break;
-                   case '5':
-                   case '6':
-                       $_SESSION['promotion'] = '3';
-                       break;
-               }*/
+
 
                $formation = 'FI';
                if(strpos($line[4], 'FA') === 0)

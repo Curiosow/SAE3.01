@@ -4,7 +4,7 @@ include "../modele/Lesson.php";
 include_once "EnseignementManager.php";
 include_once "CollegueManager.php";
 
-function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
+function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation, $teacherEdt = false)
 {
 
     $newDate = clone $date;
@@ -13,21 +13,37 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation)
     /*$preparedStatement = "SELECT * FROM schedule
          WHERE DATE(horaire) = $1 AND semestre = $2 AND (typeformation = $3 OR typeformation = 'MUT') AND (nomgroupe = $4 OR nomgroupe = $5 OR nomgroupe = 'CM') 
          ORDER BY version DESC";*/
-    $preparedStatement = "
-        SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
-        FROM schedule s
-        LEFT JOIN enseignement e ON s.code = e.code
-        LEFT JOIN collegue c ON s.collegue = c.id
-        LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
-        WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM')
-        ORDER BY s.version DESC";
+
+    if(!$teacherEdt) {
+        $preparedStatement = "
+            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
+            FROM schedule s
+            LEFT JOIN enseignement e ON s.code = e.code
+            LEFT JOIN collegue c ON s.collegue = c.id
+            LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
+            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM')
+            ORDER BY s.version DESC";
+    } else {
+        $preparedStatement = "
+            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
+            FROM schedule s
+            LEFT JOIN enseignement e ON s.code = e.code
+            LEFT JOIN collegue c ON s.collegue = c.id
+            LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
+            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.collegue = $6
+            ORDER BY s.version DESC";
+    }
+
 
     $connexion = Database::getInstance()->getConnection();
     if(!$connexion) {
         die('La communcation à la base de données a echouée : ' . pg_last_error());
     }
 
-    $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe));
+    if(!$teacherEdt)
+        $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe));
+    else
+        $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe, $_COOKIE['collegue']));
 
     $version = -1;
     $courses = [];
@@ -209,43 +225,6 @@ function getDayPreviousVersion($date, $day, $semestre, $groupe, $sousgroupe, $fo
         $course->setCollegueFullName($row['prenom'] . ' ' . $row['nom']);
         $course->setSalle($row['salle']);
         $course->setDiscipline($row['discipline']);
-        $courses[] = $course;
-    }
-
-    return $courses;
-}
-///////////////////////////////
-
-function getDayByVersionold($date, $day, $semestre, $groupe, $sousgroupe, $formation, $version)
-{
-    $newDate = clone $date;
-    $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
-
-    $preparedStatement = "SELECT * FROM schedule WHERE DATE(horaire) = $1 AND semestre = $2 AND (typeformation = $3 OR typeformation = 'MUT') AND (nomgroupe = $4 OR nomgroupe = $5 OR nomgroupe = 'CM') AND version = $6";
-    $connexion = Database::getInstance()->getConnection();
-    if(!$connexion) {
-        die('La communcation à la base de données a echouée : ' . pg_last_error());
-    }
-
-    $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe ,$version));
-
-    $courses = [];
-    while ($row = pg_fetch_assoc($result)) {
-        $course = new Lesson();
-        $course->setCode($row['code']);
-        $course->setTypeseance($row['typeseance']);
-        $course->setTypeformation($row['typeformation']);
-        $course->setCollegue($row['collegue']);
-        $course->setNomgroupe($row['nomgroupe']);
-        $course->setSemestre($row['semestre']);
-        $course->setNoseance($row['noseance']);
-        $course->setHoraire($row['horaire']);
-        $course->setDuration($row['duration']);
-        $course->setEnseignementLongName(getEnseignementFullName($row['code']));
-        $course->setEnseignementShortName(getEnseignementShortName($row['code']));
-        $course->setCollegueFullName(getCollegueFullName($row['collegue']));
-        $course->setSalle(getSalle($course->getTypeformation(), $course->getCode(), $course->getTypeseance(), $course->getSemestre(), $course->getNomgroupe(), $course->getCollegue(), $course->getNoseance()));
-        $course->setDiscipline(getDiscipline($row['code']));
         $courses[] = $course;
     }
 

@@ -1,6 +1,9 @@
 <?php
 include_once "../controleur/pdf/fpdf.php";
 include_once "../modele/managers/ScheduleManager.php";
+include_once "../controleur/AbsenceControleur.php";
+
+$absenceControleur = new AbsenceControleur();
 
 function disconnect() {
     session_destroy();
@@ -45,13 +48,15 @@ function disconnect() {
 }
 
 function createAbsence($notificationsControleur, $start_date, $end_date, $reason) {
+    global $absenceControleur;
     $id = $_COOKIE['mail'];
     if(isset($_COOKIE['collegue']))
         $id = $_COOKIE['collegue'];
 
-    $start_date = DateTime::createFromFormat('d-m-Y H:i', $start_date)->format('d-m-Y H:i');
-    $end_date = DateTime::createFromFormat('d-m-Y H:i', $end_date)->format('d-m-Y H:i');
+    $start_dateDT = DateTime::createFromFormat('d-m-Y H:i', $start_date)->format('Y-m-d H:i:s');
+    $end_dateDT = DateTime::createFromFormat('d-m-Y H:i', $end_date)->format('Y-m-d H:i:s');
 
+    $absenceControleur->addAbsence($start_dateDT, $end_dateDT, $reason);
     $notificationsControleur->createNotification("Demande de changement d'emploi du temps", $id . " ne sera pas présent du " . $start_date . " jusqu'au " . $end_date . " pour le motif : " . $reason . ".", "GESTIONNAIRE", true);
 }
 
@@ -61,7 +66,7 @@ function notifModificationStudent($notificationsControleur) {
 
 function notifNewVersion($notificationsControleur)
 {
-    $message = "Veuillez valider si l'emploi du temps vous convient.\n Liens : <a href='Comparison.php'>Comparer</a>";
+    $message = "Une nouvelle proposition d'emploi du temps est disponible, veuillez y laisser votre avis.\n Lien : <a href='Comparison.php' style='color: blue x'>Comparer</a>";
     $notificationsControleur->createNotification("Changement d'emploi du temps", $message, "PROF", false);
 }
 
@@ -83,8 +88,7 @@ function getCalendarPdf($date) {
 
     $pdf->Cell(0, 10, 'Emploi du temps de la semaine', 0, 1, 'C');
 
-    // Draw border around the entire schedule
-    $pdf->Rect(10, 20, 270, 165); // Adjusted height to move the bottom border down
+    $pdf->Rect(10, 20, 270, 165);
 
     // header du calendrier
     $pdf->SetFont('Arial', 'B', 12);

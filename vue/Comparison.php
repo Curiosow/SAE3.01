@@ -14,30 +14,11 @@ if(!isset($_COOKIE['groupe']) || $_COOKIE['groupe'] == "NONE") {
     exit();
 }
 
-// Vérification si l'utilisateur souhaite se déconnecter
-if(isset($_POST['disconnect'])) disconnect();
-
-// Vérification si l'utilisateur souhaite soumettre une absence (pour les profs & gestionnaires)
-if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['start_date'], $_POST['end_date'], $_POST['reason']);
-
-// Vérification si l'utilisateur souhaite soumettre une notification de modification (pour les gestionnaires)
-if(isset($_POST['gestio-ping-modification'])) notifModificationStudent($notificationsControleur);
-
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
 $date = clone $realDate;
 $week = clone $realDate;
-
-// Vérification si l'utilisateur à demander de changer de mois
-if (isset($_POST['monthOffSet'])) {
-    $_SESSION['monthOffSet'] = (int)$_POST['monthOffSet'];
-} else {
-    // Si ce n'est pas le cas, si aucun mois n'est enregistrer dans la session, alors on définit au mois actuel.
-    if (!isset($_SESSION['monthOffSet'])) {
-        $_SESSION['monthOffSet'] = 0;
-    }
-}
 
 // Vérification si l'utilisateur à demander de changer de semaine
 if (isset($_POST['weekOffSet'])) {
@@ -54,7 +35,6 @@ if (isset($_GET['error']) && $_GET['error'] == 'validation_expired') {
 }
 
 // Modification des données par rapport à l'utilisateur
-$date = $date->modify($_SESSION['monthOffSet'] . ' month');
 $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
 
@@ -264,7 +244,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
     </form>
     <!-- Valider and Refuser Buttons -->
     <div class="absolute right-4 flex space-x-2">
-        <form method="POST" action="../modele/validation.php">
+        <form method="POST" action="../modele/Validation.php">
             <input type="hidden" name="justification" value="ok">
         <span class="isolate inline-flex rounded-md shadow-sm">
             <button type="submit" name="action" value="ACCEPTE" class="relative inline-flex items-center rounded-l-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10">Valider</button>
@@ -281,7 +261,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
 <div id="refuseModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
     <div class="bg-white p-8 rounded shadow-lg w-1/3">
         <h2 class="text-lg font-semibold mb-4">Justification du refus</h2>
-        <form action="../modele/validation.php" method="post">
+        <form action="../modele/Validation.php" method="post">
             <textarea name="justification" rows="6" class="w-full p-2 border border-gray-300 rounded mb-4" placeholder="Entrez la justification ici..."></textarea>
             <div class="flex justify-end space-x-2">
                 <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" onclick="document.getElementById('refuseModal').classList.add('hidden')">Annuler</button>

@@ -8,16 +8,21 @@ class AbsenceControleur
     {
     }
 
-    public function createAbsence($start, $end, $reason)
+    public function addAbsence($start, $end, $reason)
     {
-        $preparedStatement = "INSERT INTO absences (start, end, reason, collegue) VALUES ($1, $2, $3, $4)";
+        $preparedStatement = "INSERT INTO absences (start, \"end\", reason, collegue) VALUES ($1, $2, $3, $4)";
         $connexion = Database::getInstance()->getConnection();
         if(!$connexion) {
             die('La communication à la base de données a échouée : ' . pg_last_error());
         }
 
-        $collegue =
-        $result = pg_query_params($connexion, $preparedStatement, array($start, $end, $reason));
+        $collegue = 'Anonyme';
+        if(isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")
+            $collegue = $_COOKIE['collegue'];
+        else if (isset($_COOKIE['mail']) && $_COOKIE['mail'] != "NONE")
+            $collegue = $_COOKIE['mail'];
+
+        pg_query_params($connexion, $preparedStatement, array($start, $end, $reason, $collegue));
     }
 
 }

@@ -43,7 +43,7 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
         $prenom = $line[2];
 
         $subject = 'Confirmez votre adresse e-mail';
-        $message = "Bonjour $nom $prenom,\n\nCliquez sur ce lien pour confirmer votre inscription : http://87.106.121.50/vue/Confirm.php?token=" . $token;
+        $message = "Bonjour $nom $prenom,\n\nCliquez sur ce lien pour confirmer votre inscription : https://edt.curiosow.fr/vue/Confirm.php?token=" . $token;
 
         $data = array(
             'sender' => array('name' => 'IUT Maubeuge - Emploi du temps', 'email' => 'bouttieroscar@gmail.com'),

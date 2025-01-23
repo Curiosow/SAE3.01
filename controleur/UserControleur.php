@@ -75,17 +75,6 @@ class UserControleur
         pg_query_params($connexion, $preparedStatement, array($password, $token));
     }
 
-    function testUser($id)
-    {
-        $preparedStatement = "UPDATE users SET token = 'test'";
-        $connexion = Database::getInstance()->getConnection();
-        if(!$connexion) {
-            die('La communcation à la base de données a echouée : ' . pg_last_error());
-        }
-
-        pg_query($connexion, $preparedStatement);
-    }
-
     function setAccountForgotToken($mail, $token) {
         $preparedStatement = "UPDATE users SET forgotoken = $1 WHERE mail = $2";
         $connexion = Database::getInstance()->getConnection();

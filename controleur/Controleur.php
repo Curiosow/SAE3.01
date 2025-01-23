@@ -10,7 +10,7 @@ class Controleur
 
     }
 
-    function generateDays($week, $previousVersion = false) {
+    function generateDays($week, $previousVersion = false, $teacherEdt = false) {
         $weekDates = getWeekDates($week);
 
         $disciplineColors = getDisciplineColors();
@@ -18,7 +18,7 @@ class Controleur
         foreach ($weekDates as $weekDate) {
 
             if ($previousVersion) {
-                $courses = getDay($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
+                $courses = getDay($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
             } else {
                 $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
             }
