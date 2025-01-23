@@ -238,10 +238,11 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
 <header class="flex justify-center items-center border-b border-gray-200 px-4 py-2">
     <!-- Back to Dashboard Button -->
     <a href="Dashboard.php" class="absolute left-4 flex items-center text-gray-500 hover:text-gray-700">
-        <svg class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
-        </svg>
-        <span>Retour au Dashboard</span>
+    <span class="isolate inline-flex rounded-md shadow-sm">
+        <button type="button" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            <span>Retour au Dashboard</span>
+        </button>
+    </span>
     </a>
     <form action="Comparison.php" method="POST">
         <div class="flex flex-center items-center rounded-md bg-white shadow-sm md:items-stretch">
