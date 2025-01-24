@@ -67,7 +67,7 @@ function notifModificationStudent($notificationsControleur) {
 
 function notifNewVersion($notificationsControleur)
 {
-    $message = "Une nouvelle proposition d'emploi du temps est disponible, veuillez y laisser votre avis.\n Lien : <a href='Comparison.php' style='color: blue x'>Comparer</a>";
+    $message = "Une nouvelle proposition d'emploi du temps est disponible, veuillez y laisser votre avis.\n Lien : <a href='Comparison.php' style='color: blue'>Comparer</a>";
     $notificationsControleur->createNotification("Changement d'emploi du temps", $message, "PROF", false);
 }
 
