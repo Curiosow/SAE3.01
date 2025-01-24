@@ -2,6 +2,7 @@
 include_once "../controleur/pdf/fpdf.php";
 include_once "../modele/managers/ScheduleManager.php";
 include_once "../controleur/AbsenceControleur.php";
+include_once "../controleur/UserControleur.php";
 
 $absenceControleur = new AbsenceControleur();
 
@@ -68,6 +69,41 @@ function notifNewVersion($notificationsControleur)
 {
     $message = "Une nouvelle proposition d'emploi du temps est disponible, veuillez y laisser votre avis.\n Lien : <a href='Comparison.php' style='color: blue x'>Comparer</a>";
     $notificationsControleur->createNotification("Changement d'emploi du temps", $message, "PROF", false);
+}
+
+function changeGroupe($newGroupe)
+{
+    $userControleur = new UserControleur();
+    $resource = $userControleur->getRessourceFromName($newGroupe);
+
+    if (!isset($_COOKIE["semestre"]))
+        setcookie("semestre", $resource['semestre'], time() + 30 * 24 * 60 * 60, "/");
+    else
+        setcookie("semestre", $resource['semestre']);
+
+    if (!isset($_COOKIE["formation"]))
+        setcookie("formation", $resource['typeformation'], time() + 30 * 24 * 60 * 60, "/");
+    else
+        setcookie("formation", $resource['typeformation']);
+
+    if ($resource['parcours'] == 'AB')
+        $groupe = substr($resource['nomressource'], 0, 1);
+    else
+        $groupe = $resource['parcours'];
+
+    if (!isset($_COOKIE["groupe"]))
+        setcookie("groupe", $groupe, time() + 30 * 24 * 60 * 60, "/");
+    else
+        setcookie("groupe", $groupe);
+
+    if (!isset($_COOKIE["sousgroupe"]))
+        setcookie("sousgroupe", substr($resource['nomressource'], -1), time() + 30 * 24 * 60 * 60, "/");
+    else
+        setcookie("sousgroupe", substr($resource['nomressource'], -1));
+
+
+    header('location: Dashboard.php');
+    exit();
 }
 
 function getRoleListFromARole($role) {

@@ -96,4 +96,21 @@ class UserControleur
         return pg_query($connexion, $preparedStatement);
     }
 
+    function getRessourceFromName($name)
+    {
+        $preparedStatement = "SELECT * FROM ressource WHERE nomressource = $1";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communcation à la base de données a echouée : ' . pg_last_error());
+        }
+
+        $result = pg_query_params($connexion, $preparedStatement, array($name));
+
+        $ressources = array();
+        while ($row = pg_fetch_assoc($result)) {
+            $ressources[] = $row;
+        }
+        return $ressources[0];
+    }
+
 }

@@ -23,6 +23,9 @@ if(isset($_POST['absence'])) createAbsence($notificationsControleur, $_POST['sta
 // Vérification si l'utilisateur souhaite soumettre une notification de modification d'edt aux professeurs (pour les gestionnaires)
 if(isset($_POST['gestio-ping-modification'])) notifNewVersion($notificationsControleur);
 
+// Vérification si l'utilisateur souhaite changer de groupe (pour les gestionnaires)
+if(isset($_POST['change-groupe'])) changeGroupe($_POST['newGroupe']);
+
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -162,6 +165,22 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                 element.classList.toggle('hidden');
             });
         }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('getResources.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('newGroupe');
+                    data.forEach(resource => {
+                        const option = document.createElement('option');
+                        option.value = resource.nomressource;
+                        option.textContent = resource.nomressource;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error(error));
+        });
     </script>
 </head>
 <body>
@@ -428,6 +447,20 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
         <div class="mt-auto flex-col justify-center hide-when-collapsed hidden">
             <?php
             if ($role != null && $role == "GESTIONNAIRE") {
+
+                echo '<form class="mb-4 flex justify-center" action="Dashboard.php" method="POST">
+                        <div>
+                            <label for="newGroupe" class="block text-sm font-medium leading-6 text-gray-100">Groupe : ' . $_COOKIE['formation'] . '-' . $_COOKIE['groupe'] . $_COOKIE['sousgroupe'] . '  </label>
+                            <div class="mt-2">
+                                <select id="newGroupe" name="newGroupe" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit" id="change-groupe" name="change-groupe" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Changer de groupe</button>
+                        </div>
+                    </form>';
+
                 echo '<form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="gestio-ping-modification" name="gestio-ping-modification" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Notifier changement EDT</button>
             </form>';
