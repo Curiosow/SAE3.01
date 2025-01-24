@@ -212,6 +212,11 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
             type="module"
             src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js">
     </script>
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+    </style>
 </head>
 <body>
 <!-- topbar (changeur de semaines) -->
