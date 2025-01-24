@@ -20,7 +20,7 @@ class Controleur
             if ($previousVersion) {
                 $courses = getDay($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
             } else {
-                $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
+                $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
             }
 
             $alreadyPlace = [];
@@ -52,12 +52,18 @@ class Controleur
 
                 $uniqueId = uniqid(); // Génère un identifiant unique
 
+                $exam = "";
+
+                if($course->getExam() == 't') {
+                    $exam = " - EXAMEN";
+                }
+
                 echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
     <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
         <form>
             <div>
                 <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
-                    <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</time>
+                    <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . $exam . '</time>
                 </p>
                 <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
                 <p class="order-1 text-' . $color . '-700">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
@@ -80,6 +86,7 @@ class Controleur
             <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
             <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
             <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>
+            <span>t : </span><span class="text-red-500">' . $course . '</span><br>
             
             ';
 

@@ -18,6 +18,7 @@ class lesson
     public $collegueFullName;
     public $discipline;
     public $version;
+    public $exam;
 
     /**
      * @return mixed
@@ -259,12 +260,28 @@ class lesson
         $this->version = $version;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getExam()
+    {
+        return $this->exam;
+    }
+
+    /**
+     * @param mixed $exam
+     */
+    public function setExam($exam): void
+    {
+        $this->exam = $exam;
+    }
+
     public function __toString()
     {
         return 'code=' . $this->code . "\ttype=" . $this->typeseance . "\tformation=" . $this->typeformation .
             "\tcollegue=" . $this->collegue . "\tgroupe=" . $this->nomgroupe . "\tsemestre=" . $this->semestre .
             "\thoraire=" . $this->horaire . "\tduration=" . $this->duration .
-            "\tsalle=" . $this->salle . "\tenseignement=" . $this->enseignementShortName . "\tdiscipline=" . $this->discipline;
+            "\tsalle=" . $this->salle . "\tenseignement=" . $this->enseignementShortName . "\tdiscipline=" . $this->discipline . "\texam=" . $this->exam;
     }
 
 }

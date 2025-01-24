@@ -16,19 +16,21 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation, $teach
 
     if(!$teacherEdt) {
         $preparedStatement = "
-            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
+            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle, seance.exam
             FROM schedule s
             LEFT JOIN enseignement e ON s.code = e.code
             LEFT JOIN collegue c ON s.collegue = c.id
+            LEFT JOIN seance ON s.code = seance.code AND s.typeseance = seance.typeseance AND s.typeformation = seance.typeformation AND s.semestre = seance.semestre AND s.nomgroupe = seance.nomgroupe AND s.collegue = seance.collegue AND s.noseance = seance.noseance
             LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
             WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM')
             ORDER BY s.version DESC";
     } else {
         $preparedStatement = "
-            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
+            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle, seance.exam
             FROM schedule s
             LEFT JOIN enseignement e ON s.code = e.code
             LEFT JOIN collegue c ON s.collegue = c.id
+            LEFT JOIN seance ON s.code = seance.code AND s.typeseance = seance.typeseance AND s.typeformation = seance.typeformation AND s.semestre = seance.semestre AND s.nomgroupe = seance.nomgroupe AND s.collegue = seance.collegue AND s.noseance = seance.noseance
             LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
             WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.collegue = $6
             ORDER BY s.version DESC";
@@ -87,6 +89,10 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation, $teach
         $course->setCollegueFullName($row['prenom'] . ' ' . $row['nom']);
         $course->setSalle($row['salle']);
         $course->setDiscipline($row['discipline']);
+        if(isset($row['exam']))
+            $course->setExam($row['exam']);
+        else
+            $course->setExam(false);
         //$course->setVersion($version);
         $courses[] = $course;
     }
@@ -187,18 +193,30 @@ function getPreviousVersion($currentVersion)
 }
 
 
-function getDayPreviousVersion($date, $day, $semestre, $groupe, $sousgroupe, $formation)
+function getDayPreviousVersion($date, $day, $semestre, $groupe, $sousgroupe, $formation, $teacherEdt = false)
 {
     $newDate = clone $date;
     $newDate->setDate($newDate->format('Y'), $newDate->format('m'), $day);
 
-    $preparedStatement = "
-        SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle
-        FROM schedule s
-        LEFT JOIN enseignement e ON s.code = e.code
-        LEFT JOIN collegue c ON s.collegue = c.id
-        LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
-        WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.version  = $6";
+    if(!$teacherEdt) {
+        $preparedStatement = "
+            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle, seance.exam
+            FROM schedule s
+            LEFT JOIN enseignement e ON s.code = e.code
+            LEFT JOIN collegue c ON s.collegue = c.id
+            LEFT JOIN seance ON s.code = seance.code AND s.typeseance = seance.typeseance AND s.typeformation = seance.typeformation AND s.semestre = seance.semestre AND s.nomgroupe = seance.nomgroupe AND s.collegue = seance.collegue AND s.noseance = seance.noseance
+            LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
+            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.version  = $6";
+    } else {
+        $preparedStatement = "
+            SELECT s.*, e.long AS enseignement_longname, e.court AS enseignement_shortname, c.prenom, c.nom, e.discipline AS discipline, ss.salle, seance.exam
+            FROM schedule s
+            LEFT JOIN enseignement e ON s.code = e.code
+            LEFT JOIN collegue c ON s.collegue = c.id
+            LEFT JOIN seance ON s.code = seance.code AND s.typeseance = seance.typeseance AND s.typeformation = seance.typeformation AND s.semestre = seance.semestre AND s.nomgroupe = seance.nomgroupe AND s.collegue = seance.collegue AND s.noseance = seance.noseance
+            LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
+            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.collegue = $6 AND s.version  = $6";
+    }
 
     $connexion = Database::getInstance()->getConnection();
     if(!$connexion) {
@@ -225,6 +243,10 @@ function getDayPreviousVersion($date, $day, $semestre, $groupe, $sousgroupe, $fo
         $course->setCollegueFullName($row['prenom'] . ' ' . $row['nom']);
         $course->setSalle($row['salle']);
         $course->setDiscipline($row['discipline']);
+        if(isset($row['exam']))
+            $course->setExam($row['exam']);
+        else
+            $course->setExam(false);
         $courses[] = $course;
     }
 
