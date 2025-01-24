@@ -16,6 +16,19 @@ if (isset($_POST['action']) && isset($_POST['justification'])) {
     $mail = $_COOKIE['mail'];
     $justification = $_POST['justification'];
 
+    // Vérifie si l'utilisateur est encore dans le délai
+    $preparedStatement = "SELECT created_at FROM validations WHERE mail = $1";
+    $result = pg_query_params($connexion, $preparedStatement, array($mail));
+    if ($row = pg_fetch_assoc($result)) {
+        $createdAt = new DateTime($row['created_at']);
+        $now = new DateTime();
+        $interval = $createdAt->diff($now);
+        if ($interval->days == 0 && $interval->h < 24) {
+            header("Location: ../vue/comparison.php?error=validation_expired");
+            exit();
+        }
+    }
+
     // Enregistre ou met à jour la validation
     $preparedStatement = "INSERT INTO validations (mail, status, justification)
                           VALUES ($1, $2, $3)
