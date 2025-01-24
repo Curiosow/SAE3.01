@@ -182,7 +182,7 @@ function getCalendarIcal($date) {
 
     $weekDates = getWeekDates($date);
     foreach ($weekDates as $day) {
-        $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation']);
+        $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE"));
         $alreadyPlace = [];
         foreach ($courses as $course) {
             if (in_array($course, $alreadyPlace)) continue;
