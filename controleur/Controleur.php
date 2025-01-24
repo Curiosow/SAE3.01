@@ -17,7 +17,7 @@ class Controleur
 
         foreach ($weekDates as $weekDate) {
 
-            if ($previousVersion) {
+            if (!$previousVersion) {
                 $courses = getDay($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
             } else {
                 $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
@@ -85,9 +85,7 @@ class Controleur
             <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
             <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
             <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
-            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>
-            <span>t : </span><span class="text-red-500">' . $course . '</span><br>
-            
+            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>            
             ';
 
                 if($course->getCollegue() != '' && $course->getCollegue() != null) {

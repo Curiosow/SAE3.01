@@ -32,7 +32,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation, $teach
             LEFT JOIN collegue c ON s.collegue = c.id
             LEFT JOIN seance ON s.code = seance.code AND s.typeseance = seance.typeseance AND s.typeformation = seance.typeformation AND s.semestre = seance.semestre AND s.nomgroupe = seance.nomgroupe AND s.collegue = seance.collegue AND s.noseance = seance.noseance
             LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
-            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.collegue = $6
+            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND s.collegue = $3
             ORDER BY s.version DESC";
     }
 
@@ -45,7 +45,7 @@ function getDay($date, $day, $semestre, $groupe, $sousgroupe, $formation, $teach
     if(!$teacherEdt)
         $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe));
     else
-        $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe, $_COOKIE['collegue']));
+        $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $_COOKIE['collegue']));
 
     $version = -1;
     $courses = [];
@@ -215,15 +215,17 @@ function getDayPreviousVersion($date, $day, $semestre, $groupe, $sousgroupe, $fo
             LEFT JOIN collegue c ON s.collegue = c.id
             LEFT JOIN seance ON s.code = seance.code AND s.typeseance = seance.typeseance AND s.typeformation = seance.typeformation AND s.semestre = seance.semestre AND s.nomgroupe = seance.nomgroupe AND s.collegue = seance.collegue AND s.noseance = seance.noseance
             LEFT JOIN schedulesalle ss ON s.typeformation = ss.typeformation AND s.code = ss.code AND s.typeseance = ss.typeseance AND s.semestre = ss.semestre AND s.nomgroupe = ss.nomgroupe AND s.collegue = ss.collegue AND s.noseance = ss.noseance
-            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND (s.typeformation = $3 OR s.typeformation = 'MUT') AND (s.nomgroupe = $4 OR s.nomgroupe = $5 OR s.nomgroupe = 'CM') AND s.collegue = $6 AND s.version  = $6";
+            WHERE DATE(s.horaire) = $1 AND s.semestre = $2 AND s.collegue = $3 AND s.version  = $4";
     }
 
     $connexion = Database::getInstance()->getConnection();
     if(!$connexion) {
         die('La communcation à la base de données a echouée : ' . pg_last_error());
     }
-
-    $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe, getPreviousVersion(getCurrentVersion())));
+    if(!$teacherEdt)
+        $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $formation, 'TD' . $groupe, 'TP' . $groupe . $sousgroupe, getPreviousVersion(getCurrentVersion())));
+    else
+        $result = pg_query_params($connexion, $preparedStatement, array($newDate->format('Y-m-d'), $semestre, $_COOKIE['collegue'], getPreviousVersion(getCurrentVersion())));
 
     $courses = [];
 
