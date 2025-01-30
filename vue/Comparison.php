@@ -280,8 +280,8 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
 <div class="flex h-full flex-col">
     <div class="flex flex-auto">
         <!-- Emploi du temps 1 -->
-        <div class="w-1/2 p-4">
-            <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
+        <div class="w-1/2 p-4 border-r-2 border-gray-200">
+            <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full bg-red-50">
                 <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
                     <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14"></div>
@@ -313,7 +313,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
                             <div class="col-start-5 row-span-full"></div>
                             <div class="col-start-6 row-span-full w-8"></div>
                         </div>
-                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(19, minmax(4.2vh , 1fr))">
+                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-200" style="grid-template-rows: repeat(19, minmax(4.2vh , 1fr))">
                             <div class="row-end-1 h-7"></div>
                             <?php
                             for ($i = 8; $i <= 17; $i++) {
@@ -334,7 +334,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
 
         <!-- Emploi du temps 2 -->
         <div class="w-1/2 p-4">
-            <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
+            <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full bg-green-50">
                 <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
                     <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14"></div>
@@ -366,7 +366,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
                             <div class="col-start-5 row-span-full"></div>
                             <div class="col-start-6 row-span-full w-8"></div>
                         </div>
-                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(19, minmax(4.2vh , 1fr))">
+                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-200" style="grid-template-rows: repeat(19, minmax(4.2vh , 1fr))">
                             <div class="row-end-1 h-7"></div>
                             <?php
                             for ($i = 8; $i <= 17; $i++) {
