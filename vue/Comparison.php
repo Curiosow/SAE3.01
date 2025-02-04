@@ -220,15 +220,16 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
 </head>
 <body>
 <!-- topbar (changeur de semaines) -->
-<header class="flex justify-center items-center border-b border-gray-200 px-4 py-2">
+<header class="flex justify-between items-center border-b border-gray-200 px-4 py-2">
     <!-- Back to Dashboard Button -->
-    <a href="Dashboard.php" class="absolute left-4 flex items-center text-gray-500 hover:text-gray-700">
+    <a href="Dashboard.php" class="text-gray-500 hover:text-gray-700">
     <span class="isolate inline-flex rounded-md shadow-sm">
         <button type="button" class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
             <span>Retour au Dashboard</span>
         </button>
     </span>
     </a>
+    <h2 class="text-sm font-semibold">Ancienne version</h2>
     <form action="Comparison.php" method="POST">
         <div class="flex flex-center items-center rounded-md bg-white shadow-sm md:items-stretch">
             <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
@@ -247,8 +248,9 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
             </button>
         </div>
     </form>
+    <h2 class="text-sm font-semibold">Nouvelle version</h2>
     <!-- Valider and Refuser Buttons -->
-    <div class="absolute right-4 flex space-x-2">
+    <div class="flex space-x-2">
         <form method="POST" action="../modele/Validation.php">
             <input type="hidden" name="justification" value="ok">
         <span class="isolate inline-flex rounded-md shadow-sm">
