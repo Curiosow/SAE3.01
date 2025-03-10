@@ -583,7 +583,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 
                         <div class="flex justify-center">
                             <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-5 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto; grid-template-columns: repeat(5, 1fr); width: 100%;">
-                                <?php $controleur->generateDay($day, false, (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
+                                <?php $controleur->generateDay($day,  (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
                             </ol>
                         </div>
                     </div>
