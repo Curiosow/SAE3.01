@@ -19,89 +19,89 @@ if(isset($_POST['email-address']) && isset($_POST['password'])) {
 
     $login_err = "";
     if($controleur->hasAccount($mail)) {
-       $data = pg_fetch_assoc($controleur->getAccountFromMail($mail));
-       if(password_verify(trim($password), $data['password'])) {
-           if($data['verified']) {
+        $data = pg_fetch_assoc($controleur->getAccountFromMail($mail));
+        if(password_verify(trim($password), $data['password'])) {
+            if($data['verified']) {
 
-               if(!isset($_COOKIE['logged']))
-                   setcookie("logged", true, time() + 30*24*60*60, "/");
-               else
-                   setcookie("logged", true);
+                if(!isset($_COOKIE['logged']))
+                    setcookie("logged", true, time() + 30*24*60*60, "/");
+                else
+                    setcookie("logged", true);
 
-               if(!isset($_COOKIE['mail']))
-                   setcookie("mail", $data['mail'], time() + 30*24*60*60, "/");
-               else
-                   setcookie("mail", $data['mail']);
+                if(!isset($_COOKIE['mail']))
+                    setcookie("mail", $data['mail'], time() + 30*24*60*60, "/");
+                else
+                    setcookie("mail", $data['mail']);
 
-               if(!isset($_COOKIE['role']))
-                   setcookie("role", $data['role'], time() + 30*24*60*60, "/");
-               else
-                   setcookie("role", $data['role']);
+                if(!isset($_COOKIE['role']))
+                    setcookie("role", $data['role'], time() + 30*24*60*60, "/");
+                else
+                    setcookie("role", $data['role']);
 
-               if(isACollegue($data['mail'])) {
-                   if(!isset($_COOKIE['collegue']))
-                       setcookie("collegue", getCollegueId($data['mail']), time() + 30*24*60*60, "/");
-                   else
-                       setcookie("collegue", getCollegueId($data['mail']));
-               }
+                if(isACollegue($data['mail'])) {
+                    if(!isset($_COOKIE['collegue']))
+                        setcookie("collegue", getCollegueId($data['mail']), time() + 30*24*60*60, "/");
+                    else
+                        setcookie("collegue", getCollegueId($data['mail']));
+                }
 
-               if(!isset($_COOKIE['lastNotif']))
-                   setcookie("lastNotif", $data['lastnotif'], time() + 30*24*60*60, "/");
-               else
-                   setcookie("lastNotif", $data['lastnotif']);
+                if(!isset($_COOKIE['lastNotif']))
+                    setcookie("lastNotif", $data['lastnotif'], time() + 30*24*60*60, "/");
+                else
+                    setcookie("lastNotif", $data['lastnotif']);
 
-               $line = getLineFromCSVByEmail($mail);
+                $line = getLineFromCSVByEmail($mail);
 
-               if(!isset($_COOKIE['semestre']))
-                   setcookie("semestre", $line[3], time() + 30*24*60*60, "/");
-               else
-                   setcookie("semestre", $line[3]);
+                if(!isset($_COOKIE['semestre']))
+                    setcookie("semestre", $line[3], time() + 30*24*60*60, "/");
+                else
+                    setcookie("semestre", $line[3]);
 
 
-               $formation = 'FI';
-               if(strpos($line[4], 'FA') === 0)
-                   $formation = 'FA';
+                $formation = 'FI';
+                if(strpos($line[4], 'FA') === 0)
+                    $formation = 'FA';
 
-               if(!isset($_COOKIE['formation']))
-                   setcookie("formation", $formation, time() + 30*24*60*60, "/");
-               else
-                   setcookie("formation", $formation);
+                if(!isset($_COOKIE['formation']))
+                    setcookie("formation", $formation, time() + 30*24*60*60, "/");
+                else
+                    setcookie("formation", $formation);
 
-               $group = removePrefix($line[4]);
+                $group = removePrefix($line[4]);
 
-               if(!isset($_COOKIE['groupe']))
-                   setcookie("groupe", $group[0], time() + 30*24*60*60, "/");
-               else
-                   setcookie("groupe", $group[0]);
+                if(!isset($_COOKIE['groupe']))
+                    setcookie("groupe", $group[0], time() + 30*24*60*60, "/");
+                else
+                    setcookie("groupe", $group[0]);
 
-               if(!isset($_COOKIE['sousgroupe']))
-                   setcookie("sousgroupe", $group[1], time() + 30*24*60*60, "/");
-               else
-                   setcookie("sousgroupe", $group[1]);
+                if(!isset($_COOKIE['sousgroupe']))
+                    setcookie("sousgroupe", $group[1], time() + 30*24*60*60, "/");
+                else
+                    setcookie("sousgroupe", $group[1]);
 
-               if(!isset($_COOKIE['nom']))
-                   setcookie("nom", $line[1], time() + 30*24*60*60, "/");
-               else
-                   setcookie("nom", $line[1]);
+                if(!isset($_COOKIE['nom']))
+                    setcookie("nom", $line[1], time() + 30*24*60*60, "/");
+                else
+                    setcookie("nom", $line[1]);
 
-               if(!isset($_COOKIE['prenom']))
-                   setcookie("prenom", $line[2], time() + 30*24*60*60, "/");
-               else
-                   setcookie("prenom", $line[2]);
+                if(!isset($_COOKIE['prenom']))
+                    setcookie("prenom", $line[2], time() + 30*24*60*60, "/");
+                else
+                    setcookie("prenom", $line[2]);
 
-               if(!isset($_COOKIE['civilite']))
-                   setcookie("civilite", $line[0], time() + 30*24*60*60, "/");
-               else
-                   setcookie("civilite", $line[0]);
+                if(!isset($_COOKIE['civilite']))
+                    setcookie("civilite", $line[0], time() + 30*24*60*60, "/");
+                else
+                    setcookie("civilite", $line[0]);
 
-               header('location: Dashboard.php');
-               exit();
-           } else {
-               $login_err = "Vous devez d'abord valider votre compte!";
-           }
-       } else {
-           $login_err = "Adresse mail ou mot de passe incorrect!";
-       }
+                header('location: Dashboard.php');
+                exit();
+            } else {
+                $login_err = "Vous devez d'abord valider votre compte!";
+            }
+        } else {
+            $login_err = "Adresse mail ou mot de passe incorrect!";
+        }
     } else {
         $login_err = "Adresse mail ou mot de passe incorrect!";
     }
@@ -138,116 +138,49 @@ function getLineFromCSVByEmail($email) {
     <meta charset="UTF-8">
     <title>Emploi du temps</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
 
-<div class="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-    <div class="w-full max-w-sm space-y-10">
+<main class="w-full max-w-md sm:max-w-lg lg:max-w-xl mx-auto text-center">
 
-        <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img class="mx-auto h-10 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7_hvZN3QSpzxIuVu8EPWSRpIZD-Al7AKMIQ&s" alt="Your Company">
-            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Connectez-vous avec votre mail UPHF</h2>
+    <img class="mx-auto h-12 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7_hvZN3QSpzxIuVu8EPWSRpIZD-Al7AKMIQ&s" alt="Your Company">
+    <h2 class="mt-6 text-lg sm:text-xl lg:text-2xl font-bold leading-9 text-gray-900">Connectez-vous avec votre mail UPHF</h2>
+
+    <form class="space-y-6 mt-6" action="Login.php" method="POST">
+        <div class="space-y-4">
+            <div>
+                <label for="email-address" class="sr-only">Adresse mail UPHF</label>
+                <input id="email-address" name="email-address" type="email" autocomplete="email" required
+                       class="block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-base lg:text-lg"
+                       placeholder="Adresse mail UPHF">
+            </div>
+            <div>
+                <label for="password" class="sr-only">Mot de passe</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required
+                       class="block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-base lg:text-lg"
+                       placeholder="Mot de passe">
+            </div>
         </div>
 
-        <?php
-        if(isset($_SESSION['just_register']) && $_SESSION['just_register']) {
-            $_SESSION['just_register'] = false;
-            echo '<div class="rounded-md bg-green-50 p-4">
-                      <div class="flex">
-                        <div class="flex-shrink-0">
-                          <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                          </svg>
-                        </div>
-                        <div class="ml-3">
-                          <h3 class="text-sm font-medium text-green-800">Enregistrement effectué avec succès !</h3>
-                          <div class="mt-2 text-sm text-green-700">
-                            <ul role="list" class="list-disc space-y-1 pl-5">
-                              <li>Vous avez reçu un mail de confirmation.</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>';
-        }
+        <button type="submit" class="w-full rounded-md bg-gray-600 px-4 py-2 text-white font-semibold hover:bg-gray-500 sm:text-lg lg:text-xl">
+            Se connecter
+        </button>
+    </form>
 
-        if(isset($_SESSION['just_register_confirm']) && $_SESSION['just_register_confirm']) {
-            $_SESSION['just_register_confirm'] = false;
-            echo '<div class="rounded-md bg-green-50 p-4">
-                      <div class="flex">
-                        <div class="flex-shrink-0">
-                          <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                          </svg>
-                        </div>
-                        <div class="ml-3">
-                          <h3 class="text-sm font-medium text-green-800">Enregistrement effectué avec succès !</h3>
-                          <div class="mt-2 text-sm text-green-700">
-                            <ul role="list" class="list-disc space-y-1 pl-5">
-                              <li>Votre mail a été confirmé, il vous suffit de vous connecter.</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>';
-        }
-
-        if(!empty($login_err)) {
-            echo '<div class="rounded-md bg-red-50 p-4">
-                      <div class="flex">
-                        <div class="flex-shrink-0">
-                          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                          </svg>
-                        </div>
-                        <div class="ml-3">
-                          <h3 class="text-sm font-medium text-red-800">Une erreur est survenue.</h3>
-                          <div class="mt-2 text-sm text-red-700">
-                            <ul role="list" class="list-disc space-y-1 pl-5">
-                              <li>'. $login_err . '</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>';
-        }
-        ?>
-
-        <form class="space-y-6" action="Login.php" method="POST">
-            <div class="relative -space-y-px rounded-md shadow-sm">
-                <div class="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300"></div>
-                <div>
-                    <label for="email-address" class="sr-only">Adresse mail UPHF</label>
-                    <input id="email-address" name="email-address" type="email" autocomplete="email" required class="relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Adresse mail UPHF">
-                </div>
-                <div>
-                    <label for="password" class="sr-only">Mot de passe</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password" required class="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Mot de passe">
-                </div>
-            </div>
-
-            <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Se connecter</button>
-            </div>
-        </form>
-
-        <p class="text-center text-sm leading-6 text-gray-500">
-            Vous avez oublié votre mot de passe ?
+    <div class="text-sm text-gray-500 space-y-2 sm:text-base lg:text-lg mt-4">
+        <p>Vous avez oublié votre mot de passe ?
             <a href="ForgotPassword.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Changez-le ici</a>
         </p>
-
-        <p class="text-center text-sm leading-6 text-gray-500">
-            Vous n'avez pas de compte ?
+        <p>Vous n'avez pas de compte ?
             <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Enregistrez-vous ici</a>
         </p>
-
-        <p class="text-center text-sm leading-6 text-gray-500">
-            Vous n'êtes pas enregistré ?
+        <p>Vous n'êtes pas enregistré ?
             <a href="OldLogin.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Cherchez votre EDT</a>
         </p>
-
     </div>
-</div>
+
+</main>
 
 </body>
 </html>

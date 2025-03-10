@@ -102,102 +102,64 @@ function getLineFromCSVByEmail($email) {
     <meta charset="UTF-8">
     <title>Emploi du temps</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
-<div class="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-    <div class="w-full max-w-sm space-y-10">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
 
-        <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img class="mx-auto h-10 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7_hvZN3QSpzxIuVu8EPWSRpIZD-Al7AKMIQ&s" alt="Your Company">
-            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Récupérez votre compte avec votre mail UPHF</h2>
-        </div>
+<main class="w-full max-w-sm mx-auto text-center">
+    <img class="mx-auto h-10 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7_hvZN3QSpzxIuVu8EPWSRpIZD-Al7AKMIQ&s" alt="Your Company">
+    <h2 class="mt-10 text-2xl font-bold leading-9 tracking-tight text-gray-900">Récupérez votre compte avec votre mail UPHF</h2>
 
-        <?php
+    <?php
+    if(!empty($password_err)) {
+        echo '<div class="rounded-md bg-red-50 p-4 mt-4 text-left">
+                  <div class="flex">
+                    <svg class="h-5 w-5 text-red-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-red-800">Une erreur est survenue.</h3>
+                      <ul class="list-disc space-y-1 pl-5 text-sm text-red-700">
+                          <li>'. $password_err . '</li>
+                      </ul>
+                    </div>
+                  </div>
+              </div>';
+    }
 
-        if(!empty($password_err)) {
-            echo '<div class="rounded-md bg-red-50 p-4">
-                      <div class="flex">
-                        <div class="flex-shrink-0">
-                          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                          </svg>
-                        </div>
-                        <div class="ml-3">
-                          <h3 class="text-sm font-medium text-red-800">Une erreur est survenue.</h3>
-                          <div class="mt-2 text-sm text-red-700">
-                            <ul role="list" class="list-disc space-y-1 pl-5">
-                              <li>'. $password_err . '</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>';
-        }
+    if(!empty($alert)) {
+        echo '<div class="rounded-md bg-green-50 p-4 mt-4 text-left">
+                  <div class="flex">
+                    <svg class="h-5 w-5 text-green-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd"/>
+                    </svg>
+                    <div class="ml-3">
+                      <h3 class="text-sm font-medium text-green-800">Action effectuée avec succès !</h3>
+                      <ul class="list-disc space-y-1 pl-5 text-sm text-green-700">
+                          <li>' . $alert . '</li>
+                      </ul>
+                    </div>
+                  </div>
+              </div>';
+    }
+    ?>
 
-        if(!empty($alert)) {
-            echo '<div class="rounded-md bg-green-50 p-4">
-                      <div class="flex">
-                        <div class="flex-shrink-0">
-                          <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-                          </svg>
-                        </div>
-                        <div class="ml-3">
-                          <h3 class="text-sm font-medium text-green-800">Action effectuée avec succès !</h3>
-                          <div class="mt-2 text-sm text-green-700">
-                            <ul role="list" class="list-disc space-y-1 pl-5">
-                              <li>' . $alert . '</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>';
-        }
+    <form class="space-y-6 mt-6" action="ForgotPassword.php" method="POST">
+        <?php if($hasAToken): ?>
+            <input name="token" type="password" required class="block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-base" placeholder="Token de validation">
+            <input name="password" type="password" required class="block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-base" placeholder="Nouveau mot de passe">
+            <button type="submit" class="w-full rounded-md bg-gray-600 px-4 py-2 text-white font-semibold hover:bg-gray-500 sm:text-lg">Changer le mot de passe</button>
+        <?php else: ?>
+            <input name="email-address" type="email" required class="block w-full rounded-md border-gray-300 shadow-sm py-2 px-3 text-gray-900 focus:ring-indigo-600 focus:border-indigo-600 sm:text-base" placeholder="Adresse mail UPHF">
+            <button type="submit" class="w-full rounded-md bg-gray-600 px-4 py-2 text-white font-semibold hover:bg-gray-500 sm:text-lg">Envoyer un mail de confirmation</button>
+        <?php endif; ?>
+    </form>
 
-        if($hasAToken) {
+    <p class="text-center text-sm text-gray-500 mt-4">
+        Vous avez retrouvé votre compte ?
+        <a href="Login.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+    </p>
+</main>
 
-            echo '<form class="space-y-6" action="ForgotPassword.php" method="POST">
-            <div class="relative -space-y-px rounded-md shadow-sm">
-                <div class="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300"></div>
-                <div>
-                    <label for="token" class="sr-only">Token de validation</label>
-                    <input id="token" name="token" type="password" autocomplete="current-password" required class="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Token de validation">
-                </div>
-                <div>
-                    <label for="password" class="sr-only">Mot de passe</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password" required class="relative block w-full rounded-b-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Mot de passe">
-                </div>
-            </div>
-
-            <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Changer le mot de passe</button>
-            </div>
-        </form>';
-
-        } else if(empty($alert)) {
-
-            echo '<form class="space-y-6" action="ForgotPassword.php" method="POST">
-            <div class="relative -space-y-px rounded-md shadow-sm">
-                <div class="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset ring-gray-300"></div>
-                <div>
-                    <label for="email-address" class="sr-only">Adresse mail UPHF</label>
-                    <input id="email-address" name="email-address" type="email" autocomplete="email" required class="relative block w-full rounded-t-md border-0 py-1.5 text-gray-900 ring-1 ring-inset ring-gray-100 placeholder:text-gray-400 focus:z-10 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Adresse mail UPHF">
-                </div>
-            </div>
-
-            <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">Envoyer un mail de confirmation.</button>
-            </div>
-        </form>';
-
-        }
-
-        ?>
-        <p class="text-center text-sm leading-6 text-gray-500">
-            Vous avez retrouvé votre compte ?
-            <a href="Login.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
-        </p>
-    </div>
-</div>
 </body>
 </html>

@@ -94,7 +94,7 @@ class Controleur
                 }
 
                 echo '</div>
-                
+            
     </a>
 </li>';
 ?>
@@ -103,6 +103,88 @@ class Controleur
         }
     }
 
+    function generateDay($day, $previousVersion = false, $teacherEdt = false) {
+        $disciplineColors = getDisciplineColors();
+
+        if (!$previousVersion) {
+            $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
+        } else {
+            $courses = getDayPreviousVersion($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
+        }
+
+        $alreadyPlace = [];
+        foreach ($courses as $course) {
+            if (in_array($course, $alreadyPlace))
+                continue;
+
+            $alreadyPlace[] = $course;
+
+            $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
+            $dispGridRow = getGridRow($horraire);
+
+            $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
+            $dispSpan = getSpan($duree);
+
+            $color = "gray";
+            if (array_key_exists($course->getDiscipline(), $disciplineColors))
+                $color = $disciplineColors[$course->getDiscipline()];
+
+            $dispHour = (int)$horraire->format("H");
+            if ($dispHour < 10 && $dispHour > 1)
+                $dispHour = '0' . $dispHour;
+
+            $dispMinute = $horraire->format("i") . '';
+            if ($horraire->format("i") < 10 && $horraire->format("i") > 1)
+                $dispMinute = '0' . $dispMinute;
+
+            $uniqueId = uniqid(); // Génère un identifiant unique
+
+            $exam = "";
+            if ($course->getExam() == 't') {
+                $exam = " - EXAMEN";
+            }
+
+            echo '<li class="relative mt-px flex sm:col-start-1 sm:col-end-6" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
+            <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
+                <form>
+                    <div>
+                        <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
+                            <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . $exam . '</time>
+                        </p>
+                        <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
+                        <p class="order-1 text-' . $color . '-700">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
+                    </div>
+                </form>
+
+                <!-- Bouton pour afficher l\'info-bulle  -->
+                <button data-tooltip-target="tooltip-' . $uniqueId . '"
+                        class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
+                        style="position: absolute; top: 0; right: 0;">
+                    ⓘ
+                </button>
+
+                <!-- Info-bulle avec animation -->
+                <div id="tooltip-' . $uniqueId . '"
+                     data-tooltip="tooltip-' . $uniqueId . '"
+                     class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 duration-200 ease-in-out border border-black" style="width: 200px; right: -210px; top: 0;">
+                    <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
+                    <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
+                    <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
+                    <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
+                    <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>
+                    ';
+
+            if ($course->getCollegue() != '' && $course->getCollegue() != null) {
+                echo'
+                    <span>Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
+            }
+
+            echo '</div>
+
+            </a>
+        </li>';
+        }
+    }
     function transformTeacherName($fullName) {
         $parts = explode(' ', $fullName);
         if (count($parts) < 2) {
