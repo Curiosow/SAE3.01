@@ -167,19 +167,19 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
         }
     </script>
     <script>
-        // JavaScript pour afficher/masquer les info-bulles
-        document.querySelectorAll('[data-tooltip-target]').forEach(button => {
-            button.addEventListener('mouseenter', () => {
-                const tooltipId = button.getAttribute('data-tooltip-target');
-                const tooltip = document.getElementById(tooltipId);
-                if (tooltip) tooltip.classList.remove('hidden');
-            });
-
-            button.addEventListener('mouseleave', () => {
-                const tooltipId = button.getAttribute('data-tooltip-target');
-                const tooltip = document.getElementById(tooltipId);
-                if (tooltip) tooltip.classList.add('hidden');
-            });
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('getResources.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('newGroupe');
+                    data.forEach(resource => {
+                        const option = document.createElement('option');
+                        option.value = resource.nomressource;
+                        option.textContent = resource.nomressource;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => console.error(error));
         });
     </script>
 </head>
@@ -434,7 +434,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                 </form>
             </div>
 
-
             <!-- Affichage calendrier -->
             <div class="mt-6 grid grid-cols-7 text-xs leading-6 text-gray-400">
                 <div>Lun</div><div>Mar</div><div>Mer</div><div>Jeu</div><div>Ven</div><div>Sam</div><div>Dim</div>
@@ -507,17 +506,24 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
         <header class="flex justify-center items-center border-b border-gray-200 px-4 py-2">
             <form action="Dashboard.php" method="POST">
                 <div class="flex flex-center items-center rounded-md bg-white shadow-sm md:items-stretch">
-                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
+                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>"
+                            class="h-9 w-12 flex items-center justify-center rounded-l-md border border-gray-300 text-gray-400 hover:text-gray-500 hover:bg-gray-50">
                         <span class="sr-only">Semaine précédente</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <button type="submit" name="weekOffSet" value="0" class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?></button>
-                    <span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden"></span>
-                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r border-gray-300 pl-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pl-0 md:hover:bg-gray-50">
+                    <button type="submit" name="weekOffSet" value="0"
+                            class="border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 sm:block hidden">
+                        Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?>
+                    </button>
+                    <span class="text-sm font-semibold text-gray-900 sm:hidden px-2">
+                        Semaine du <?php $fDay = getWeekDay(true); echo $fDay->format('d M'); ?>
+                    </span>
+                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>"
+                            class="h-9 w-12 flex items-center justify-center rounded-r-md border border-gray-300 text-gray-400 hover:text-gray-500 hover:bg-gray-50">
                         <span class="sr-only">Semaine suivante</span>
-                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
@@ -529,27 +535,22 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
         <div class="isolate flex flex-auto flex-col overflow-hidden bg-white">
             <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full">
                 <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
-                    <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
-                        <div class="col-end-1 w-14"></div>
+                    <div class="overflow-x-auto sm:overflow-visible">
+                        <div class="grid grid-cols-5 sm:grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 min-w-max sm:min-w-full">
+                            <div class="col-end-1 w-14"></div>
                         <!-- affichage de la semaine -->
-                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('monday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Lun <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('monday'); echo $thisDay->format('d M'); ?></span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Mar <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('d M'); ?></span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Mer <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('d M'); ?></span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Jeu <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('d M'); ?></span></span>
-                        </div>
-                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('friday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Ven <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('friday'); echo $thisDay->format('d M'); ?></span></span>
-                        </div>
-
+                        <?php
+                        $days = ['monday' => 'Lun', 'tuesday' => 'Mar', 'wednesday' => 'Mer', 'thursday' => 'Jeu', 'friday' => 'Ven'];
+                        foreach ($days as $key => $value) {
+                            $thisDay = getDayWeek($key);
+                            echo '<div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="' . $thisDay->format('Y-m-d') . '" onclick="handleDayClicked(this)">
+                                    <span>' . $value . ' <span class="items-center justify-center font-semibold text-gray-900">' . $thisDay->format('d M') . '</span></span>
+                                </div>';
+                        }
+                        ?>
                     </div>
                 </div>
+            </div>
 
                 <!-- Heures sur la gauche du calendrier -->
                 <div class="flex flex-auto">
@@ -566,7 +567,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                         </div>
 
                         <!-- Horizontal lines -->
-                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(19, minmax(4.2vh , 1fr))">
+                        <div class="col-start-1 col-end-2 row-start-1 grid divide-y divide-gray-100" style="grid-template-rows: repeat(auto-fill, minmax(50px, auto))">
                             <!-- Adjust top margin for mobile -->
                             <div class="row-end-1 h-7"></div>
                             <?php
@@ -580,8 +581,9 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                         </div>
 
                         <!-- Events -->
-                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8"  style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
-                            <?php $controleur->generateDays($week, false, (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
+                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-5 min-w-max sm:min-w-full sm:grid-cols-5 sm:pr-8"
+                            style="grid-template-rows: 1.75rem repeat(19, minmax(50px, auto)); min-width: 200px;">
+                        <?php $controleur->generateDays($week, false, (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
                         </ol>
                     </div>
                 </div>

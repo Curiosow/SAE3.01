@@ -9,6 +9,7 @@ Projet de SAE visant à créer un visionneur d'emploi du temps utilisant PHP pou
 - [CHARPIOT Corentin](https://www.github.com/CorentinChr)
 - [BAJOMÉE Noa](https://www.github.com/NoaBaj)
 - [HENICHARD Théo](https://www.github.com/TheoHenichard)
+- [HETHUIN Marion](https://github.com/MarionHethuin)
 
 ## Comment utiliser le projet
 **Configuration:** Pour que le projet fonctionne, il faut créer dans dossier racine un fichier nommé **config.yml** et y ajouter ceci:
