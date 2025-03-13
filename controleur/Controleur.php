@@ -23,6 +23,7 @@ class Controleur
                 $courses = getDayPreviousVersion($weekDate, $weekDate->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
             }
 
+
             $alreadyPlace = [];
             foreach ($courses as $course) {
                 if(in_array($course, $alreadyPlace))
@@ -35,7 +36,9 @@ class Controleur
                 $dispGridRow = getGridRow($horraire);
 
                 $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
-                $dispSpan = getSpan($duree);
+                $dispSpan = max(getSpan($duree), ceil(strlen($course->getTypeseance()) / 20) + 1);
+
+
 
                 $color="gray";
                 if(array_key_exists($course->getDiscipline(), $disciplineColors))
@@ -58,7 +61,7 @@ class Controleur
                     $exam = " - EXAMEN";
                 }
 
-                echo '<li class="relative mt-px flex sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
+                echo '<li class="relative mt-px flex col-start-' . $dispHoraire . ' sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
     <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
         <form>
             <div>
