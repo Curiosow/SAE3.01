@@ -2,7 +2,7 @@
 include_once "../modele/managers/CollegueManager.php";
 include_once "../modele/managers/EnseignementManager.php";
 include_once "../modele/managers/ScheduleManager.php";
-
+include_once("../vue/theme.php");
 
 class Controleur
 {
@@ -196,7 +196,7 @@ class Controleur
     }
 
     function generateCalendar() {
-        global $date, $realDate;
+        global $date, $realDate, $currentColors;
         $month = $date->format('m');
         $year = $date->format('Y');
 
@@ -225,11 +225,11 @@ class Controleur
             $day = date('d', strtotime($d));
             $cMonth = date('m', strtotime($d));
 
-            $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-white focus:z-10';
+            $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 focus:z-10';
             if ($d == $actualDay) {
-                $buttonClass = 'rounded-full border-2 border-sky-700 bg-black-50 py-1.5 text-white focus:z-10';
+                $buttonClass = 'rounded-full border-2 border-sky-700 bg-black-50 py-1.5 focus:z-10';
             } elseif ($cMonth != $month) {
-                $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 text-gray-600 focus:z-10';
+                $buttonClass = 'rounded-tl-lg bg-black-50 py-1.5 ' . $currentColors['unfocustext'] . ' focus:z-10';
             }
 
             // Calculer l'offset de la semaine par rapport à la semaine actuelle

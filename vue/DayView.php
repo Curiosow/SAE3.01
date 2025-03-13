@@ -57,10 +57,10 @@ if (isset($_POST['weekOffSet'])) {
 if (isset($_POST['dayOffSet'])) {
     $_SESSION['dayOffSet'] = (int)$_POST['dayOffSet'];
 } else {
-// Si ce n'est pas le cas, si aucun jour n'est enregistrer dans la session, alors on définit au jour actuel.
-if (!isset($_SESSION['dayOffSet'])) {
-    $_SESSION['dayOffSet'] = 0;
-}
+    // Si ce n'est pas le cas, si aucun jour n'est enregistrer dans la session, alors on définit au jour actuel.
+    if (!isset($_SESSION['dayOffSet'])) {
+        $_SESSION['dayOffSet'] = 0;
+    }
 }
 
 // Modification des données par rapport à l'utilisateur
