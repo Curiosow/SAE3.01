@@ -72,7 +72,7 @@ class Controleur
                 <p class="order-1 text-' . $color . '-700">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
             </div>
         </form>
-        
+
         <!-- Bouton pour afficher l\'info-bulle  -->
         <button data-tooltip-target="tooltip-' . $uniqueId . '"
                 class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -83,21 +83,19 @@ class Controleur
         <!-- Info-bulle avec animation -->
         <div id="tooltip-' . $uniqueId . '"
              data-tooltip="tooltip-' . $uniqueId . '"
-             class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 duration-200 ease-in-out border border-black" style="width: 200px; right: -210px; top: 0;">
+             class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 border border-black"
+             style="width: 200px; right: -210px; top: 0; display: none;">
             <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
             <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
             <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
             <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
-            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>            
-            ';
+            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>';
 
                 if($course->getCollegue() != '' && $course->getCollegue() != null) {
-                    echo'
-            <span>Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
+                    echo '<span>Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
                 }
 
                 echo '</div>
-            
     </a>
 </li>';
 ?>

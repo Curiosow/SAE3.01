@@ -182,6 +182,42 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                 .catch(error => console.error(error));
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipButtons = document.querySelectorAll('[data-tooltip-target]');
+
+            tooltipButtons.forEach(button => {
+                const tooltipId = button.getAttribute('data-tooltip-target');
+                const tooltip = document.getElementById(tooltipId);
+
+                button.addEventListener('mouseenter', () => {
+                    tooltip.style.display = 'block';
+                    tooltip.style.opacity = '1';
+
+                    const rect = tooltip.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+
+                    // Adjust position if tooltip goes off the right edge
+                    if (rect.right > viewportWidth) {
+                        tooltip.style.right = 'auto';
+                        tooltip.style.left = '0';
+                    }
+
+                    // Adjust position if tooltip goes off the bottom edge
+                    if (rect.bottom > viewportHeight) {
+                        tooltip.style.top = 'auto';
+                        tooltip.style.bottom = '100%';
+                    }
+                });
+
+                button.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                    tooltip.style.opacity = '0';
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 
@@ -466,6 +502,17 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
             </form>';
             }
             ?>
+
+            <!-- Bouton pour accéder à la vue par jour -->
+            <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed hidden">
+                <form action="DayView.php" method="POST" class="flex w-full justify-center">
+                    <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
+                    <button type="submit" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
+                        Vue par jour
+                    </button>
+                </form>
+            </div>
+
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="disconnect" name="disconnect" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Se déconnecter</button>
             </form>
@@ -520,7 +567,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14"></div>
                         <!-- affichage de la semaine -->
-                        <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('monday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
+                        <div class="flex items-center justify-center py-3 hover:bg-gray-200 calendar-day" data-date="<?php $thisDay = getDayWeek('monday'); echo $thisDay->format('Y-m-d') ?>" onclick="handleDayClicked(this)">
                             <span>Lun <span class="items-center justify-center font-semibold text-gray-900"><?php $thisDay = getDayWeek('monday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
                         <div class="flex items-center justify-center py-3 hover:bg-gray-200" data-date="<?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
