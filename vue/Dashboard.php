@@ -10,6 +10,11 @@ session_start();
 $controleur = new Controleur();
 $notificationsControleur = new NotificationControleur();
 
+// Vérification si le thème n'est pas initialiser
+if(!isset($_COOKIE['theme'])) {
+    $_COOKIE['theme'] = 'light';
+}
+
 // Vérification si l'utilisateur n'est pas connecté
 if(!isset($_COOKIE['groupe']) || $_COOKIE['groupe'] == "NONE") {
     header('location: Login.php');
@@ -521,16 +526,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
             }
             ?>
 
-            <!-- Bouton pour accéder à la vue par jour -->
-            <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed hidden">
-                <form action="DayView.php" method="POST" class="flex w-full justify-center">
-                    <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
-                    <button type="submit" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
-                        Vue par jour
-                    </button>
-                </form>
-            </div>
-
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="disconnect" name="disconnect" class="rounded <?php echo $currentColors['bg']; ?> px-2 py-1 text-xs font-semibold <?php echo $currentColors['text']; ?> shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:<?php echo $currentColors['hover']; ?>">Se déconnecter</button>
             </form>
@@ -573,18 +568,42 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 <div id="dashboard" class="lg:pl-16 transition-all duration-300 <?php echo $currentColors['bg']; ?>">
     <div class="flex h-full flex-col">
         <!-- topbar (changeur de semaines) -->
-        <header class="flex justify-center items-center border-b <?php echo $currentColors['border']; ?> px-4 py-2">
-            <form action="Dashboard.php" method="POST">
-                <div class="flex flex-center items-center rounded-md <?php echo $currentColors['bg']; ?> <?php echo $currentColors['shadow']; ?> md:items-stretch">
-                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> hover:<?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
+        <header class="flex justify-between items-center border-b <?php echo $currentColors['border']; ?> px-4 py-2">
+            <form action="DayView.php" method="GET" class="flex items-center">
+                <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
+                <button type="submit" class="flex items-center <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?>">
+                    <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="h-6 w-6">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>exit_full_screen [#905]</title>
+                            <desc>Created with Sketch.</desc>
+                            <defs></defs>
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g id="Dribbble-Light-Preview" transform="translate(-260.000000, -4199.000000)" fill="#000000">
+                                    <g id="icons" transform="translate(56.000000, 160.000000)">
+                                        <path d="M218,4047 L224,4047 L224,4045 L218,4045 L218,4039 L216,4039 L216,4043.959 L216,4047 L218,4047 Z M218,4053 L224,4053 L224,4051 L218,4051 L216,4051 L216,4051.959 L216,4059 L218,4059 L218,4053 Z M210,4059 L212,4059 L212,4051.959 L212,4051 L210,4051 L204,4051 L204,4053 L210,4053 L210,4059 Z M210,4039 L212,4039 L212,4043.959 L212,4047 L210,4047 L204,4047 L204,4045 L210,4045 L210,4039 Z" id="exit_full_screen-[#905]"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+            </form>
+            <form action="Dashboard.php" method="POST" class="flex items-center mx-auto">
+                <input type="hidden" name="weekOffSet" value="<?php echo $_SESSION['weekOffSet']; ?>">
+                <div class="flex items-center rounded-md <?php echo $currentColors['bg'] ?> shadow-sm md:items-stretch">
+                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Semaine précédente</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <button type="submit" name="weekOffSet" value="0" class="hidden border-y <?php echo $currentColors['border']; ?> px-3.5 <?php echo $currentColors['text']; ?> font-semibold hover:<?php echo $currentColors['bg']; ?> focus:relative md:block">Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?></button>
-                    <span class="relative -mx-px h-5 w-px <?php echo $currentColors['border']; ?> md:hidden"></span>
-                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> hover:<?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
+                    <button type="submit" name="weekOffSet" value="0" class="hidden border-y <?php echo $currentColors['border']; ?> px-3.5 text-sm font-semibold <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:block">
+                        Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?>
+                    </button>
+                    <span class="relative -mx-px h-5 w-px <?php echo $currentColors['bg']; ?> md:hidden"></span>
+                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Semaine suivante</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />

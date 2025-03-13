@@ -515,16 +515,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
             }
             ?>
 
-            <!-- Bouton pour accéder à la vue par semaine -->
-            <div class="mt-10 text-center lg:col-start-8 lg:col-end-13 lg:row-start-1 lg:mt-9 xl:col-start-9 hide-when-collapsed hidden">
-                <form action="Dashboard.php" method="GET" class="flex w-full justify-center">
-                    <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
-                    <button type="submit" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">
-                        Vue par semaine
-                    </button>
-                </form>
-            </div>
-
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
                 <button type="submit" id="disconnect" name="disconnect" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Se déconnecter</button>
             </form>
@@ -551,10 +541,31 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 <div id="dashboard" class="lg:pl-16 transition-all duration-300">
     <div class="flex h-full flex-col">
         <!-- topbar (changeur de jours) -->
-        <header class="flex justify-center items-center border-b border-gray-200 px-4 py-2">
-            <form action="DayView.php" method="POST">
+        <header class="flex justify-between items-center border-b border-gray-200 px-4 py-2">
+            <form action="Dashboard.php" method="GET" class="flex items-center">
                 <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
-                <div class="flex flex-center items-center rounded-md bg-white shadow-sm md:items-stretch">
+                <button type="submit" class="flex items-center text-gray-500 hover:text-gray-700">
+                    <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="h-6 w-6">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <title>full\_screen [#904]</title>
+                            <desc>Created with Sketch.</desc>
+                            <defs></defs>
+                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <g id="Dribbble-Light-Preview" transform="translate(-300.000000, -4199.000000)" fill="#000000">
+                                    <g id="icons" transform="translate(56.000000, 160.000000)">
+                                        <path d="M262.4445,4039 L256.0005,4039 L256.0005,4041 L262.0005,4041 L262.0005,4047 L264.0005,4047 L264.0005,4039.955 L264.0005,4039 L262.4445,4039 Z M262.0005,4057 L256.0005,4057 L256.0005,4059 L262.4445,4059 L264.0005,4059 L264.0005,4055.955 L264.0005,4051 L262.0005,4051 L262.0005,4057 Z M246.0005,4051 L244.0005,4051 L244.0005,4055.955 L244.0005,4059 L246.4445,4059 L252.0005,4059 L252.0005,4057 L246.0005,4057 L246.0005,4051 Z M246.0005,4047 L244.0005,4047 L244.0005,4039.955 L244.0005,4039 L246.4445,4039 L252.0005,4039 L252.0005,4041 L246.0005,4041 L246.0005,4047 Z" id="full\_screen-[#904]"></path>
+                                    </g>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                </button>
+            </form>
+            <form action="DayView.php" method="POST" class="flex items-center mx-auto">
+                <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
+                <div class="flex items-center rounded-md bg-white shadow-sm md:items-stretch">
                     <button type="submit" name="dayOffSet" value="<?php echo ($_SESSION['dayOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l border-gray-300 pr-1 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:pr-0 md:hover:bg-gray-50">
                         <span class="sr-only">Jour précédent</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
