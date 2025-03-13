@@ -194,6 +194,42 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipButtons = document.querySelectorAll('[data-tooltip-target]');
+
+            tooltipButtons.forEach(button => {
+                const tooltipId = button.getAttribute('data-tooltip-target');
+                const tooltip = document.getElementById(tooltipId);
+
+                button.addEventListener('mouseenter', () => {
+                    tooltip.style.display = 'block';
+                    tooltip.style.opacity = '1';
+
+                    const rect = tooltip.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+
+                    // Adjust position if tooltip goes off the right edge
+                    if (rect.right > viewportWidth) {
+                        tooltip.style.right = 'auto';
+                        tooltip.style.left = '0';
+                    }
+
+                    // Adjust position if tooltip goes off the bottom edge
+                    if (rect.bottom > viewportHeight) {
+                        tooltip.style.top = 'auto';
+                        tooltip.style.bottom = '100%';
+                    }
+                });
+
+                button.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                    tooltip.style.opacity = '0';
+                });
+            });
+        });
+    </script>
 </head>
 <body>
 
