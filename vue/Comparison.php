@@ -251,17 +251,40 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
     <h2 class="text-sm font-semibold">Nouvelle version</h2>
     <!-- Valider and Refuser Buttons -->
     <div class="flex space-x-2">
-        <form method="POST" action="../modele/Validation.php">
+        <form method="POST" action="../modele/Validation.php" onsubmit="return showValidationModal(event)">
             <input type="hidden" name="justification" value="ok">
-        <span class="isolate inline-flex rounded-md shadow-sm">
-            <button type="submit" name="action" value="ACCEPTE" class="relative inline-flex items-center rounded-l-md bg-green-50 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-green-100 focus:z-10">Valider</button>
+            <span class="isolate inline-flex rounded-md shadow-sm">
+            <button type="button" class="relative inline-flex items-center rounded-l-md bg-green-50 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-green-100 focus:z-10" onclick="showValidationModal(event)">Valider</button>
         </span>
         </form>
-            <input type="hidden" name="action" value="REFUSE">
-            <span class="isolate inline-flex rounded-md shadow-sm">
-                <button type="submit" class="relative -ml-px inline-flex items-center rounded-r-md bg-red-50 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-red-100 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
-            </span>
+        <input type="hidden" name="action" value="REFUSE">
+        <span class="isolate inline-flex rounded-md shadow-sm">
+        <button type="submit" class="relative -ml-px inline-flex items-center rounded-r-md bg-red-50 px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-red-100 focus:z-10" onclick="document.getElementById('refuseModal').classList.remove('hidden')">Refuser</button>
+    </span>
     </div>
+
+    <!-- Validation Modal -->
+    <div id="validationModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 hidden z-50">
+        <div class="bg-white p-8 rounded shadow-lg w-1/3">
+            <h2 class="text-lg font-semibold mb-4">Confirmation de validation</h2>
+            <p>Êtes-vous sûr de vouloir valider ?</p>
+            <div class="flex justify-end space-x-2 mt-4">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600" onclick="document.getElementById('validationModal').classList.add('hidden')">Annuler</button>
+                <button type="button" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onclick="submitValidationForm()">Valider</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showValidationModal(event) {
+            event.preventDefault();
+            document.getElementById('validationModal').classList.remove('hidden');
+        }
+
+        function submitValidationForm() {
+            document.querySelector('form[onsubmit="return showValidationModal(event)"]').submit();
+        }
+    </script>
 </header>
 
 <!-- Refus -->
