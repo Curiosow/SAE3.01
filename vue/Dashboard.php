@@ -367,6 +367,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 
     <!-- Bouton pour basculer le thème -->
     <form action="theme.php" method="POST" class="flex items-center">
+        <input type="hidden" name="current_file" value="Dashboard.php">
         <?php
         if ($_COOKIE['theme'] == 'light') {
             echo '<button type="submit" name="theme" value="dark" class="focus:outline-none '; echo $currentColors['text']; echo '">
@@ -530,7 +531,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     </form>';
 
                 echo '<form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
-                <button type="submit" id="gestio-ping-modification" name="gestio-ping-modification" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Notifier changement EDT</button>
+                <button type="submit" id="gestio-ping-modification" name="gestio-ping-modification" class="rounded '; echo $currentColors['bg']; echo ' px-2 py-1 text-xs font-semibold '; echo $currentColors['text']; echo ' shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:'; echo $currentColors['bg']; echo '">Notifier changement EDT</button>
             </form>';
             }
             ?>

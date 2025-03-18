@@ -138,12 +138,14 @@ function getLineFromCSVByEmail($email) {
     <meta charset="UTF-8">
     <title>Emploi du temps</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body class="<?php echo $currentColors['subbg']; ?> <?php echo $currentColors['text']; ?>">
+<body class="<?php echo $currentColors['subbg'] ?> flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
 
 <div class="absolute top-0 right-0 p-4">
     <!-- Bouton pour basculer le thème -->
     <form action="theme.php" method="POST" class="flex items-center">
+        <input type="hidden" name="current_file" value="Login.php">
         <?php
         if ($_COOKIE['theme'] == 'light') {
             echo '<button type="submit" name="theme" value="dark" class="focus:outline-none '; echo $currentColors['text']; echo '">
@@ -162,18 +164,15 @@ function getLineFromCSVByEmail($email) {
     </form>
 </div>
 
-<div class="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-    <div class="w-full max-w-sm space-y-10">
+<main class="w-full max-w-sm mx-auto text-center">
 
-        <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img class="mx-auto h-10 w-auto" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/UPHF_logo.svg/2560px-UPHF_logo.svg.png" alt="UPHF">
-            <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight <?php echo $currentColors['text']; ?>">Connectez-vous avec votre mail UPHF</h2>
-        </div>
+    <img class="mx-auto h-10 w-auto" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/UPHF_logo.svg/2560px-UPHF_logo.svg.png">
+    <h2 class="text-2xl font-bold leading-9 tracking-tight <?php echo $currentColors['text']; ?>">Connectez-vous avec votre mail UPHF</h2>
 
-        <?php
-        if(isset($_SESSION['just_register']) && $_SESSION['just_register']) {
-            $_SESSION['just_register'] = false;
-            echo '<div class="rounded-md bg-green-50 p-4">
+    <?php
+    if(isset($_SESSION['just_register']) && $_SESSION['just_register']) {
+        $_SESSION['just_register'] = false;
+        echo '<div class="rounded-md bg-green-50 p-4">
                       <div class="flex">
                         <div class="flex-shrink-0">
                           <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -190,11 +189,11 @@ function getLineFromCSVByEmail($email) {
                         </div>
                       </div>
                     </div>';
-        }
+    }
 
-        if(isset($_SESSION['just_register_confirm']) && $_SESSION['just_register_confirm']) {
-            $_SESSION['just_register_confirm'] = false;
-            echo '<div class="rounded-md bg-green-50 p-4">
+    if(isset($_SESSION['just_register_confirm']) && $_SESSION['just_register_confirm']) {
+        $_SESSION['just_register_confirm'] = false;
+        echo '<div class="rounded-md bg-green-50 p-4">
                       <div class="flex">
                         <div class="flex-shrink-0">
                           <svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -211,10 +210,10 @@ function getLineFromCSVByEmail($email) {
                         </div>
                       </div>
                     </div>';
-        }
+    }
 
-        if(!empty($login_err)) {
-            echo '<div class="rounded-md bg-red-50 p-4">
+    if(!empty($login_err)) {
+        echo '<div class="rounded-md bg-red-50 p-4">
                       <div class="flex">
                         <div class="flex-shrink-0">
                           <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -231,44 +230,46 @@ function getLineFromCSVByEmail($email) {
                         </div>
                       </div>
                     </div>';
-        }
-        ?>
+    }
+    ?>
 
-        <form class="space-y-6" action="Login.php" method="POST">
-            <div class="relative -space-y-px rounded-md shadow-sm">
-                <div class="pointer-events-none absolute inset-0 z-10 rounded-md ring-1 ring-inset <?php echo $currentColors['ring']; ?>"></div>
-                <div>
-                    <label for="email-address" class="sr-only">Adresse mail UPHF</label>
-                    <input id="email-address" name="email-address" type="email" autocomplete="email" required class="relative block w-full rounded-t-md border-0 py-1.5 <?php echo $currentColors['text']; ?> ring-1 ring-inset <?php echo $currentColors['ring'] ?> placeholder:<?php echo $currentColors['text']; ?> focus:z-10 focus:ring-2 focus:ring-inset focus:<?php echo $currentColors['ring']; ?> sm:text-sm sm:leading-6" placeholder="Adresse mail UPHF">
-                </div>
-                <div>
-                    <label for="password" class="sr-only">Mot de passe</label>
-                    <input id="password" name="password" type="password" autocomplete="current-password" required class="relative block w-full rounded-b-md border-0 py-1.5 <?php echo $currentColors['text']; ?> ring-1 ring-inset <?php echo $currentColors['ring'] ?> placeholder:<?php echo $currentColors['text']; ?> focus:z-10 focus:ring-2 focus:ring-inset focus:<?php echo $currentColors['ring']; ?> sm:text-sm sm:leading-6" placeholder="Mot de passe">
-                </div>
-            </div>
-
+    <form class="space-y-6 mt-6" action="Login.php" method="POST">
+        <div class="space-y-4">
             <div>
-                <button type="submit" class="flex w-full justify-center rounded-md <?php echo $currentColors['bg']; ?> px-3 py-1.5 text-sm font-semibold leading-6 <?php echo $currentColors['text']; ?> shadow-sm <?php echo $currentColors['hover']; ?> focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:<?php echo $currentColors['ring']; ?>">Se connecter</button>
+                <label for="email-address" class="sr-only">Adresse mail UPHF</label>
+                <input id="email-address" name="email-address" type="email" autocomplete="email" required
+                       class="block w-full rounded-md <?php echo $currentColors['bg'] ?> <?php echo $currentColors['border'] ?> shadow-sm py-2 px-3 <?php echo $currentColors['text'] ?> focus:ring-indigo-600 focus:border-indigo-600 sm:text-base"
+                       placeholder="Adresse mail UPHF">
             </div>
-        </form>
+            <div>
+                <label for="password" class="sr-only">Mot de passe</label>
+                <input id="password" name="password" type="password" autocomplete="current-password" required
+                       class="block w-full rounded-md <?php echo $currentColors['bg'] ?> <?php echo $currentColors['border'] ?> shadow-sm py-2 px-3 <?php echo $currentColors['text'] ?> focus:ring-indigo-600 focus:border-indigo-600 sm:text-base"
+                       placeholder="Mot de passe">
+            </div>
+        </div>
 
-        <p class="text-center text-sm leading-6 <?php echo $currentColors['text']; ?>">
-            Vous avez oublié votre mot de passe ?
-            <a href="ForgotPassword.php" class="font-semibold text-indigo-300 <?php echo $currentColors['hover']; ?>">Changez-le ici</a>
-        </p>
+        <button type="submit" class="w-full rounded-md <?php echo $currentColors['bg'] ?> px-4 py-2 <?php echo $currentColors['text'] ?> font-semibold <?php echo $currentColors['hover'] ?>  sm:text-lg">
+            S'enregistrer
+        </button>
+    </form>
 
-        <p class="text-center text-sm leading-6 <?php echo $currentColors['text']; ?>">
-            Vous n'avez pas de compte ?
-            <a href="Register.php" class="font-semibold text-indigo-300 <?php echo $currentColors['hover']; ?>">Enregistrez-vous ici</a>
-        </p>
+    <p class="text-center text-sm text-gray-500 mt-4">
+        Vous avez oublié votre mot de passe ?
+        <a href="ForgotPassword.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+    </p>
 
-        <p class="text-center text-sm leading-6 <?php echo $currentColors['text']; ?>">
-            Vous n'êtes pas enregistré ?
-            <a href="OldLogin.php" class="font-semibold text-indigo-300 <?php echo $currentColors['hover']; ?>">Cherchez votre EDT</a>
-        </p>
+    <p class="text-center text-sm text-gray-500 mt-4">
+        Vous n'avez pas de compte ?
+        <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+    </p>
 
-    </div>
-</div>
+    <p class="text-center text-sm text-gray-500 mt-4">
+        Vous n'êtes pas enregistré ?
+        <a href="OldLogin.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+    </p>
+
+</main>
 
 </body>
 </html>

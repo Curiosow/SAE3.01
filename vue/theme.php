@@ -4,7 +4,9 @@ if (isset($_POST['theme'])) {
     $theme = $_POST['theme'];
     setcookie('theme', $theme, time() + (86400 * 30), "/");
     $_COOKIE['theme'] = $theme;
-    header('location: Dashboard.php');
+
+    $redirect_file = isset($_POST['current_file']) ? $_POST['current_file'] : 'Dashboard.php';
+    header('location: ' . $redirect_file);
 } else {
     $theme = isset($_COOKIE['theme']) ? $_COOKIE['theme'] : 'light';
 }
