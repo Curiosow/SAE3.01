@@ -126,20 +126,6 @@ function getDayWeek($day) {
     return $resultDate;
 }
 
-//La fonction getWeekDay renvoie la date soit du lundi, soit du dimanche de la semaine en cours, en fonction du paramètre firstDay.
-function getWeekDay($firstDay) {
-    global $week;
-    $resultDate = clone $week;
-
-    if ($firstDay) {
-        $resultDate->modify('monday this week');
-    } else {
-        $resultDate->modify('sunday this week');
-    }
-
-    return $resultDate;
-}
-
 // Récupération de la version la plus récente
 $version = returnVersion();
 
@@ -230,6 +216,9 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
             });
         });
     </script>
+
+    <script src="/controleur/week.js"></script>
+
 </head>
 <body class="<?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>">
 
@@ -590,27 +579,27 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     </svg>
                 </button>
             </form>
-            <form action="Dashboard.php" method="POST" class="flex items-center mx-auto">
-                <input type="hidden" name="weekOffSet" value="<?php echo $_SESSION['weekOffSet']; ?>">
+            <div id="weekNav" class="flex items-center mx-auto">
+                <input type="hidden" name="weekOffSet" id="weekOffsetValue" value="<?php echo $_SESSION['weekOffSet']; ?>">
                 <div class="flex items-center rounded-md <?php echo $currentColors['bg'] ?> shadow-sm md:items-stretch">
-                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
+                    <button id="buttonback" type="submit" name="weekOffSet" value="" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Semaine précédente</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
                     <button type="submit" name="weekOffSet" value="0" class="hidden border-y <?php echo $currentColors['border']; ?> px-3.5 text-sm font-semibold <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:block">
-                        Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?>
+                        <span id="weekRange">Loading...</span>
                     </button>
                     <span class="relative -mx-px h-5 w-px <?php echo $currentColors['bg']; ?> md:hidden"></span>
-                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
+                    <button id="buttonnext" type="submit" name="weekOffSet" value="" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Semaine suivante</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 </div>
-            </form>
+            </div>
         </header>
 
         <!-- Content -->
@@ -620,20 +609,20 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     <div class="-mr-px hidden grid-cols-5 divide-x <?php echo $currentColors['lines'] ?> border-r <?php echo $currentColors['border']; ?> text-sm leading-6 <?php echo $currentColors['text']; ?> sm:grid">
                         <div class="col-end-1 w-14"></div>
                         <!-- affichage de la semaine -->
-                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('monday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Lun <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('monday'); echo $thisDay->format('d M'); ?></span></span>
+                        <div id="day-lundi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
+                            <span>Lun <span id="day-lundi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Mar <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('d M'); ?></span></span>
+                        <div id="day-mardi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
+                            <span>Mar <span id="day-mardi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Mer <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('d M'); ?></span></span>
+                        <div id="day-mercredi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
+                            <span>Mer <span id="day-mercredi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Jeu <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('d M'); ?></span></span>
+                        <div id="day-jeudi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
+                            <span>Jeu <span id="day-jeudi-span"  class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
                         </div>
-                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('friday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
-                            <span>Ven <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('friday'); echo $thisDay->format('d M'); ?></span></span>
+                        <div id="day-vendredi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
+                            <span>Ven <span id="day-vendredi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
                         </div>
                     </div>
                 </div>
@@ -667,8 +656,8 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                         </div>
 
                         <!-- Events -->
-                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
-                            <?php $controleur->generateDays($week, false, (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
+                        <ol id="daysContainer" class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
+                            <!-- AJAX loaded events will appear here -->
                         </ol>
                     </div>
                 </div>

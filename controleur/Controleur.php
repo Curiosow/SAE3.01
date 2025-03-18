@@ -10,8 +10,49 @@ class Controleur
 
     }
 
+    function getSpan(DateTime $duration) {
+        $hours = (int) $duration->format('H');
+        $minutes = (int) $duration->format('i');
+
+        $span = ($hours * 2);
+        if ($minutes >= 30) {
+            $span += 1;
+        }
+
+        return $span;
+    }
+
+    function getGridRow(DateTime $dateTime) {
+        $hour = (int) $dateTime->format('H');
+        $minute = (int) $dateTime->format('i');
+
+        $gridRow = (($hour - 7) * 2);
+        if ($minute >= 30) {
+            $gridRow += 1;
+        }
+        return $gridRow;
+    }
+
+    function getWeekDates(DateTime $date) {
+        $startOfWeek = clone $date;
+        $endOfWeek = clone $date;
+
+        $startOfWeek->modify('monday this week');
+        $endOfWeek->modify('sunday this week');
+
+        $weekDates = [];
+
+        $currentDate = clone $startOfWeek;
+        while ($currentDate <= $endOfWeek) {
+            $weekDates[] = clone $currentDate;
+            $currentDate->modify('+1 day');
+        }
+
+        return $weekDates;
+    }
+
     function generateDays($week, $previousVersion = false, $teacherEdt = false) {
-        $weekDates = getWeekDates($week);
+        $weekDates = $this->getWeekDates($week);
 
         $disciplineColors = getDisciplineColors();
 
@@ -33,10 +74,10 @@ class Controleur
 
                 $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
                 $dispHoraire = $horraire->format("N");
-                $dispGridRow = getGridRow($horraire);
+                $dispGridRow = $this->getGridRow($horraire);
 
                 $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
-                $dispSpan = max(getSpan($duree), ceil(strlen($course->getTypeseance()) / 20) + 1);
+                $dispSpan = max($this->getSpan($duree), ceil(strlen($course->getTypeseance()) / 20) + 1);
 
 
 
@@ -119,10 +160,10 @@ class Controleur
 
             $horraire = new DateTime($course->getHoraire(), new DateTimeZone('Europe/Paris'));
             $dispHoraire = $horraire->format("N");
-            $dispGridRow = getGridRow($horraire);
+            $dispGridRow = $this->getGridRow($horraire);
 
             $duree = new DateTime($course->getDuration(), new DateTimeZone('Europe/Paris'));
-            $dispSpan = getSpan($duree);
+            $dispSpan = $this->getSpan($duree);
 
             $color = "gray";
             if (array_key_exists($course->getDiscipline(), $disciplineColors))
@@ -247,6 +288,37 @@ class Controleur
             </button>
         </form>';
         }
+    }
+
+    //La fonction getWeekDay renvoie la date soit du lundi, soit du dimanche de la semaine en cours, en fonction du paramètre firstDay.
+    function getWeekDay($firstDay) {
+        // Données de bases
+        setlocale(LC_TIME, 'fr_FR.UTF-8');
+        $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
+        $week = clone $realDate;
+        $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
+        $resultDate = clone $week;
+
+        if ($firstDay) {
+            $resultDate->modify('monday this week');
+        } else {
+            $resultDate->modify('sunday this week');
+        }
+
+        return $resultDate;
+    }
+
+    //La fonction getDayWeek renvoie la date d'un jour spécifique de la semaine en cours. Elle prend un jour en paramètre et modifie la date de la semaine clonée pour correspondre au jour spécifié
+    function getDayWeek($day) {
+        // Données de bases
+        setlocale(LC_TIME, 'fr_FR.UTF-8');
+        $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
+        $week = clone $realDate;
+        $week = $week->modify(($_SESSION['weekOffSet'] * 7) . ' days');
+        $resultDate = clone $week;
+        $resultDate->modify($day . ' this week');
+
+        return $resultDate;
     }
 
 }

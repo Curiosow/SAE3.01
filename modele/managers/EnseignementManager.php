@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/../Database.php";
 
 function getDisciplineColors() {
     $preparedStatement = "SELECT * FROM disciplinecouleur";
