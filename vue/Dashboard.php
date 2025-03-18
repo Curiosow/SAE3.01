@@ -188,9 +188,10 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                 const tooltipId = button.getAttribute('data-tooltip-target');
                 const tooltip = document.getElementById(tooltipId);
 
-                button.addEventListener('mouseenter', () => {
+                const showTooltip = () => {
                     tooltip.style.display = 'block';
                     tooltip.style.opacity = '1';
+                    tooltip.style.padding = '5px';
 
                     const rect = tooltip.getBoundingClientRect();
                     const viewportWidth = window.innerWidth;
@@ -207,11 +208,30 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                         tooltip.style.top = 'auto';
                         tooltip.style.bottom = '100%';
                     }
-                });
+                };
 
-                button.addEventListener('mouseleave', () => {
+                const hideTooltip = () => {
                     tooltip.style.display = 'none';
                     tooltip.style.opacity = '0';
+                    tooltip.style.padding = '0';
+                };
+
+                button.addEventListener('mouseenter', showTooltip);
+                button.addEventListener('mouseleave', () => {
+                    setTimeout(hideTooltip, 50); // Delay hiding the tooltip
+                });
+                button.addEventListener('click', () => {
+                    if (tooltip.style.display === 'block') {
+                        hideTooltip();
+                    } else {
+                        showTooltip();
+                    }
+                });
+
+                // Touch events for mobile
+                button.addEventListener('touchstart', showTooltip);
+                button.addEventListener('touchend', () => {
+                    setTimeout(hideTooltip, 5000); // Delay hiding the tooltip
                 });
             });
         });
@@ -516,8 +536,30 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
             ?>
 
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
-                <button type="submit" id="disconnect" name="disconnect" class="rounded <?php echo $currentColors['bg']; ?> px-2 py-1 text-xs font-semibold <?php echo $currentColors['text']; ?> shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:<?php echo $currentColors['hover']; ?>">Se déconnecter</button>
+                <button type="button" id="disconnect" name="disconnect" class="rounded <?php echo $currentColors['bg']; ?> px-2 py-1 text-xs font-semibold <?php echo $currentColors['text']; ?> shadow-sm ring-1 ring-inset <?php echo $currentColors['ring']; ?> hover:<?php echo $currentColors['hover']; ?>" onclick="togglePopup()">Se déconnecter</button>
             </form>
+
+            <!-- Pop-up de confirmation -->
+            <div id="popup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                <div class="p-6 rounded-lg shadow-lg w-3/4 max-w-sm <?php echo $_COOKIE['theme'] == 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'; ?>">
+                    <h2 class="text-lg font-semibold mb-4">Confirmation</h2>
+                    <p class="mb-4">Êtes-vous sûr de vouloir vous déconnecter ?</p>
+                    <div class="flex justify-end">
+                        <button class="mr-2 px-4 py-2 rounded <?php echo $_COOKIE['theme'] == 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : $currentColors['bg'] . ' ' . $currentColors['text'] . ' ' . $currentColors['hover']; ?>" onclick="togglePopup()">Annuler</button>
+                        <form action="Dashboard.php" method="POST">
+                            <button type="submit" name="disconnect" class="px-4 py-2 rounded bg-red-600 bg-opacity-75 text-white hover:bg-red-700">Se déconnecter</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function togglePopup() {
+                    const popup = document.getElementById('popup');
+                    popup.classList.toggle('hidden');
+                }
+            </script>
+
             <span class="text-xs <?php echo $currentColors['text']; ?>">Version: <?php echo $version; if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE" && $_COOKIE['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_COOKIE['role']; } ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
