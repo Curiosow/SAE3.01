@@ -25,4 +25,18 @@ class AbsenceControleur
         pg_query_params($connexion, $preparedStatement, array($start, $end, $reason, $collegue));
     }
 
+    public function getAllAbsences() {
+        $preparedStatement = "SELECT * FROM absences";
+        $connexion = Database::getInstance()->getConnection();
+        if(!$connexion) {
+            die('La communication à la base de données a échouée : ' . pg_last_error());
+        }
+        $result = pg_query($connexion, $preparedStatement);
+        $absences = array();
+        while ($row = pg_fetch_assoc($result)) {
+            $absences[] = new Absence($row['id'], $row['start'], $row['end'], $row['reason'], $row['collegue']);
+        }
+        return $absences;
+    }
+
 }

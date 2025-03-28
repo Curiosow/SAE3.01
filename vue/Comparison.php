@@ -60,10 +60,22 @@ function getGridRow(DateTime $dateTime) {
     $hour = (int) $dateTime->format('H');
     $minute = (int) $dateTime->format('i');
 
-    $gridRow = (($hour - 7) * 2);
+    // Calculate the grid row based on the hour and minute
+    $gridRow = (($hour - 7) * 2) + 1; // Adjusted to start from 1
     if ($minute >= 30) {
         $gridRow += 1;
     }
+
+    // Ensure the grid row is within the valid range
+    if ($gridRow < 1) {
+        $gridRow = 1;
+    } elseif ($gridRow > 19) {
+        $gridRow = 19;
+    }
+
+    // Debugging output
+    error_log("DateTime: " . $dateTime->format('Y-m-d H:i') . " -> GridRow: " . $gridRow);
+
     return $gridRow;
 }
 
@@ -108,23 +120,13 @@ function isCourseModified($currentCourse, $previousCourses) {
     }
 }
 
-function getDifference($currentCourse, $previousCourses) {
-    foreach ($previousCourses as $prevCourse) {
-        $prvToString = explode("\t", $prevCourse);
-        $curToString = explode("\t", $currentCourse);
-
-        foreach ($prvToString as $keyValue) {
-            if($keyValue != $curToString[array_search($keyValue, $prvToString)]) {
-                $keyAndValue = explode("=", $keyValue);
-                return $keyAndValue[0];
-            }
-
-        }
-
-    }
-
-    return null;
-}
+include_once "../controleur/AbsenceControleur.php";
+$absenceControleur = new AbsenceControleur();
+$absences = $absenceControleur->getAllAbsences();
+$filteredAbsences = array_filter($absences, function($absence) {
+    $dayOfWeek = date('N', strtotime($absence->getStart()));
+    return $dayOfWeek >= 1 && $dayOfWeek <= 5;
+});
 
 function generateDays2($week, $isPreviousVersion = false) {
     $weekDates = getWeekDates($week);
@@ -168,26 +170,26 @@ function generateDays2($week, $isPreviousVersion = false) {
                 <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
             </div>
         </form>
+        <!-- Bouton pour afficher l\'info-bulle  -->
         <button data-tooltip-target="tooltip-' . $uniqueId . '"
                 class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
                 style="position: absolute; top: 0; right: 0;">
             ⓘ
         </button>
+
+        <!-- Info-bulle avec animation -->
         <div id="tooltip-' . $uniqueId . '"
              data-tooltip="tooltip-' . $uniqueId . '"
-             class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 duration-200 ease-in-out border border-black" style="width: 200px; right: -210px; top: 0;">
+             class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 border border-black"
+             style="width: 200px; right: -210px; top: 0; display: none;">
             <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
             <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
             <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
             <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
-            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>
-            <span>Code : </span><span class="text-red-500">' . $course->getCode() . '</span><br>
-            ';
-            if($isModified) {
-                echo '<span>Difference : </span><span class="text-red-500">' . getDifference($course, $previousCourses) . '</span><br>';
-            }
+            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>';
+
             echo '</div>
-       </a>
+    </a>
 </li>';
         }
     }
@@ -211,6 +213,62 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
     <script
             type="module"
             src="https://unpkg.com/@material-tailwind/html@latest/scripts/tooltip.js">
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tooltipButtons = document.querySelectorAll('[data-tooltip-target]');
+
+            tooltipButtons.forEach(button => {
+                const tooltipId = button.getAttribute('data-tooltip-target');
+                const tooltip = document.getElementById(tooltipId);
+
+                const showTooltip = () => {
+                    tooltip.style.display = 'block';
+                    tooltip.style.opacity = '1';
+                    tooltip.style.padding = '5px';
+
+                    const rect = tooltip.getBoundingClientRect();
+                    const viewportWidth = window.innerWidth;
+                    const viewportHeight = window.innerHeight;
+
+                    // Adjust position if tooltip goes off the right edge
+                    if (rect.right > viewportWidth) {
+                        tooltip.style.right = 'auto';
+                        tooltip.style.left = '0';
+                    }
+
+                    // Adjust position if tooltip goes off the bottom edge
+                    if (rect.bottom > viewportHeight) {
+                        tooltip.style.top = 'auto';
+                        tooltip.style.bottom = '100%';
+                    }
+                };
+
+                const hideTooltip = () => {
+                    tooltip.style.display = 'none';
+                    tooltip.style.opacity = '0';
+                    tooltip.style.padding = '0';
+                };
+
+                button.addEventListener('mouseenter', showTooltip);
+                button.addEventListener('mouseleave', () => {
+                    setTimeout(hideTooltip, 50); // Delay hiding the tooltip
+                });
+                button.addEventListener('click', () => {
+                    if (tooltip.style.display === 'block') {
+                        hideTooltip();
+                    } else {
+                        showTooltip();
+                    }
+                });
+
+                // Touch events for mobile
+                button.addEventListener('touchstart', showTooltip);
+                button.addEventListener('touchend', () => {
+                    setTimeout(hideTooltip, 5000); // Delay hiding the tooltip
+                });
+            });
+        });
     </script>
     <style>
         body {
@@ -351,6 +409,28 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
                         </div>
                         <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
                             <?php generateDays2($week, true); // Previous version ?>
+                            <?php foreach ($filteredAbsences as $absence): ?>
+                                <?php
+                                $startDateTime = new DateTime($absence->getStart(), new DateTimeZone('Europe/Paris'));
+                                $endDateTime = new DateTime($absence->getEnd(), new DateTimeZone('Europe/Paris'));
+                                $startHour = getGridRow($startDateTime);
+                                $endHour = getGridRow($endDateTime);
+
+                                // Calculer la colonne en fonction de la date complète
+                                $weekStart = clone $week;
+                                $weekStart->modify('monday this week');
+                                $daysDifference = $startDateTime->diff($weekStart)->days;
+                                $column = $daysDifference + 1;
+
+                                // Vérifier si la date de début est dans la même semaine
+                                if ($startDateTime >= $weekStart && $startDateTime < $weekStart->modify('+7 days')) {
+                                    // Debugging output
+                                    error_log("Absence: " . $absence->getStart() . " to " . $absence->getEnd() . " -> Column: " . $column . ", StartHour: " . $startHour . ", EndHour: " . $endHour);
+                                    ?>
+                                    <div class="col-start-<?= $column ?> row-start-<?= $startHour ?> row-end-<?= $endHour ?> border-2 border-purple-500">
+                                    </div>
+                                <?php } ?>
+                            <?php endforeach; ?>
                         </ol>
                     </div>
                 </div>
