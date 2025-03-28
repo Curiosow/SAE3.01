@@ -93,6 +93,8 @@ function getWeekDates(DateTime $date) {
     return $weekDates;
 }
 
+#La fonction getGridRow calcule une valeur de ligne de grille en fonction des heures et des minutes d'un objet DateTime donné,
+#où chaque heure à partir de 7 heures du matin compte pour 2 unités et 30 minutes ou plus ajoutent une unité supplémentaire.
 function getGridRow(DateTime $dateTime) {
     $hour = (int) $dateTime->format('H');
     $minute = (int) $dateTime->format('i');
@@ -104,7 +106,7 @@ function getGridRow(DateTime $dateTime) {
     return $gridRow;
 }
 
-
+#La fonction getSpan calcule une valeur d'étendue en fonction des heures et des minutes d'un objet DateTime donné, où chaque heure compte pour 2 unités et 30 minutes ou plus ajoutent une unité supplémentaire.
 function getSpan(DateTime $duration) {
     $hours = (int) $duration->format('H');
     $minutes = (int) $duration->format('i');
@@ -122,6 +124,20 @@ function getDayWeek($day) {
     global $week;
     $resultDate = clone $week;
     $resultDate->modify($day . ' this week');
+
+    return $resultDate;
+}
+
+//La fonction getWeekDay renvoie la date soit du lundi, soit du dimanche de la semaine en cours, en fonction du paramètre firstDay.
+function getWeekDay($firstDay) {
+    global $week;
+    $resultDate = clone $week;
+
+    if ($firstDay) {
+        $resultDate->modify('monday this week');
+    } else {
+        $resultDate->modify('sunday this week');
+    }
 
     return $resultDate;
 }
@@ -188,10 +204,9 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                 const tooltipId = button.getAttribute('data-tooltip-target');
                 const tooltip = document.getElementById(tooltipId);
 
-                const showTooltip = () => {
+                button.addEventListener('mouseenter', () => {
                     tooltip.style.display = 'block';
                     tooltip.style.opacity = '1';
-                    tooltip.style.padding = '5px';
 
                     const rect = tooltip.getBoundingClientRect();
                     const viewportWidth = window.innerWidth;
@@ -208,37 +223,15 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                         tooltip.style.top = 'auto';
                         tooltip.style.bottom = '100%';
                     }
-                };
+                });
 
-                const hideTooltip = () => {
+                button.addEventListener('mouseleave', () => {
                     tooltip.style.display = 'none';
                     tooltip.style.opacity = '0';
-                    tooltip.style.padding = '0';
-                };
-
-                button.addEventListener('mouseenter', showTooltip);
-                button.addEventListener('mouseleave', () => {
-                    setTimeout(hideTooltip, 50); // Delay hiding the tooltip
-                });
-                button.addEventListener('click', () => {
-                    if (tooltip.style.display === 'block') {
-                        hideTooltip();
-                    } else {
-                        showTooltip();
-                    }
-                });
-
-                // Touch events for mobile
-                button.addEventListener('touchstart', showTooltip);
-                button.addEventListener('touchend', () => {
-                    setTimeout(hideTooltip, 5000); // Delay hiding the tooltip
                 });
             });
         });
     </script>
-
-    <script src="/controleur/week.js"></script>
-
 </head>
 <body class="<?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>">
 
@@ -367,7 +360,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 
     <!-- Bouton pour basculer le thème -->
     <form action="theme.php" method="POST" class="flex items-center">
-        <input type="hidden" name="current_file" value="Dashboard.php">
         <?php
         if ($_COOKIE['theme'] == 'light') {
             echo '<button type="submit" name="theme" value="dark" class="focus:outline-none '; echo $currentColors['text']; echo '">
@@ -526,41 +518,19 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                             </div>
                         </div>
                         <div>
-                            <button type="submit" id="change-groupe" name="change-groupe" class="rounded '; echo $currentColors['bg']; echo ' px-2 py-1 text-xs font-semibold '; echo $currentColors['text']; echo ' shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' ';  echo $currentColors['hover']; echo '">Changer de groupe</button>
+                            <button type="submit" id="change-groupe" name="change-groupe" class="rounded '; echo $currentColors['bg']; echo ' px-2 py-1 text-xs font-semibold '; echo $currentColors['text']; echo ' shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:';  echo $currentColors['hover']; echo '">Changer de groupe</button>
                         </div>
                     </form>';
 
                 echo '<form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
-                <button type="submit" id="gestio-ping-modification" name="gestio-ping-modification" class="rounded '; echo $currentColors['bg']; echo ' px-2 py-1 text-xs font-semibold '; echo $currentColors['text']; echo ' shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:'; echo $currentColors['bg']; echo '">Notifier changement EDT</button>
+                <button type="submit" id="gestio-ping-modification" name="gestio-ping-modification" class="rounded bg-gray-800 px-2 py-1 text-xs font-semibold text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-900">Notifier changement EDT</button>
             </form>';
             }
             ?>
 
             <form action="Dashboard.php" method="POST" class="mb-4 flex justify-center">
-                <button type="button" id="disconnect" name="disconnect" class="rounded <?php echo $currentColors['bg']; ?> px-2 py-1 text-xs font-semibold <?php echo $currentColors['text']; ?> shadow-sm ring-1 ring-inset <?php echo $currentColors['ring']; ?> hover:<?php echo $currentColors['hover']; ?>" onclick="togglePopup()">Se déconnecter</button>
+                <button type="submit" id="disconnect" name="disconnect" class="rounded <?php echo $currentColors['bg']; ?> px-2 py-1 text-xs font-semibold <?php echo $currentColors['text']; ?> shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:<?php echo $currentColors['hover']; ?>">Se déconnecter</button>
             </form>
-
-            <!-- Pop-up de confirmation -->
-            <div id="popup" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                <div class="p-6 rounded-lg shadow-lg w-3/4 max-w-sm <?php echo $_COOKIE['theme'] == 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-black'; ?>">
-                    <h2 class="text-lg font-semibold mb-4">Confirmation</h2>
-                    <p class="mb-4">Êtes-vous sûr de vouloir vous déconnecter ?</p>
-                    <div class="flex justify-end">
-                        <button class="mr-2 px-4 py-2 rounded <?php echo $_COOKIE['theme'] == 'dark' ? 'bg-gray-700 text-white hover:bg-gray-600' : $currentColors['bg'] . ' ' . $currentColors['text'] . ' ' . $currentColors['hover']; ?>" onclick="togglePopup()">Annuler</button>
-                        <form action="Dashboard.php" method="POST">
-                            <button type="submit" name="disconnect" class="px-4 py-2 rounded bg-red-600 bg-opacity-75 text-white hover:bg-red-700">Se déconnecter</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <script>
-                function togglePopup() {
-                    const popup = document.getElementById('popup');
-                    popup.classList.toggle('hidden');
-                }
-            </script>
-
             <span class="text-xs <?php echo $currentColors['text']; ?>">Version: <?php echo $version; if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE" && $_COOKIE['role'] != 'ELEVE') { echo ' - Vous êtes ' . $_COOKIE['role']; } ?></span>
             <svg xmlns="http://www.w3.org/2000/svg" width="240" height="1" viewBox="0 0 240 1" fill="none">
                 <path d="M0 0.5H240" stroke="#898888"/>
@@ -608,11 +578,11 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                         <g id="SVGRepo_iconCarrier">
-                            <title>Coucou</title>
-                            <desc>Super description de Matis.</desc>
+                            <title>exit_full_screen [#905]</title>
+                            <desc>Created with Sketch.</desc>
                             <defs></defs>
                             <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <g id="Dribbble-Light-Preview" transform="translate(-260.000000, -4199.000000)" fill="currentColor">
+                                <g id="Dribbble-Light-Preview" transform="translate(-260.000000, -4199.000000)" fill="#000000">
                                     <g id="icons" transform="translate(56.000000, 160.000000)">
                                         <path d="M218,4047 L224,4047 L224,4045 L218,4045 L218,4039 L216,4039 L216,4043.959 L216,4047 L218,4047 Z M218,4053 L224,4053 L224,4051 L218,4051 L216,4051 L216,4051.959 L216,4059 L218,4059 L218,4053 Z M210,4059 L212,4059 L212,4051.959 L212,4051 L210,4051 L204,4051 L204,4053 L210,4053 L210,4059 Z M210,4039 L212,4039 L212,4043.959 L212,4047 L210,4047 L204,4047 L204,4045 L210,4045 L210,4039 Z" id="exit_full_screen-[#905]"></path>
                                     </g>
@@ -622,27 +592,27 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     </svg>
                 </button>
             </form>
-            <div id="weekNav" class="flex items-center mx-auto">
-                <input type="hidden" name="weekOffSet" id="weekOffsetValue" value="<?php echo $_SESSION['weekOffSet']; ?>">
+            <form action="Dashboard.php" method="POST" class="flex items-center mx-auto">
+                <input type="hidden" name="weekOffSet" value="<?php echo $_SESSION['weekOffSet']; ?>">
                 <div class="flex items-center rounded-md <?php echo $currentColors['bg'] ?> shadow-sm md:items-stretch">
-                    <button id="buttonback" type="submit" name="weekOffSet" value="" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
+                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Semaine précédente</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
                     <button type="submit" name="weekOffSet" value="0" class="hidden border-y <?php echo $currentColors['border']; ?> px-3.5 text-sm font-semibold <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:block">
-                        <span id="weekRange">Loading...</span>
+                        Du <?php $fDay = getWeekDay(true); echo $fDay->format('d M') ?> au <?php $lDay = getWeekDay(false); echo $lDay->format('d M'); ?>
                     </button>
                     <span class="relative -mx-px h-5 w-px <?php echo $currentColors['bg']; ?> md:hidden"></span>
-                    <button id="buttonnext" type="submit" name="weekOffSet" value="" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
+                    <button type="submit" name="weekOffSet" value="<?php echo ($_SESSION['weekOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Semaine suivante</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 </div>
-            </div>
+            </form>
         </header>
 
         <!-- Content -->
@@ -652,20 +622,20 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     <div class="-mr-px hidden grid-cols-5 divide-x <?php echo $currentColors['lines'] ?> border-r <?php echo $currentColors['border']; ?> text-sm leading-6 <?php echo $currentColors['text']; ?> sm:grid">
                         <div class="col-end-1 w-14"></div>
                         <!-- affichage de la semaine -->
-                        <div id="day-lundi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
-                            <span>Lun <span id="day-lundi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
+                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('monday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
+                            <span>Lun <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('monday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div id="day-mardi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
-                            <span>Mar <span id="day-mardi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
+                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
+                            <span>Mar <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('tuesday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div id="day-mercredi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
-                            <span>Mer <span id="day-mercredi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
+                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
+                            <span>Mer <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('wednesday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div id="day-jeudi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
-                            <span>Jeu <span id="day-jeudi-span"  class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
+                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
+                            <span>Jeu <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('thursday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
-                        <div id="day-vendredi" class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" onclick="handleDayClicked(this)">
-                            <span>Ven <span id="day-vendredi-span" class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>">Loading&hellip;</span></span>
+                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = getDayWeek('friday'); echo $thisDay->format('Y-m-d') ?> " onclick="handleDayClicked(this)">
+                            <span>Ven <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php $thisDay = getDayWeek('friday'); echo $thisDay->format('d M'); ?></span></span>
                         </div>
                     </div>
                 </div>
@@ -699,8 +669,8 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                         </div>
 
                         <!-- Events -->
-                        <ol id="daysContainer" class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
-                            <!-- AJAX loaded events will appear here -->
+                        <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
+                            <?php $controleur->generateDays($week, false, (isset($_COOKIE['collegue']) && $_COOKIE['collegue'] != "NONE")); ?>
                         </ol>
                     </div>
                 </div>
