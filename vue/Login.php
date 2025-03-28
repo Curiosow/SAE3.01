@@ -256,17 +256,17 @@ function getLineFromCSVByEmail($email) {
 
     <p class="text-center text-sm text-gray-500 mt-4">
         Vous avez oublié votre mot de passe ?
-        <a href="ForgotPassword.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+        <a href="ForgotPassword.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Changez-le moi</a>
     </p>
 
     <p class="text-center text-sm text-gray-500 mt-4">
         Vous n'avez pas de compte ?
-        <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+        <a href="Register.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Enregistrez-vous ici</a>
     </p>
 
     <p class="text-center text-sm text-gray-500 mt-4">
         Vous n'êtes pas enregistré ?
-        <a href="OldLogin.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+        <a href="OldLogin.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Cherchez votre EDT</a>
     </p>
 
 </main>

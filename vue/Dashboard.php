@@ -526,7 +526,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                             </div>
                         </div>
                         <div>
-                            <button type="submit" id="change-groupe" name="change-groupe" class="rounded '; echo $currentColors['bg']; echo ' px-2 py-1 text-xs font-semibold '; echo $currentColors['text']; echo ' shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' hover:';  echo $currentColors['hover']; echo '">Changer de groupe</button>
+                            <button type="submit" id="change-groupe" name="change-groupe" class="rounded '; echo $currentColors['bg']; echo ' px-2 py-1 text-xs font-semibold '; echo $currentColors['text']; echo ' shadow-sm ring-1 ring-inset '; echo $currentColors['ring']; echo ' ';  echo $currentColors['hover']; echo '">Changer de groupe</button>
                         </div>
                     </form>';
 
@@ -608,8 +608,8 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                         <g id="SVGRepo_iconCarrier">
-                            <title>exit_full_screen [#905]</title>
-                            <desc>Created with Sketch.</desc>
+                            <title>Coucou</title>
+                            <desc>Super description de Matis.</desc>
                             <defs></defs>
                             <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                                 <g id="Dribbble-Light-Preview" transform="translate(-260.000000, -4199.000000)" fill="currentColor">

@@ -66,8 +66,9 @@ function getSemestre($promotion, $date)
     <meta charset="UTF-8">
     <title>Emploi du temps</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body <?php echo $currentColors['subbg']; ?>>
+<body class="<?php echo $currentColors['subbg'] ?> flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8">
 
 <div class="absolute top-0 right-0 p-4">
     <!-- Bouton pour basculer le thème -->
@@ -89,59 +90,64 @@ function getSemestre($promotion, $date)
         }
         ?>
     </form>
+
 </div>
 
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+<main class="w-full max-w-sm mx-auto text-center">
 
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img class="mx-auto h-10 w-auto" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7_hvZN3QSpzxIuVu8EPWSRpIZD-Al7AKMIQ&s" alt="Your Company">
-        <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight <?php echo $currentColors['text']; ?>">Accédez via votre groupe</h2>
-    </div>
+    <img class="mx-auto h-10 w-auto" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/UPHF_logo.svg/2560px-UPHF_logo.svg.png">
+    <h2 class="text-2xl font-bold leading-9 tracking-tight <?php echo $currentColors['text']; ?>">Accédez via votre groupe</h2>
 
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="OldLogin.php" method="POST">
-            <div>
-                <label for="promotion" class="block text-sm font-medium leading-6  <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>">Promotion</label>
-                 <div class="mt-2">
-                    <select id="promotion" name="promotion" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ring-1 ring-inset <?php echo $currentColors['ring']; ?>  focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option value="1">1 ère année</option>
-                        <option value="2">2 ème année</option>
-                        <option value="3">3 ème année</option>
-                    </select>
-                </div>
+    <form class="space-y-6 mt-6" action="Login.php" method="POST">
+        <div class="space-y-4">
 
-                <label for="formation" class="block text-sm font-medium leading-6 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ">Formation</label>
-                <div class="mt-2">
-                    <select id="formation" name="formation" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ring-1 ring-inset <?php echo $currentColors['ring']; ?> focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option value="FI">Initiale</option>
-                        <option value="FA">Alternance</option>
-                    </select>
-                </div>
-
-                <label for="groupe" class="block text-sm font-medium leading-6 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ">Groupe</label>
-                <div class="mt-2">
-                    <select id="groupe" name="groupe" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 ring-1 ring-inset <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> <?php echo $currentColors['ring']; ?> focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                    </select>
-                </div>
-
-                <label for="sousgroupe" class="block text-sm font-medium leading-6 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ">Sous-Groupe</label>
-                <div class="mt-2">
-                    <select id="sousgroupe" name="sousgroupe" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>  ring-1 ring-inset <?php echo $currentColors['ring']; ?>  focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
-                </div>
+            <label for="promotion" class="block text-sm font-medium leading-6  <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>">Promotion</label>
+            <div class="mt-2">
+                <select id="promotion" name="promotion" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ring-1 ring-inset <?php echo $currentColors['ring']; ?>  focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option value="1">1 ère année</option>
+                    <option value="2">2 ème année</option>
+                    <option value="3">3 ème année</option>
+                </select>
             </div>
 
-            <div>
-                <button type="submit" class="flex w-full justify-center rounded-md <?php echo $currentColors['bg']; ?> px-3 py-1.5 text-sm font-semibold leading-6 <?php echo $currentColors['text']; ?> shadow-sm <?php echo $currentColors['hover']; ?> focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:<?php echo $currentColors['ring']; ?>">Connexion</button>
+            <label for="formation" class="block text-sm font-medium leading-6 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ">Formation</label>
+            <div class="mt-2">
+                <select id="formation" name="formation" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ring-1 ring-inset <?php echo $currentColors['ring']; ?> focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option value="FI">Initiale</option>
+                    <option value="FA">Alternance</option>
+                </select>
             </div>
-        </form>
-    </div>
-</div>
+
+            <label for="groupe" class="block text-sm font-medium leading-6 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ">Groupe</label>
+            <div class="mt-2">
+                <select id="groupe" name="groupe" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 ring-1 ring-inset <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> <?php echo $currentColors['ring']; ?> focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+
+            <label for="sousgroupe" class="block text-sm font-medium leading-6 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?> ">Sous-Groupe</label>
+            <div class="mt-2">
+                <select id="sousgroupe" name="sousgroupe" class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>  ring-1 ring-inset <?php echo $currentColors['ring']; ?>  focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button type="submit" class="w-full rounded-md <?php echo $currentColors['bg'] ?> px-4 py-2 <?php echo $currentColors['text'] ?> font-semibold <?php echo $currentColors['hover'] ?>  sm:text-lg">
+            Connexion
+        </button>
+    </form>
+
+    <p class="text-center text-sm text-gray-500 mt-4">
+        Vous avez déjà un compte ?
+        <a href="Login.php" class="font-semibold text-indigo-600 hover:text-indigo-500">Connectez-vous ici</a>
+    </p>
+
+</main>
 
 </body>
 </html>
