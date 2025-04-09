@@ -269,7 +269,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
     $notifications = $notificationsControleur->getUnreadNotifications();
 
     echo '
-    <div class="absolute top-0 right-0 p-4">
+    <div class="absolute top-0 right-7 p-4">
         <div class="relative">';
     if (sizeof($notifications) != 0)
         echo '<span class="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-red-600"></span>';
@@ -489,7 +489,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 <!-- Static sidebar -->
 <div id="sidebar" class="lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-16 lg:flex-col transition-width duration-300 <?php echo $currentColors['bg']; ?>">
     <!-- Bouton pour rétracter/étendre la sidebar -->
-    <div class="absolute top-0 right-0 p-2">
+    <div class="absolute top-0 left-0 p-2">
         <button onclick="toggleSidebar()" class="focus:outline-none <?php echo $currentColors['text']; ?>">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
