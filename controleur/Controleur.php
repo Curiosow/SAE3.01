@@ -103,14 +103,14 @@ class Controleur
                 }
 
                 echo '<li class="relative mt-px flex col-start-' . $dispHoraire . ' sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm leading-5 hover:bg-' . $color . '-100">
+    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm sm:text-xs md:text-xs lg:text-sm leading-5 hover:bg-' . $color . '-100">
         <form>
             <div>
-                <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
+                <p class="text-' . $color . '-500 font-semibold text-sm sm:text-xs md:text-xs lg:text-sm group-hover:text-' . $color . '-700">
                     <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . $exam . '</time>
                 </p>
-                <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
-                <p class="order-1 text-' . $color . '-700">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
+                <p class="order-1 text-' . $color . '-700 text-sm sm:text-xs md:text-xs lg:text-sm">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
+                <p class="order-1 text-' . $color . '-700 text-sm sm:text-xs md:text-xs lg:text-sm">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
             </div>
         </form>
 
