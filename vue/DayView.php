@@ -265,18 +265,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
 if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
     $notifications = $notificationsControleur->getUnreadNotifications();
 
-    echo '
-    <div class="absolute top-0 right-0 p-4">
-        <div class="relative">
-            <button onclick="toggleNotificationSidebar()" class="text-black focus:outline-none">
-                <svg class="h-6 w-6" fill="none" stroke="black" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-            </button>
-            <!-- Notification Bulles -->
-            ';
-    if (sizeof($notifications) != 0)
-        echo '<span class="absolute top-0 right-0 inline-flex h-2 w-2 rounded-full bg-red-600"></span>';
+
     echo '</div></div>';
 
     echo '<div id="notificationSidebar" class="fixed inset-y-0 right-0 z-50 w-64 '; echo $currentColors['bg']; echo ' shadow-lg transform translate-x-full transition-transform duration-300">
@@ -387,7 +376,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 
     <!-- Bouton pour basculer le thème -->
     <form action="theme.php" method="POST" class="flex items-center">
-        <input type="hidden" name="current_file" value="Dashboard.php">
+        <input type="hidden" name="current_file" value="DayView.php">
         <?php
         if ($_COOKIE['theme'] == 'light') {
             echo '<button type="submit" name="theme" value="dark" class="focus:outline-none '; echo $currentColors['text']; echo '">
@@ -630,13 +619,13 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
             <form action="DayView.php" method="POST" class="flex items-center mx-auto">
                 <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
                 <div class="flex items-center rounded-md <?php echo $currentColors['bg'] ?> shadow-sm md:items-stretch">
-                    <button type="submit" name="dayOffSet" value="<?php echo ($_SESSION['dayOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:md:hover:<?php echo $currentColors['bg']; ?>">
+                    <button type="submit" name="dayOffSet" value="<?php echo ($_SESSION['dayOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Jour précédent</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
-                    <button type="submit" name="dayOffSet" value="0" class="hidden border-y border-gray-300 px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block">
+                    <button type="submit" name="dayOffSet" value="0" class="hidden border-y <?php echo $currentColors['border']; ?> px-3.5 text-sm font-semibold <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:block">
                         <?php
                         $currentDay = new DateTime('now', new DateTimeZone('Europe/Paris'));
                         $currentDay->modify($_SESSION['dayOffSet'] . ' days');
