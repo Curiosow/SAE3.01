@@ -143,6 +143,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const daysContainer = document.getElementById("daysContainer");
                 if (daysContainer != null) {
                     daysContainer.innerHTML = data.html;
+                    // Réinitialiser les évènements pour les infobulles
+                    initializeTooltips();
                 } else {
                     console.error("daysContainer element not found!");
                 }
@@ -151,4 +153,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Error fetching AJAX days:", error);
             });
     }
+
+    // Fonction pour initialiser les infobulles
+    function initializeTooltips() {
+        document.querySelectorAll('[data-tooltip-target]').forEach(button => {
+            const tooltipId = button.getAttribute('data-tooltip-target');
+            const tooltip = document.getElementById(tooltipId);
+
+            if (tooltip) {
+                button.addEventListener('mouseenter', () => {
+                    tooltip.style.display = 'block';
+                    tooltip.style.opacity = '1';
+                });
+
+                button.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                    tooltip.style.opacity = '0';
+                });
+            }
+        });
+    }
+
 });

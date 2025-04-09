@@ -245,8 +245,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
                 window.location.href = "DayView.php";
             }
         });
-
-        // Optionnel : écoute les changements de taille d'écran
+        // Event listener pour vérifier s'il y a un changement de taille de la fenetre
         window.addEventListener("resize", function () {
             if (window.innerWidth < 768) {
                 window.location.href = "DayView.php";
