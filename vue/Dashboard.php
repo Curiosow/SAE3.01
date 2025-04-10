@@ -64,8 +64,8 @@ if (isset($_POST['weekOffSet'])) {
     }
 }
 
-// Réinitialisation de dayOffSet à 0 si défini
-if (isset($_SESSION['dayOffSet'])) {
+// Réinitialisation de dayOffSet à 0 si il n'est pas défini
+if (!isset($_SESSION['dayOffSet'])) {
     $_SESSION['dayOffSet'] = 0;
 }
 

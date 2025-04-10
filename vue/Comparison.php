@@ -409,28 +409,6 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
                         </div>
                         <ol class="col-start-1 col-end-2 row-start-1 grid grid-cols-1 sm:grid-cols-5 sm:pr-8" style="grid-template-rows: 1.75rem repeat(19, minmax(4.2vh, 1fr)) auto">
                             <?php generateDays2($week, true); // Previous version ?>
-                            <?php foreach ($filteredAbsences as $absence): ?>
-                                <?php
-                                $startDateTime = new DateTime($absence->getStart(), new DateTimeZone('Europe/Paris'));
-                                $endDateTime = new DateTime($absence->getEnd(), new DateTimeZone('Europe/Paris'));
-                                $startHour = getGridRow($startDateTime);
-                                $endHour = getGridRow($endDateTime);
-
-                                // Calculer la colonne en fonction de la date complète
-                                $weekStart = clone $week;
-                                $weekStart->modify('monday this week');
-                                $daysDifference = $startDateTime->diff($weekStart)->days;
-                                $column = $daysDifference + 1;
-
-                                // Vérifier si la date de début est dans la même semaine
-                                if ($startDateTime >= $weekStart && $startDateTime < $weekStart->modify('+7 days')) {
-                                    // Debugging output
-                                    error_log("Absence: " . $absence->getStart() . " to " . $absence->getEnd() . " -> Column: " . $column . ", StartHour: " . $startHour . ", EndHour: " . $endHour);
-                                    ?>
-                                    <div class="col-start-<?= $column ?> row-start-<?= $startHour ?> row-end-<?= $endHour ?> border-2 border-purple-500">
-                                    </div>
-                                <?php } ?>
-                            <?php endforeach; ?>
                         </ol>
                     </div>
                 </div>

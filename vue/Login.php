@@ -10,6 +10,11 @@ $notificationControleur = new NotificationControleur();
 
 session_start();
 
+// Vérification si le thème n'est pas initialiser
+if(!isset($_COOKIE['theme'])) {
+    $_COOKIE['theme'] = 'light';
+}
+
 if(isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
     header('location: Dashboard.php');
     exit();
