@@ -33,6 +33,11 @@ if(isset($_POST['gestio-ping-modification'])) notifNewVersion($notificationsCont
 // Vérification si l'utilisateur souhaite changer de groupe (pour les gestionnaires)
 if(isset($_POST['change-groupe'])) changeGroupe($_POST['newGroupe']);
 
+// Réinitialisation de dayOffSet à 0 si défini
+if (isset($_SESSION['dayOffSet'])) {
+    $_SESSION['dayOffSet'] = 0;
+}
+
 // Données de bases
 setlocale(LC_TIME, 'fr_FR.UTF-8');
 $realDate = new DateTime('now', new DateTimeZone('Europe/Paris'));
@@ -59,9 +64,15 @@ if (isset($_POST['weekOffSet'])) {
     }
 }
 
-// Si ce n'est pas le cas, si aucun jour n'est enregistrer dans la session, alors on définit au jour actuel.
-if (!isset($_SESSION['dayOffSet'])) {
+// Réinitialisation de dayOffSet à 0 si défini
+if (isset($_SESSION['dayOffSet'])) {
     $_SESSION['dayOffSet'] = 0;
+}
+
+// Redirection pour nettoyer l'URL si dayOffSet est présent
+if (isset($_GET['dayOffSet'])) {
+    header('Location: Dashboard.php');
+    exit();
 }
 
 // Modification des données par rapport à l'utilisateur

@@ -68,8 +68,25 @@ if (isset($_POST['dayOffSet'])) {
 // Modification des données par rapport à l'utilisateur
 $date = (new DateTime('now', new DateTimeZone('Europe/Paris')))->modify($_SESSION['monthOffSet'] . ' month');
 $week = (new DateTime('now', new DateTimeZone('Europe/Paris')))->modify(($_SESSION['weekOffSet'] * 7) . ' days');
-$day = (new DateTime('now', new DateTimeZone('Europe/Paris')))->modify($_SESSION['dayOffSet'] . ' days');
 $month = IntlDateFormatter::formatObject($date, 'MMMM y', 'fr');
+
+// Fonction permettant de récupérer la date en fonction des offsets
+function getDateWithOffsets($weekOffset, $dayOffset) {
+    $date = new DateTime('now', new DateTimeZone('Europe/Paris'));
+
+    // Calcul de la date de base en fonction de l'offset de semaine
+    $date->modify(($weekOffset * 7) . ' days');
+
+    // Ajout de l'offset de jour
+    $date->modify($dayOffset . ' days');
+
+    return $date;
+}
+
+// Utilisation de la fonction
+$day = getDateWithOffsets($_SESSION['weekOffSet'], $_SESSION['dayOffSet']);
+//echo $day->format('Y-m-d'); // Affiche la date calculée
+//echo "offset : " . $_SESSION['dayOffSet'];
 
 // Vérification si l'utilisateur souhaite faire un pdf du mois actuel
 if(isset($_POST['PDF'])) getCalendarPdf($week);
@@ -151,6 +168,8 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
     $role = $_COOKIE['role'];
     $notificationsControleur->setToLastNotification();
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -482,7 +501,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
 <!-- Static sidebar -->
 <div id="sidebar" class="lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-16 lg:flex-col transition-width duration-300 <?php echo $currentColors['bg']; ?>">
     <!-- Bouton pour rétracter/étendre la sidebar -->
-    <div class="absolute top-0 right-0 p-2">
+    <div class="absolute left-0 right-0 p-2">
         <button onclick="toggleSidebar()" class="<?php echo $currentColors['text']; ?> focus:outline-none">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
@@ -617,7 +636,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                 </button>
             </form>
             <form action="DayView.php" method="POST" class="flex items-center mx-auto">
-                <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
                 <div class="flex items-center rounded-md <?php echo $currentColors['bg'] ?> shadow-sm md:items-stretch">
                     <button type="submit" name="dayOffSet" value="<?php echo ($_SESSION['dayOffSet'] - 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-l-md border-y border-l <?php echo $currentColors['border']; ?> pr-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pr-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Jour précédent</span>
@@ -627,18 +645,15 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     </button>
                     <button type="submit" name="dayOffSet" value="0" class="hidden border-y <?php echo $currentColors['border']; ?> px-3.5 text-sm font-semibold <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:block">
                         <?php
-                        $currentDay = new DateTime('now', new DateTimeZone('Europe/Paris'));
-                        $currentDay->modify($_SESSION['dayOffSet'] . ' days');
                         $formatter = new IntlDateFormatter('fr_FR', IntlDateFormatter::FULL, IntlDateFormatter::NONE);
                         $formatter->setPattern('EEEE d MMMM');
-                        echo ucfirst($formatter->format($currentDay));
+                        echo ucfirst($formatter->format($day));
                         ?>
                     </button>
-                    <span class="relative -mx-px h-5 w-px <?php echo $currentColors['bg']; ?> md:hidden"></span>
                     <button type="submit" name="dayOffSet" value="<?php echo ($_SESSION['dayOffSet'] + 1); ?>" class="flex h-9 w-12 items-center justify-center rounded-r-md border-y border-r <?php echo $currentColors['border']; ?> pl-1 <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?> focus:relative md:w-9 md:pl-0 md:hover:<?php echo $currentColors['bg']; ?>">
                         <span class="sr-only">Jour suivant</span>
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5-4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
                         </svg>
                     </button>
                 </div>
@@ -652,8 +667,8 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
                     <div class="-mr-px hidden grid-cols-1 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14"></div>
                         <!-- affichage du jour -->
-                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php $thisDay = (new DateTime('now', new DateTimeZone('Europe/Paris')))->modify($_SESSION['dayOffSet'] . ' days'); echo $thisDay->format('Y-m-d'); ?>" onclick="handleDayClicked(this)">
-                            <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php echo $thisDay->format('d M'); ?></span>
+                        <div class="flex items-center justify-center py-3 <?php echo $currentColors['hover']; ?>" data-date="<?php echo $day->format('Y-m-d'); ?>" onclick="handleDayClicked(this)">
+                            <span class="items-center justify-center font-semibold <?php echo $currentColors['text']; ?>"><?php echo $day->format('d M'); ?></span>
                         </div>
                     </div>
                 </div>
