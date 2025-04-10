@@ -183,8 +183,8 @@ class Controleur
             if ($course->getExam() == 't') {
                 $exam = " - EXAMEN";
             }
-            echo '<li class="relative mt-px flex sm:col-start-1 sm:col-end-6" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-                <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 ' . (is_numeric(strpos(strtolower($_SERVER["HTTP_USER_AGENT"]), "mobile")) ? "text-[50px]" : "text-sm") . ' hover:bg-' . $color . '-100">
+            echo '<li class="relative mt-px flex col-start-1 col-end-6" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
+                <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 ' . ' hover:bg-' . $color . '-100">
                     <form>
                         <div>
                             <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">

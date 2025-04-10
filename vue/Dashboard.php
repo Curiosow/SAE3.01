@@ -152,6 +152,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE") {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emploi du temps</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
@@ -488,7 +489,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
             });
         }
     }
-    // Fonction qui gère l'événement lorsqu'un jour est cliqué dans le calendrier
+    // Fonction qui gère l'événement lorsqu'un jour est cliqué dans la barre du haut
     function handleDayClicked(day) {
         clickedDate = day.getAttribute('data-date');
         clickedDate = new Date(clickedDate);
@@ -629,7 +630,6 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
         <!-- topbar (changeur de semaines) -->
         <header class="flex justify-between items-center border-b <?php echo $currentColors['border']; ?> px-4 py-2">
             <form action="DayView.php" method="GET" class="flex items-center">
-                <input type="hidden" name="dayOffSet" value="<?php echo $_SESSION['dayOffSet']; ?>">
                 <button type="submit" class="flex items-center <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?>">
                     <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="h-6 w-6">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
