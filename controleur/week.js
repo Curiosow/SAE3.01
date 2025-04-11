@@ -5,9 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     loadWeekDays();
     loadDaysAjax();
 
-    // Add event listeners to the buttons to update the offset and call updateSessionOffset()
+    // Ajout d'event listeners aux boutons pour mettre à jour l'offset et appeler la fonction updateSession avec le nouvel offset
     document.getElementById("buttonback").addEventListener("click", function (e) {
-        e.preventDefault();
         const hiddenInput = document.getElementById("weekOffsetValue");
         let currentOffset = parseInt(hiddenInput.value, 10);
         let newOffset = currentOffset - 1;
@@ -16,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("buttonnext").addEventListener("click", function (e) {
-        e.preventDefault();
         const hiddenInput = document.getElementById("weekOffsetValue");
         let currentOffset = parseInt(hiddenInput.value, 10);
         let newOffset = currentOffset + 1;
@@ -24,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
         updateSessionOffset(newOffset);
     });
 
-    // Function to update the week offset in the session via AJAX using POST
+    // Fonction pour mettre à jour l'offset de la session en Ajax
     function updateSessionOffset(newOffset) {
         const formData = new FormData();
         formData.append("weekOffSet", newOffset);
@@ -34,14 +32,14 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(response => response.text())
             .then(data => {
-                console.log("Session updated. New offset:", newOffset);
+                console.log("Session mise à jour. Nouvel offset:", newOffset);
                 loadOffset(-1);
                 loadOffset(1);
                 loadWeekRange();
                 loadWeekDays();
                 loadDaysAjax();
             })
-            .catch(error => console.error("Error updating session offset:", error));
+            .catch(error => console.error("Erreur dans la mise à jour de l'offset", error));
     }
 
     function loadOffset(offset) {
@@ -51,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (this.readyState === 4) {
                 if (this.status === 200) {
                     const data = JSON.parse(this.responseText);
-                    console.log("Offset response:", data);
+                    console.log("Offset:", data);
 
                     let button;
                     if (offset === -1) {
@@ -63,17 +61,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (button) {
                         button.setAttribute("value", data);
                     } else {
-                        console.error("Button not found for offset:", offset);
+                        console.error("Bouton non trouvé pour l'offset:", offset);
                     }
                 } else {
-                    console.error("Error with status:", this.status);
+                    console.error("Erreur de statut:", this.status);
                 }
             }
         };
 
         xhr.open("GET", "/controleur/Offset.php?offset=" + offset, true);
         xhr.send();
-        console.log("AJAX request sent with offset:", offset);
+        console.log("Requête Ajax envoyé avec offset:", offset);
     }
 
     function loadWeekRange() {
@@ -82,16 +80,16 @@ document.addEventListener("DOMContentLoaded", function () {
         xhr.onreadystatechange = function () {
             if (this.readyState === 4) {
                 if (this.status === 200) {
-                    console.log("Réponse de la fonction range :", this.responseText); // Log the response text
+                    console.log("Réponse de la fonction range :", this.responseText);
                     try {
                         const data = JSON.parse(this.responseText);
                         const weekRangeElement = document.getElementById("weekRange");
                         weekRangeElement.textContent = `Du ${data.start} au ${data.end}`;
                     } catch (e) {
-                        console.error("Error parsing JSON:", e);
+                        console.error("Erreur dans le parsing JSON:", e);
                     }
                 } else {
-                    console.error("Error with status:", this.status);
+                    console.error("Erreur de statut:", this.status);
                 }
             }
         };
@@ -123,10 +121,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         document.getElementById('day-vendredi').setAttribute("data-date", data.vendredi.date);
                         document.getElementById("day-vendredi-span").textContent = data.vendredi.display;
                     } catch (e) {
-                        console.error("Error parsing JSON:", e);
+                        console.error("Erreur dans le parsing JSON:", e);
                     }
                 } else {
-                    console.error("Error with status:", this.status);
+                    console.error("Erreur de statut:", this.status);
                 }
             }
         };
@@ -146,11 +144,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Réinitialiser les évènements pour les infobulles
                     initializeTooltips();
                 } else {
-                    console.error("daysContainer element not found!");
+                    console.error("daysContainer non trouvé");
                 }
             })
             .catch(error => {
-                console.error("Error fetching AJAX days:", error);
+                console.error("Erreur dans la récupération des jours en Ajax:", error);
             });
     }
 
