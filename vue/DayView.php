@@ -10,6 +10,11 @@ session_start();
 $controleur = new Controleur();
 $notificationsControleur = new NotificationControleur();
 
+// Vérification si le thème n'est pas initialiser
+if(!isset($_COOKIE['theme'])) {
+    $_COOKIE['theme'] = 'light';
+}
+
 // Vérification si l'utilisateur n'est pas connecté
 if(!isset($_COOKIE['groupe']) || $_COOKIE['groupe'] == "NONE") {
     header('location: Login.php');
