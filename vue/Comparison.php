@@ -364,7 +364,7 @@ if(isset($_COOKIE['role']) && $_COOKIE['role'] != "NONE")
     <div class="flex flex-auto">
         <!-- Emploi du temps 1 -->
         <div class="w-1/2 p-4 border-r-2 border-gray-200">
-            <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full bg-red-50">
+            <div class="flex max-w-full flex-none flex-col sm:max-w-none md:max-w-full bg-red-100">
                 <div class="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8">
                     <div class="-mr-px hidden grid-cols-5 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
                         <div class="col-end-1 w-14"></div>
