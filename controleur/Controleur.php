@@ -133,7 +133,7 @@ class Controleur
 
         <!-- Bouton pour afficher l\'info-bulle  -->
         <button data-tooltip-target="tooltip-' . $uniqueId . '"
-                class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
+                class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase ' . $currentColors['text'] . ' hover:text-gray-700 focus:outline-none"
                 style="position: absolute; top: 0; right: 0;">
             ⓘ
         </button>
@@ -232,7 +232,7 @@ class Controleur
             
                     <!-- Bouton pour afficher l\'info-bulle  -->
                     <button data-tooltip-target="tooltip-' . $uniqueId . '"
-                            class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase text-gray-500 hover:text-gray-700 focus:outline-none"
+                            class="select-none rounded-lg bg-transparent py-1 px-2 text-xs font-bold uppercase ' . $currentColors['text'] . ' hover:text-gray-700 focus:outline-none"
                             style="position: absolute; top: 0; right: 0;">
                         ⓘ
                     </button>
