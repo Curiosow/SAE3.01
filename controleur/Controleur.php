@@ -53,6 +53,10 @@ class Controleur
 
     function generateDays($week, $previousVersion = false, $teacherEdt = false) {
         global $currentColors;
+        if(!isset($_COOKIE['theme'])) {
+            $_COOKIE['theme'] = 'light';
+        }
+
         $weekDates = $this->getWeekDates($week);
 
         $disciplineColors = getDisciplineColors();
@@ -163,8 +167,11 @@ class Controleur
     }
 
     function generateDay($day, $teacherEdt = false) {
-
         global $currentColors;
+        if(!isset($_COOKIE['theme'])) {
+            $_COOKIE['theme'] = 'light';
+        }
+
         $disciplineColors = getDisciplineColors();
 
         $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
@@ -273,6 +280,10 @@ class Controleur
 
     function generateCalendar() {
         global $date, $realDate, $currentColors;
+        if(!isset($_COOKIE['theme'])) {
+            $_COOKIE['theme'] = 'light';
+        }
+
         $month = $date->format('m');
         $year = $date->format('Y');
 
