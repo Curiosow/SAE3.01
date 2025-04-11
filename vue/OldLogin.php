@@ -98,7 +98,7 @@ function getSemestre($promotion, $date)
     <img class="mx-auto h-10 w-auto" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/UPHF_logo.svg/2560px-UPHF_logo.svg.png">
     <h2 class="text-2xl font-bold leading-9 tracking-tight <?php echo $currentColors['text']; ?>">Accédez via votre groupe</h2>
 
-    <form class="space-y-6 mt-6" action="Login.php" method="POST">
+    <form class="space-y-6 mt-6" action="OldLogin.php" method="POST">
         <div class="space-y-4">
 
             <label for="promotion" class="block text-sm font-medium leading-6  <?php echo $currentColors['bg']; ?> <?php echo $currentColors['text']; ?>">Promotion</label>
