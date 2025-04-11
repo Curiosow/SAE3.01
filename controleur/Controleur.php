@@ -52,6 +52,7 @@ class Controleur
     }
 
     function generateDays($week, $previousVersion = false, $teacherEdt = false) {
+        global $currentColors;
         $weekDates = $this->getWeekDates($week);
 
         $disciplineColors = getDisciplineColors();
@@ -102,15 +103,31 @@ class Controleur
                     $exam = " - EXAMEN";
                 }
 
+                $caseColor = "bg-" . $color . '-50';
+                if($_COOKIE['theme'] == 'dark')
+                    $caseColor = "bg-" . $color . '-500';
+
+                $hoverCaseColor = "bg-" . $color . '-100';
+                if($_COOKIE['theme'] == 'dark')
+                    $hoverCaseColor = "bg-" . $color . '-700';
+
+                $firstTtextColor = "text-" . $color . '-500';
+                if($_COOKIE['theme'] == 'dark')
+                    $firstTtextColor = "text-" . $color . '-50';
+
+                $secondTtextColor = "text-" . $color . '-700';
+                if($_COOKIE['theme'] == 'dark')
+                    $secondTtextColor = "text-" . $color . '-100';
+
                 echo '<li class="relative mt-px flex col-start-' . $dispHoraire . ' sm:col-start-' . $dispHoraire . '" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 text-sm sm:text-xs md:text-xs lg:text-sm leading-5 hover:bg-' . $color . '-100">
+    <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg ' . $caseColor . ' p-2 text-sm sm:text-xs md:text-xs lg:text-sm leading-5 hover:' . $hoverCaseColor . '">
         <form>
             <div>
-                <p class="text-' . $color . '-500 font-semibold text-sm sm:text-xs md:text-xs lg:text-sm group-hover:text-' . $color . '-700">
+                <p class="' . $firstTtextColor . ' font-semibold text-sm sm:text-xs md:text-xs lg:text-sm group-hover:' . $secondTtextColor . '">
                     <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . $exam . '</time>
                 </p>
-                <p class="order-1 text-' . $color . '-700 text-sm sm:text-xs md:text-xs lg:text-sm">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
-                <p class="order-1 text-' . $color . '-700 text-sm sm:text-xs md:text-xs lg:text-sm">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
+                <p class="order-1 ' . $secondTtextColor . ' text-sm sm:text-xs md:text-xs lg:text-sm">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
+                <p class="order-1 ' . $secondTtextColor . ' text-sm sm:text-xs md:text-xs lg:text-sm">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
             </div>
         </form>
 
@@ -124,16 +141,16 @@ class Controleur
         <!-- Info-bulle avec animation -->
         <div id="tooltip-' . $uniqueId . '"
              data-tooltip="tooltip-' . $uniqueId . '"
-             class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 border border-black"
+             class="absolute z-50 whitespace-normal break-words rounded-lg ' . $currentColors['bg'] . ' py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 border border-black"
              style="width: 200px; right: -210px; top: 0; display: none;">
-            <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
-            <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
-            <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
-            <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
-            <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>';
+            <p class="text-center ' . $currentColors['text'] . ' font-bold text-lg ">' . $course->getTypeseance() . '</p>
+            <span class="' . $currentColors['text'] . '">Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
+            <span class="' . $currentColors['text'] . '">Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
+            <span class="' . $currentColors['text'] . '">Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
+            <span class="' . $currentColors['text'] . '">Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>';
 
                 if($course->getCollegue() != '' && $course->getCollegue() != null) {
-                    echo '<span>Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
+                    echo '<span class="' . $currentColors['text'] . '">Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
                 }
 
                 echo '</div>
@@ -147,6 +164,7 @@ class Controleur
 
     function generateDay($day, $teacherEdt = false) {
 
+        global $currentColors;
         $disciplineColors = getDisciplineColors();
 
         $courses = getDay($day, $day->format('d'), $_COOKIE['semestre'], $_COOKIE['groupe'], (int) $_COOKIE['sousgroupe'], $_COOKIE['formation'], $teacherEdt);
@@ -177,21 +195,38 @@ class Controleur
             if ($horraire->format("i") < 10 && $horraire->format("i") > 1)
                 $dispMinute = '0' . $dispMinute;
 
-            $uniqueId = uniqid(); // Génère un identifiant unique
+            $uniqueId = uniqid();
 
             $exam = "";
             if ($course->getExam() == 't') {
                 $exam = " - EXAMEN";
             }
+
+            $caseColor = "bg-" . $color . '-50';
+            if($_COOKIE['theme'] == 'dark')
+                $caseColor = "bg-" . $color . '-500';
+
+            $hoverCaseColor = "bg-" . $color . '-100';
+            if($_COOKIE['theme'] == 'dark')
+                $hoverCaseColor = "bg-" . $color . '-700';
+
+            $firstTtextColor = "text-" . $color . '-500';
+            if($_COOKIE['theme'] == 'dark')
+                $firstTtextColor = "text-" . $color . '-50';
+
+            $secondTtextColor = "text-" . $color . '-700';
+            if($_COOKIE['theme'] == 'dark')
+                $secondTtextColor = "text-" . $color . '-100';
+
             echo '<li class="relative mt-px flex col-start-1 col-end-6" style="grid-row: ' . $dispGridRow . ' / span ' . $dispSpan . '">
-                <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg bg-' . $color . '-50 p-2 ' . ' hover:bg-' . $color . '-100">
+                <a class="group absolute inset-1 flex flex-col overflow-visible rounded-lg ' . $caseColor . ' p-2 ' . ' hover:' . $hoverCaseColor . '">
                     <form>
                         <div>
-                            <p class="text-' . $color . '-500 font-semibold group-hover:text-' . $color . '-700">
+                            <p class="' . $firstTtextColor . ' font-semibold group-hover:' . $secondTtextColor . '">
                                 <time>' . $dispHour . ':' . $dispMinute . ' - ' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . $exam . '</time>
                             </p>
-                            <p class="order-1 text-' . $color . '-700">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
-                            <p class="order-1 text-' . $color . '-700">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
+                            <p class="order-1 ' . $secondTtextColor . '">' . $course->getTypeseance() . ' - ' . $course->getEnseignementShortName() . '</p>
+                            <p class="order-1 ' . $secondTtextColor . '">' . $this->transformTeacherName($course->getCollegueFullName()) . '</p>
                         </div>
                     </form>
             
@@ -205,16 +240,16 @@ class Controleur
                     <!-- Info-bulle avec animation -->
                     <div id="tooltip-' . $uniqueId . '"
                          data-tooltip="tooltip-' . $uniqueId . '"
-                         class="absolute z-50 whitespace-normal break-words rounded-lg bg-gray-50 py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 border border-black"
-                         style="width: 30%; right: 100px; top: 0; display: none;">
-                        <p class="text-center font-bold text-lg">' . $course->getTypeseance() . '</p>
-                        <span>Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
-                        <span>Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
-                        <span>Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
-                        <span>Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>';
+                         class="absolute z-50 whitespace-normal break-words rounded-lg ' . $currentColors['bg'] . ' py-1.5 px-3 font-sans text-sm font-normal text-black focus:outline-none transition-opacity opacity-0 border border-black"
+                         style="width: 200px; right: -210px; top: 0; display: none;">
+                        <p class="text-center ' . $currentColors['text'] . ' font-bold text-lg ">' . $course->getTypeseance() . '</p>
+                        <span class="' . $currentColors['text'] . '">Cours : </span><span class="text-purple-500">' . $course->getEnseignementLongName() . '</span><br>
+                        <span class="' . $currentColors['text'] . '">Horaire : </span><span class="text-blue-500">' . $dispHour . ':' . $dispMinute . '</span><br>
+                        <span class="' . $currentColors['text'] . '">Salle : </span><span class="text-green-500">' . ($course->getSalle() == '' ? 'Pas de salle' : ($course->getSalle() == '200' ? 'Amphi.' : 'Salle ' . $course->getSalle())) . '</span><br>
+                        <span class="' . $currentColors['text'] . '">Groupe : </span><span class="text-red-500">' . $course->getNomgroupe() . '</span><br>';
 
                         if($course->getCollegue() != '' && $course->getCollegue() != null) {
-                            echo '<span>Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
+                            echo '<span class="' . $currentColors['text'] . '">Prof : </span> <span class="text-orange-500">' . $this->transformTeacherName($course->getCollegueFullName()) . '</span>';
                         }
 
                         echo '</div>
