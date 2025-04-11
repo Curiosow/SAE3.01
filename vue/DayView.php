@@ -613,7 +613,7 @@ if (isset($_COOKIE['logged']) && $_COOKIE['logged'] != "NONE") {
         <header class="flex justify-between items-center border-b <?php echo $currentColors['border']; ?> px-4 py-2">
             <!-- Bouton retour -->
             <form action="Dashboard.php" method="GET" class="flex items-center">
-                <button type="submit" class="flex items-center <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?>">
+                <button type="submit" class="invisible sm:visible flex items-center <?php echo $currentColors['text']; ?> <?php echo $currentColors['hover']; ?>">
                     <svg viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="h-6 w-6">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
