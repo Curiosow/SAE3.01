@@ -110,7 +110,7 @@ class NotificationControleur
             $mails = array();
             foreach ($accounts as $user) {
                 $mails[] = $user['mail'];
-                $userControleur->testUser($user['id']);
+                //$userControleur->testUser($user['id']);
             }
 
             $data = array(
